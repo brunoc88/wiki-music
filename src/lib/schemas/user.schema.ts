@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const UserSchema = z.object({
+const RegisterSchema = z.object({
     email: z
         .string()
         .nonempty('Debe ingresar un email')
@@ -41,4 +41,4 @@ const UserSchema = z.object({
     path: ['password2'],
 })
 
-export default UserSchema
+export default RegisterSchema.transform(({ password2, ...data }) => data)
