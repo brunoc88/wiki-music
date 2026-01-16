@@ -3,7 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -14,6 +15,6 @@ model User {
   rol              String
   securityQuestion String
   securityAnswer   String
-  pic              String?
+  pic              String @default("default.png")
   state            Boolean @default(true)
 }

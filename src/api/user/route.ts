@@ -1,8 +1,9 @@
 import UserRegisterSchema from "@/lib/schemas/user/user.schema"
+import errorHandler from "@/middlewares/errorHandler"
 import { userService } from "@/services/user.service"
 import { NextResponse } from "next/server"
 
-export const POST = async (req: Request, res: Response) => {
+export const POST = async (req: Request) => {
     try {
         const data = await req.json()
 
@@ -17,6 +18,6 @@ export const POST = async (req: Request, res: Response) => {
 
         return NextResponse.json({ msj: 'usuario creado', user }, { status: 201 })
     } catch (error) {
-        console.log(error)
+        return errorHandler(error)
     }
 }
