@@ -4,6 +4,7 @@ export type RegisterUser = {
   password: string,
   securityQuestion:string,
   securityAnswer:string,
+  pic?:string
 }
 
 export type CreateUser =  RegisterUser & {
