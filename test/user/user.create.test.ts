@@ -32,7 +32,6 @@ describe('POST /api/user', () => {
             const res = await POST(makeRequest(user))
             const body = await res.json()
 
-            console.log("body", body)
 
             expect(res.status).toBe(201)
             expect(body.user).toBeDefined()
@@ -83,6 +82,26 @@ describe('POST /api/user', () => {
             expect(res.status).toBe(409)
             expect(body).toHaveProperty('error')
             expect(body.error).toBe(`El campo email ya está en uso`)
+        })
+
+        it('No coinciden los password', async() => {
+            const user = {
+                email: 'bruno88@gmail.com',
+                username: 'bruno88',
+                password: '123456',
+                password2: '1234567',
+                securityQuestion: 'lenguaje favorito?',
+                securityAnswer: 'javascript',
+                pic: '' // o directamente no mandarlo
+            }
+
+            const res = await POST(makeRequest(user))
+            const body = await res.json()
+
+            expect(res.status).toBe(400)
+            expect(body).toHaveProperty('error')
+            expect(body.error).toHaveProperty('password2')
+            expect(body.error.password2).toContain('Las contraseñas no coinciden')
         })
     })
 })

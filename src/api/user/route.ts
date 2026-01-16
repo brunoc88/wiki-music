@@ -14,8 +14,14 @@ export const POST = async (req: Request) => {
             }, { status: 400 })
         }
 
-        const user = await userService.create(parsed.data)
+        const res = await userService.create(parsed.data)
 
+        let user = {
+            id: res.id,
+            email: res.email,
+            username: res.username,
+            pic: res.pic
+        }
         return NextResponse.json({ msj: 'usuario creado', user }, { status: 201 })
     } catch (error) {
         return errorHandler(error)
