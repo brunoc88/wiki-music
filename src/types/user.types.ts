@@ -1,7 +1,11 @@
-export type User = {
-    email:string,
-    username:string,
-    password: string,
-    securityQuestion: string,
-    securityAnswer:string
+export type RegisterUser = {
+  email:string,
+  username:string,
+  password: string,
+  securityQuestion:string,
+  securityAnswer:string,
+}
+
+export type CreateUser =  RegisterUser & {
+  rol: 'comun' | 'admin'
 }

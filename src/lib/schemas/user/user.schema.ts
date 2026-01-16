@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const RegisterSchema = z.object({
+const UserRegisterSchema = z.object({
     email: z
         .string()
         .nonempty('Debe ingresar un email')
@@ -36,9 +36,14 @@ const RegisterSchema = z.object({
     securityAnswer: z
         .string()
         .min(10, 'Min 10 caracteres'),
+
+    pic: z.string().optional()
+
 }).refine(data => data.password === data.password2, {
     message: 'Las contraseñas no coinciden',
     path: ['password2'],
 })
 
-export default RegisterSchema.transform(({ password2, ...data }) => data)
+export default UserRegisterSchema.transform(({ password2, ...data }) => data)
+
+

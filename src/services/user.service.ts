@@ -1,8 +1,8 @@
 import { userRepo } from "@/repositories/user.repository"
-import { User } from "@/types/user.types"
+import { RegisterUser } from "@/types/user.types"
 
 export const userService = {
-    create: async (data:User) => {
-        return userRepo.create(data)
+    create: async (data: RegisterUser) => {
+        return userRepo.create({ ...data, rol:"comun"})
     }
 }
