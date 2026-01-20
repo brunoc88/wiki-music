@@ -15,6 +15,7 @@ model User {
   rol              String
   securityQuestion String
   securityAnswer   String
-  pic              String @default("default.png")
+  pic              String 
+  picPublicId      String?
   state            Boolean @default(true)
 }

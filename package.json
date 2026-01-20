@@ -6,12 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "vitest",
-    "test:u": "npm test test/user/"
+    "test": "dotenv -e .env.test vitest",
+    "test:u": "dotenv -e .env.test vitest test/user",
+    "prisma:generate": "dotenv -e .env prisma generate",
+    "prisma:migrate": "dotenv -e .env prisma migrate dev",
+    "prisma:migrate:test": "dotenv -e .env.test prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.9.0",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -21,6 +25,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "prisma": "^6.19.0",
     "typescript": "^5",
     "vitest": "^4.0.17"
