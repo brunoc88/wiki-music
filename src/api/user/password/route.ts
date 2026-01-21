@@ -1,6 +1,6 @@
 import requireSessionUserId from "@/lib/auth/requireSessionUserId"
 import ChangePasswordSchema from "@/lib/schemas/user/user.editpassword.schema"
-import errorHandler from "@/middlewares/errorHandler"
+import errorHandler from "@/error/errorHandler"
 import { userService } from "@/services/user.service"
 import { NextResponse } from "next/server"
 

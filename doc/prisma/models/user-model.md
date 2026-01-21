@@ -56,7 +56,8 @@ model User {
   rol              String
   securityQuestion String
   securityAnswer   String
-  pic              String  @default("default.png")
+  pic              String  
+  picPublicId      String?
   state            Boolean @default(true)
 }
 ```
@@ -100,7 +101,10 @@ model User {
 - **pic**
   - Tipo: String
   - Imagen de perfil
-  - Valor por defecto: `default.png`
+  
+- **picPublicId**
+  - Tipo: String o Null
+  - Id de la imagen
 
 - **state**
   - Tipo: Boolean

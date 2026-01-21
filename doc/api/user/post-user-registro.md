@@ -1,4 +1,4 @@
-# POST /user/registro
+# POST /api/user — Registro de usuario
 
 ## Descripción
 
@@ -20,7 +20,7 @@ import { NextResponse } from "next/server"
 ```
 
 - **UserRegisterSchema**: Validación con `zod` para comprobar datos válidos al momento de registrar un usuario.
-- **errorHandler**: Middleware que captura errores lanzados durante el flujo de la API.
+- **errorHandler**: Función centralizada para el manejo de errores de la API.
 - **userService**: Servicio de User donde se implementa la lógica de negocio.
 - **NextResponse**: Utilizado para devolver la respuesta HTTP y su correspondiente estado.
 
@@ -32,13 +32,31 @@ import { NextResponse } from "next/server"
 export const POST = async (req: Request)
 ```
 
-### Paso 1: Lectura del body
+### Paso 1: Lectura de formData
 
 ```ts
-const data = await req.json()
+const formData = await req.formData()
 ```
 
-- Se parsea el cuerpo de la request.
+- Se obtiene el valor de todos los campos del formData.
+
+```ts
+let data = {
+      email: formData.get("email")?.toString() || "",
+      username: formData.get("username")?.toString() || "",
+      password: formData.get("password")?.toString() || "",
+      password2: formData.get("password2")?.toString() || "",
+      securityQuestion: formData.get("securityQuestion")?.toString() || "",
+      securityAnswer: formData.get("securityAnswer")?.toString() || ""
+    }
+    
+```
+
+- Se obtiene el archivo (imagen de perfil), si fue enviado.
+
+```ts
+const file: File | null = formData.get('file') as File
+```
 
 ---
 
@@ -64,7 +82,7 @@ if (!parsed.success) {
 ### Paso 3: Creación del usuario
 
 ```ts
-const res = await userService.create(parsed.data)
+const res = await userService.create(parsed.data, file)
 
 const user = {
   id: res.id,
@@ -83,7 +101,7 @@ return NextResponse.json(
 - El service se encarga de:
   - Hashear el password.
   - Hashear la respuesta de seguridad.
-  - Asignar el rol correspondiente.
+  - Asignar el rol por defecto (comun).
 - Se devuelve únicamente la información pública del usuario.
 - Código de estado: **201 – Created**.
 
@@ -106,4 +124,4 @@ En todos los casos, se devuelve un mensaje claro al cliente.
 ## Notas
 
 - El password y la respuesta de seguridad **nunca** se devuelven en las respuestas.
-- El endpoint está diseñado para integrarse con JWT y control de acceso por roles.
+- El endpoint está preparado para integrarse con autenticación (NextAuth / JWT) y control de acceso por roles.

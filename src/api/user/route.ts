@@ -1,5 +1,5 @@
 import UserRegisterSchema from "@/lib/schemas/user/user.schema"
-import errorHandler from "@/middlewares/errorHandler"
+import errorHandler from "@/error/errorHandler"
 import { userService } from "@/services/user.service"
 import { NextResponse } from "next/server"
 
