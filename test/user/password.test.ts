@@ -1,0 +1,128 @@
+import { describe, it, beforeEach, afterAll, expect, vi } from 'vitest'
+import { PATCH } from "@/api/user/password/route"
+import { loadUsers, getUsers } from '../fake.user'
+import { prisma } from "@/lib/prisma"
+import { getServerSession } from 'next-auth'
+
+
+vi.mock('next-auth', async () => {
+    const actual = await vi.importActual<any>('next-auth')
+    return {
+        ...actual,
+        getServerSession: vi.fn()
+    }
+})
+
+let users: any[]
+
+const makeRequest = (body: { password: string, password2: string }) => {
+    return new Request('http://localhost/api/user/password', {
+        method: 'PATCH',
+        body: JSON.stringify(body)
+    })
+}
+
+
+beforeEach(async () => {
+    await prisma.user.deleteMany()
+    await loadUsers()
+    users = await getUsers()
+})
+
+describe('PATCH /api/user/password', () => {
+    describe('Cambiar Password', () => {
+        it('Cambiar password con exito', async () => {
+            (getServerSession as any).mockResolvedValue({
+                user: {
+                    id: users[0].id,
+                    email: users[0].email,
+                    name: users[0].username
+                }
+            })
+
+            let res = await PATCH(makeRequest({
+                password: '123123',
+                password2: '123123'
+            }))
+
+            const body = await res.json()
+
+            expect(res.status).toBe(200)
+            expect(body).toHaveProperty('ok')
+            expect(body.ok).toBe(true)
+        })
+    })
+
+    describe('Validaciones: Cambio de password', () => {
+        it('Sin autorizacion', async () => {
+            (getServerSession as any).mockResolvedValue(null)
+
+            let res = await PATCH(makeRequest({
+                password: '123123',
+                password2: '123123'
+            }))
+
+            const body = await res.json()
+
+            expect(res.status).toBe(401)
+            expect(body).toHaveProperty('error')
+            expect(body.error).toBe('Sin autorizacion')
+
+        })
+
+        it('Password & password2 diferentes', async () => {
+            (getServerSession as any).mockResolvedValue({
+                user: {
+                    id: users[0].id,
+                    email: users[0].email,
+                    name: users[0].username
+                }
+            })
+
+            let res = await PATCH(makeRequest({
+                password: '123123',
+                password2: '1231237'
+            }))
+
+            const body = await res.json()
+
+            expect(res.status).toBe(400)
+            expect(body).toHaveProperty('error')
+            expect(body.error).toHaveProperty('password2')
+            expect(body.error.password2).toContain('Las contraseñas no coinciden')
+        })
+
+        it('Password vacio', async () => {
+            (getServerSession as any).mockResolvedValue({
+                user: {
+                    id: users[0].id,
+                    email: users[0].email,
+                    name: users[0].username
+                }
+            })
+
+            let res = await PATCH(makeRequest({
+                password: '',
+                password2: '1231237'
+            }))
+
+            const body = await res.json()
+
+            expect(res.status).toBe(400)
+            expect(body).toHaveProperty('error')
+            expect(body.error).toHaveProperty('password2')
+            expect(body.error).toHaveProperty('password2')
+            expect(body.error.password).toContain('Debe ingresar un password')
+            expect(body.error.password2).toContain('Las contraseñas no coinciden')
+
+        })
+    })
+})
+
+
+
+
+afterAll(async () => {
+    await prisma.$disconnect()
+})
+

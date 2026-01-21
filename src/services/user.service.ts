@@ -2,6 +2,7 @@ import { userRepo } from "@/repositories/user.repository"
 import { RegisterUser } from "@/types/user.types"
 import bcrypt from "bcryptjs"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
+import { NotFoundError, ForbiddenError } from "@/error/appError"
 
 export const userService = {
   create: async (data: RegisterUser, imageFile?: File | null) => {
@@ -40,5 +41,21 @@ export const userService = {
       }
       throw error
     }
+  },
+
+  changePassword: async (data: { password: string, password2: string }, userId: number) => {
+    let password = await bcrypt.hash(data.password, 10)
+
+    let user = await userRepo.findUser(userId)
+    if (!user) {
+      throw new NotFoundError()
+    }
+
+    if (!user.state) {
+      throw new ForbiddenError('Usuario inactivo')
+    }
+
+
+    return await userRepo.changePassword(password, userId)
   }
 }

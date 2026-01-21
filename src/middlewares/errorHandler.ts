@@ -1,6 +1,14 @@
+import { AppError } from "@/error/appError"
 import { NextResponse } from "next/server"
 
 const errorHandler = (error: any) => {
+    if (error instanceof AppError) {
+        return NextResponse.json(
+            { error: error.message },
+            { status: error.status }
+        )
+    }
+    
     if (error.code === "P2002") {
         return NextResponse.json(
             { error: `El campo ${error.meta.target} ya está en uso` },
@@ -8,7 +16,7 @@ const errorHandler = (error: any) => {
         )
     }
 
-    // cuestion: preguntar si usarlo o crear clase
+   
     if (error.code === 'P2025') {
         return NextResponse.json(
             { error: 'Recurso no encontrado' },
@@ -16,6 +24,7 @@ const errorHandler = (error: any) => {
         )
     }
 
+    
     return NextResponse.json({ error: error.message }, { status: 500 })
 }
 

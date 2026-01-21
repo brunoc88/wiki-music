@@ -39,8 +39,7 @@ export const authOptions: AuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.username,
-          image: user.pic
+          name: user.username
         }
       }
     })
