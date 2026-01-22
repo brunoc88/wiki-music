@@ -91,7 +91,7 @@ describe("POST /api/users", () => {
   })
 
   describe("Validaciones", () => {
-    it("Campos vacíos", async () => {
+    it("Campos vacíos & otros errores", async () => {
       const formData = new FormData()
       formData.append("email", "")
       formData.append("username", "")

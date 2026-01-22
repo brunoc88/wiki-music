@@ -1,6 +1,7 @@
 import LoginSchema from "@/lib/schemas/login.schema"
 import NextAuth, { type AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import GoogleProvider from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 
@@ -13,7 +14,7 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" }
       },
 
-      async authorize(credentials:{user:string, password:string}) {
+      async authorize(credentials: { user: string, password: string }) {
         if (!credentials) return null
 
         const parsed = await LoginSchema.safeParseAsync(credentials)
@@ -42,7 +43,11 @@ export const authOptions: AuthOptions = {
           name: user.username
         }
       }
-    })
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
 
   callbacks: {
@@ -51,7 +56,7 @@ export const authOptions: AuthOptions = {
         token.id = user.id
         token.email = user.email
         token.name = user.name,
-        token.picture = user.image
+          token.picture = user.image
       }
       return token
     },

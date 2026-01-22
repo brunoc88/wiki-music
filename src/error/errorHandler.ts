@@ -16,7 +16,7 @@ const errorHandler = (error: any) => {
         )
     }
 
-   
+   // race condition/ final de carrera
     if (error.code === 'P2025') {
         return NextResponse.json(
             { error: 'Recurso no encontrado' },

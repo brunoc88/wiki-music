@@ -2,7 +2,7 @@ import { userRepo } from "@/repositories/user.repository"
 import { RegisterUser } from "@/types/user.types"
 import bcrypt from "bcryptjs"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
-import { NotFoundError, ForbiddenError } from "@/error/appError"
+import { NotFoundError, ForbiddenError, UnAuthorizedError } from "@/error/appError"
 
 export const userService = {
   create: async (data: RegisterUser, imageFile?: File | null) => {
@@ -57,5 +57,19 @@ export const userService = {
 
 
     return await userRepo.changePassword(password, userId)
+  },
+
+  deleteAccount: async (password:string, id:number) => {
+
+    let user = await userRepo.findUser(id)
+
+    if(!user) throw new NotFoundError()
+    if(!user.state) throw new ForbiddenError('Usuario inactivo')
+    
+    const isValid = await bcrypt.compare(password, user.password)
+    if(!isValid) throw new UnAuthorizedError('Credenciales inválidas')
+
+    return await userRepo.deleteAccount(id)
+
   }
 }

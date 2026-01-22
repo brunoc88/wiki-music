@@ -2,6 +2,9 @@ import UserRegisterSchema from "@/lib/schemas/user/user.schema"
 import errorHandler from "@/error/errorHandler"
 import { userService } from "@/services/user.service"
 import { NextResponse } from "next/server"
+import requireSessionUserId from "@/lib/auth/requireSessionUserId"
+import { BadRequestError } from "@/error/appError"
+import userDeleteAccountSchema from "@/lib/schemas/user/user.deleteAccount.schema"
 
 export const POST = async (req: Request) => {
   try {
@@ -18,7 +21,7 @@ export const POST = async (req: Request) => {
     }
     const file: File | null = formData.get('file') as File
 
-    
+
     const parsed = await UserRegisterSchema.safeParseAsync(data)
     if (!parsed.success) {
       return NextResponse.json({
@@ -26,10 +29,10 @@ export const POST = async (req: Request) => {
       }, { status: 400 })
     }
 
-    
+
     const res = await userService.create(parsed.data, file)
 
-    
+
     const user = {
       id: res.id,
       email: res.email,
@@ -39,6 +42,25 @@ export const POST = async (req: Request) => {
     }
 
     return NextResponse.json({ msj: "usuario creado", user }, { status: 201 })
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
+export const DELETE = async (req: Request) => {
+  try {
+    let userId = await requireSessionUserId()
+
+    const data = await req.json()
+
+    const parsed = await userDeleteAccountSchema.safeParseAsync(data)
+    if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
+
+    let { password } = parsed.data
+
+    await userService.deleteAccount(password, userId)
+    return NextResponse.json({ok:true},{status:200})
+
   } catch (error) {
     return errorHandler(error)
   }
