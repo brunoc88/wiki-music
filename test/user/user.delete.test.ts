@@ -16,7 +16,7 @@ vi.mock('next-auth', async () => {
 
 const makeRequest = (body: any) => {
     return new Request("http://localhost/api/users", {
-        method: "PATCH",
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
     })
