@@ -100,7 +100,7 @@ await userService.changePassword(parsed.data, userId)
 ### Paso 5: Respuesta exitosa
 
 ```ts
-return NextResponse.json({ ok: true }, { status: 200 })
+return NextResponse.json(res, { status: 200 })
 ```
 
 - Indica que la contraseña fue actualizada correctamente.

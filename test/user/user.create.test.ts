@@ -86,7 +86,6 @@ describe("POST /api/users", () => {
       expect(res.status).toBe(201)
       expect(body.user).toBeDefined()
       expect(body.user.pic).toBe("https://res.cloudinary.com/fake/image.png")
-      expect(body.user.picPublicId).toBe("users/fake-id")
     })
   })
 

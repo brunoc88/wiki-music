@@ -79,20 +79,14 @@ if (!parsed.success) {
 
 ---
 
-### Paso 3: Creación del usuario
+### Paso 3: Respuesta con informacion publica del usuario
 
 ```ts
 const res = await userService.create(parsed.data, file)
 
-const user = {
-  id: res.id,
-  email: res.email,
-  username: res.username,
-  pic: res.pic
-}
 
 return NextResponse.json(
-  { message: "Usuario creado correctamente", user },
+  {  user: res  },
   { status: 201 }
 )
 ```

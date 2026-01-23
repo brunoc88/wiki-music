@@ -3,9 +3,10 @@ import { RegisterUser } from "@/types/user.types"
 import bcrypt from "bcryptjs"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { NotFoundError, ForbiddenError, UnAuthorizedError } from "@/error/appError"
+import { PublicUserDTO } from "@/dtos/user.dto"
 
 export const userService = {
-  create: async (data: RegisterUser, imageFile?: File | null) => {
+  create: async (data: RegisterUser, imageFile?: File | null): Promise<PublicUserDTO> => {
     const hashpassword = await bcrypt.hash(data.password, 10)
     const hashSecurityAnswer = await bcrypt.hash(data.securityAnswer, 10)
 
@@ -30,10 +31,18 @@ export const userService = {
         picPublicId: imagePublicId
       }
 
-      return userRepo.create({
+      const res = await userRepo.create({
         ...userToCreate,
         rol: "comun"
       })
+
+      return {
+        id: res.id,
+        email: res.email,
+        username: res.username,
+        rol: res.rol,
+        pic: res.pic
+      }
     } catch (error) {
       // rollback si falla DB
       if (imagePublicId) {
@@ -43,7 +52,7 @@ export const userService = {
     }
   },
 
-  changePassword: async (data: { password: string, password2: string }, userId: number) => {
+  changePassword: async (data: { password: string, password2: string }, userId: number): Promise<{ ok: true }> => {
     let password = await bcrypt.hash(data.password, 10)
 
     let user = await userRepo.findUser(userId)
@@ -55,21 +64,23 @@ export const userService = {
       throw new ForbiddenError('Usuario inactivo')
     }
 
-
-    return await userRepo.changePassword(password, userId)
+    await userRepo.changePassword(password, userId)
+    return { ok: true }
   },
 
-  deleteAccount: async (password:string, id:number) => {
+  deleteAccount: async (password: string, id: number): Promise<{ ok: true }> => {
 
     let user = await userRepo.findUser(id)
 
-    if(!user) throw new NotFoundError()
-    if(!user.state) throw new ForbiddenError('Usuario inactivo')
-    
-    const isValid = await bcrypt.compare(password, user.password)
-    if(!isValid) throw new UnAuthorizedError('Credenciales inválidas')
+    if (!user) throw new NotFoundError()
+    if (!user.state) throw new ForbiddenError('Usuario inactivo')
 
-    return await userRepo.deleteAccount(id)
+    const isValid = await bcrypt.compare(password, user.password)
+    if (!isValid) throw new UnAuthorizedError('Credenciales inválidas')
+
+    await userRepo.deleteAccount(id)
+
+    return { ok: true }
 
   }
 }

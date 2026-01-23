@@ -10,7 +10,7 @@ Este método:
 - Hashea la nueva contraseña.
 - Verifica que el usuario exista.
 - Verifica que la cuenta esté activa.
-- Delegá la persistencia al repository.
+- Delegá la persistencia al repository correspondiente.
 
 ---
 
@@ -20,10 +20,10 @@ Este método:
 changePassword: async (
   data: { password: string; password2: string },
   userId: number
-) => {
-  let password = await bcrypt.hash(data.password, 10)
+): Promise<{ ok: true }> => {
+  const password = await bcrypt.hash(data.password, 10)
 
-  let user = await userRepo.findUser(userId)
+  const user = await userRepo.findUser(userId)
   if (!user) {
     throw new NotFoundError()
   }
@@ -32,8 +32,11 @@ changePassword: async (
     throw new ForbiddenError("Usuario inactivo")
   }
 
-  return await userRepo.changePassword(password, userId)
+  await userRepo.changePassword(password, userId)
+
+  return { ok: true }
 }
+
 ```
 
 ---
@@ -69,6 +72,7 @@ changePassword: async (
 - Decidir **cuándo** se puede cambiar una contraseña.
 - No devolver respuestas HTTP.
 - No acceder directamente al request o session.
+- Definir el contrato de salida del caso de uso (`{ ok: true }`).
 
 ---
 

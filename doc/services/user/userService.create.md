@@ -21,8 +21,9 @@ ya fue validada previamente (por ejemplo, mediante Zod en la capa de API).
 create(
   data: RegisterUser,
   imageFile?: File | null
-): Promise<User>
+): Promise<PublicUserDTO>
 ```
+- El tipo RegisterUser representa datos ya validados provenientes de la capa superior.
 
 ---
 
@@ -116,7 +117,7 @@ const userToCreate = {
 ### 5. Persistencia en base de datos
 
 ```ts
-return userRepo.create({
+const res = await userRepo.create({
   ...userToCreate,
   rol: "comun"
 })
@@ -127,6 +128,18 @@ return userRepo.create({
 
 ---
 
+### 6. Construcción del DTO de salida 
+
+```ts
+return {
+  id: res.id,
+  email: res.email,
+  username: res.username,
+  rol: res.rol,
+  pic: res.pic
+}
+```
+---
 ## Manejo de errores y rollback
 
 ```ts

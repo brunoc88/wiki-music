@@ -28,19 +28,9 @@ export const POST = async (req: Request) => {
       }, { status: 400 })
     }
 
-
     const res = await userService.create(parsed.data, file)
 
-
-    const user = {
-      id: res.id,
-      email: res.email,
-      username: res.username,
-      pic: res.pic,
-      picPublicId: res.picPublicId
-    }
-
-    return NextResponse.json({ msj: "usuario creado", user }, { status: 201 })
+    return NextResponse.json({ user: res }, { status: 201 })
   } catch (error) {
     return errorHandler(error)
   }
@@ -57,8 +47,8 @@ export const DELETE = async (req: Request) => {
 
     let { password } = parsed.data
 
-    await userService.deleteAccount(password, userId)
-    return NextResponse.json({ok:true},{status:200})
+    const res = await userService.deleteAccount(password, userId)
+    return NextResponse.json(res, { status: 200 })
 
   } catch (error) {
     return errorHandler(error)

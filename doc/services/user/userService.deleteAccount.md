@@ -34,7 +34,7 @@ deleteAccount(password: string, id: number): Promise<void>
 ## Implementación
 
 ```ts
-deleteAccount: async (password: string, id: number) => {
+deleteAccount: async (password: string, id: number) : Promise<{ ok: true }>=> {
   let user = await userRepo.findUser(id)
 
   if (!user) throw new NotFoundError()
@@ -43,7 +43,9 @@ deleteAccount: async (password: string, id: number) => {
   const isValid = await bcrypt.compare(password, user.password)
   if (!isValid) throw new UnAuthorizedError('Credenciales inválidas')
 
-  return await userRepo.deleteAccount(id)
+  await userRepo.deleteAccount(id)
+
+  return { ok: true }
 }
 ```
 
