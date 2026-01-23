@@ -3,7 +3,6 @@ import errorHandler from "@/error/errorHandler"
 import { userService } from "@/services/user.service"
 import { NextResponse } from "next/server"
 import requireSessionUserId from "@/lib/auth/requireSessionUserId"
-import { BadRequestError } from "@/error/appError"
 import userDeleteAccountSchema from "@/lib/schemas/user/user.deleteAccount.schema"
 
 export const POST = async (req: Request) => {
