@@ -52,8 +52,7 @@ export const userService = {
     }
   },
 
-  changePassword: async (data: { password: string, password2: string }, userId: number): Promise<{ ok: true }> => {
-    let password = await bcrypt.hash(data.password, 10)
+  changePassword: async (data: { oldpassword: string, password: string, password2: string }, userId: number): Promise<{ ok: true }> => {
 
     let user = await userRepo.findUser(userId)
     if (!user) {
@@ -64,6 +63,28 @@ export const userService = {
       throw new ForbiddenError('Usuario inactivo')
     }
 
+    
+    const isValidOldPassword = await bcrypt.compare(
+      data.oldpassword,
+      user.password
+    )
+    if (!isValidOldPassword) {
+      throw new ForbiddenError('Credenciales inválidas')
+    }
+
+
+    const isSamePassword = await bcrypt.compare(
+      data.password,
+      user.password
+    )
+    if (isSamePassword) {
+      throw new ForbiddenError(
+        'El nuevo password no puede ser igual al anterior'
+      )
+    }
+
+
+    let password = await bcrypt.hash(data.password, 10)
     await userRepo.changePassword(password, userId)
     return { ok: true }
   },
