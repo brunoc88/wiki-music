@@ -44,7 +44,7 @@ beforeEach(async () => {
 
 
 
-describe('PATCH /api/user', () => {
+describe('DELETE /api/user', () => {
     it('Eliminacion exitosa', async () => {
         mockAuthenticatedSession()
 
