@@ -63,7 +63,7 @@ export const userService = {
       throw new ForbiddenError('Usuario inactivo')
     }
 
-    
+
     const isValidOldPassword = await bcrypt.compare(
       data.oldpassword,
       user.password
@@ -103,5 +103,31 @@ export const userService = {
 
     return { ok: true }
 
+  },
+
+  securityQuestionUpdate: async (data: { securityQuestion?: string, securityAnswer: string }, userId: number): Promise<{ ok: true }> => {
+    let { securityQuestion, securityAnswer } = data
+
+    let user = await userRepo.findUser(userId)
+    if (!user) throw new NotFoundError()
+    if (!user.state) throw new ForbiddenError('Usuario inactivo')
+
+    if (securityQuestion && securityQuestion === user.securityQuestion) {
+      throw new ForbiddenError('La pregunta no puede ser la misma')
+    }
+
+    const isSameAnswer: boolean = await bcrypt.compare(securityAnswer, user.securityAnswer)
+
+    if (isSameAnswer) throw new ForbiddenError('La respuesta no puede ser la misma')
+    let hashpassword: string = await bcrypt.hash(securityAnswer, 10)
+
+
+    let userToUpdate: { securityQuestion?: string, securityAnswer: string } = {
+      securityQuestion,
+      securityAnswer: hashpassword
+    }
+    await userRepo.securityQuestionUpdate(userToUpdate, userId)
+
+    return { ok: true }
   }
 }

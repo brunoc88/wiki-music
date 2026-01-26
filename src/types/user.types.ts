@@ -7,6 +7,6 @@ export type RegisterUser = {
 }
 
 
-export type CreateUser =  RegisterUser & {
+export type CreateUser = RegisterUser & {
   rol: 'comun' | 'admin'
 }
