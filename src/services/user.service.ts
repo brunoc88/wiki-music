@@ -119,13 +119,14 @@ export const userService = {
     const isSameAnswer: boolean = await bcrypt.compare(securityAnswer, user.securityAnswer)
 
     if (isSameAnswer) throw new ForbiddenError('La respuesta no puede ser la misma')
-    let hashpassword: string = await bcrypt.hash(securityAnswer, 10)
+    let hashedSecurityAnswer: string = await bcrypt.hash(securityAnswer, 10)
 
 
-    let userToUpdate: { securityQuestion?: string, securityAnswer: string } = {
-      securityQuestion,
-      securityAnswer: hashpassword
+    const userToUpdate = {
+      securityAnswer: hashedSecurityAnswer,
+      ...(securityQuestion && { securityQuestion })
     }
+
     await userRepo.securityQuestionUpdate(userToUpdate, userId)
 
     return { ok: true }
