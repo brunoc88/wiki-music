@@ -2,8 +2,7 @@ import LoginSchema from "@/lib/schemas/login.schema"
 import NextAuth, { type AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import bcrypt from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+import { authorizeUser } from "../credentials-authorize"
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -14,35 +13,22 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" }
       },
 
-      async authorize(credentials: { user: string, password: string }) {
+      async authorize(credentials) {
         if (!credentials) return null
 
         const parsed = await LoginSchema.safeParseAsync(credentials)
         if (!parsed.success) return null
 
-        const user = await prisma.user.findFirst({
-          where: {
-            OR: [
-              { email: parsed.data.user },
-              { username: parsed.data.user }
-            ]
-          }
-        })
-
-        if (!user || !user.state) return null
-
-        const isValid = await bcrypt.compare(
-          parsed.data.password,
-          user.password
-        )
-        if (!isValid) return null
+        const user = await authorizeUser(parsed.data)
+        if (!user) return null
 
         return {
           id: user.id,
           email: user.email,
-          name: user.username
+          name: user.username,
         }
       }
+
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -55,8 +41,8 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.id = user.id
         token.email = user.email
-        token.name = user.name,
-          token.picture = user.image
+        token.name = user.name
+        token.picture = user.image
       }
       return token
     },
