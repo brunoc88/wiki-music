@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { AuthorizeInput, AuthorizedUser } from "@/types/user.types"
 
-export const authorizeUser = async ({ user, password }: { user: string, password: string }) => {
+export const authorizeUser = async ({ user, password }: AuthorizeInput) : Promise<AuthorizedUser | null> => {
     const userDB = await prisma.user.findFirst({
         where: {
             OR: [

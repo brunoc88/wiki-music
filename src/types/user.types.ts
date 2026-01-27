@@ -10,3 +10,14 @@ export type RegisterUser = {
 export type CreateUser = RegisterUser & {
   rol: 'comun' | 'admin'
 }
+
+export type AuthorizeInput = {
+  user: string,
+  password: string
+}
+
+export type AuthorizedUser = {
+  id:number,
+  email: string,
+  username: string
+}
