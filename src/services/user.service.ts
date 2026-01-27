@@ -130,5 +130,14 @@ export const userService = {
     await userRepo.securityQuestionUpdate(userToUpdate, userId)
 
     return { ok: true }
+  },
+
+  changeUsername: async (data: { username: string }, userId: number): Promise<{ username: string, ok: true }> => {
+    const user = await userRepo.findUser(userId)
+    if (!user) throw new NotFoundError()
+    if (!user.state) throw new ForbiddenError('Usuario inactivo')
+
+    const res = await userRepo.changeUsername(data, userId)
+    return { username: res.username, ok: true }
   }
 }

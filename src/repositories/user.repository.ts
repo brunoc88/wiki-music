@@ -15,5 +15,7 @@ export const userRepo = {
 
     securityQuestionUpdate: async (data: { securityQuestion?: string, securityAnswer: string }, userId: number): Promise<User> => {
         return await prisma.user.update({ where: { id: userId }, data })
-    }
+    },
+
+    changeUsername: async (data:{username:string}, userId:number): Promise<User> => await prisma.user.update({ where:{id:userId}, data:{username:data.username}})
 }

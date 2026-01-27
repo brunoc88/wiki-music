@@ -4,6 +4,7 @@ import { userService } from "@/services/user.service"
 import { NextResponse } from "next/server"
 import requireSessionUserId from "@/lib/auth/requireSessionUserId"
 import userDeleteAccountSchema from "@/lib/schemas/user/user.deleteAccount.schema"
+import usernameChangeSchema from "@/lib/schemas/user/user.change.username"
 
 export const POST = async (req: Request) => {
   try {
@@ -48,6 +49,24 @@ export const DELETE = async (req: Request) => {
     let { password } = parsed.data
 
     const res = await userService.deleteAccount(password, userId)
+    return NextResponse.json(res, { status: 200 })
+
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
+export const PATCH = async (req: Request) => {
+  try {
+    const userId = await requireSessionUserId()
+
+    const data = await req.json()
+
+    const parsed = await usernameChangeSchema.safeParseAsync(data)
+    if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
+
+    const res = await userService.changeUsername(parsed.data, userId)
+
     return NextResponse.json(res, { status: 200 })
 
   } catch (error) {
