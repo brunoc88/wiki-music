@@ -29,7 +29,7 @@ export const authOptions: AuthOptions = {
           }
         })
 
-        if (!user) return null
+        if (!user || !user.state) return null
 
         const isValid = await bcrypt.compare(
           parsed.data.password,

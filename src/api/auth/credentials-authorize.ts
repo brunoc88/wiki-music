@@ -11,7 +11,7 @@ export const authorizeUser = async ({ user, password }: { user: string, password
         }
     })
 
-    if(!userDB) return null
+    if(!userDB || !userDB.state) return null
     
     const isValid = await bcrypt.compare(password, userDB.password)
     if(!isValid) return null
