@@ -41,9 +41,7 @@ securityQuestionUpdate: async (
 ): Promise<{ ok: true }> => {
   let { securityQuestion, securityAnswer } = data
 
-  let user = await userRepo.findUser(userId)
-  if (!user) throw new NotFoundError()
-  if (!user.state) throw new ForbiddenError('Usuario inactivo')
+  let user = await requireActiveUserById(userId)
 
   if (securityQuestion && securityQuestion === user.securityQuestion) {
     throw new ForbiddenError('La pregunta no puede ser la misma')

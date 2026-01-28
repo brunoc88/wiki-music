@@ -26,14 +26,7 @@ changePassword: async (
   userId: number
 ): Promise<{ ok: true }> => {
 
-  const user = await userRepo.findUser(userId)
-  if (!user) {
-    throw new NotFoundError()
-  }
-
-  if (!user.state) {
-    throw new ForbiddenError('Usuario inactivo')
-  }
+  let user = await requireActiveUserById(userId)
 
   const isValidOldPassword = await bcrypt.compare(
     data.oldpassword,
