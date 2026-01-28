@@ -1,9 +1,11 @@
 import { userRepo } from "@/repositories/user.repository"
-import { RegisterUser } from "@/types/user.types"
+import { RegisterUser, RecoverPassword } from "@/types/user.types"
 import bcrypt from "bcryptjs"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { NotFoundError, ForbiddenError, UnAuthorizedError } from "@/error/appError"
 import { PublicUserDTO } from "@/dtos/user.dto"
+import { requireActiveUserById, requireActiveUserByEmail } from "@/domain/user/userAccess"
+
 
 export const userService = {
   create: async (data: RegisterUser, imageFile?: File | null): Promise<PublicUserDTO> => {
@@ -54,14 +56,7 @@ export const userService = {
 
   changePassword: async (data: { oldpassword: string, password: string, password2: string }, userId: number): Promise<{ ok: true }> => {
 
-    let user = await userRepo.findUser(userId)
-    if (!user) {
-      throw new NotFoundError()
-    }
-
-    if (!user.state) {
-      throw new ForbiddenError('Usuario inactivo')
-    }
+    let user = await requireActiveUserById(userId)
 
 
     const isValidOldPassword = await bcrypt.compare(
@@ -91,10 +86,7 @@ export const userService = {
 
   deleteAccount: async (password: string, id: number): Promise<{ ok: true }> => {
 
-    let user = await userRepo.findUser(id)
-
-    if (!user) throw new NotFoundError()
-    if (!user.state) throw new ForbiddenError('Usuario inactivo')
+    let user = await requireActiveUserById(id)
 
     const isValid = await bcrypt.compare(password, user.password)
     if (!isValid) throw new UnAuthorizedError('Credenciales inválidas')
@@ -108,9 +100,8 @@ export const userService = {
   securityQuestionUpdate: async (data: { securityQuestion?: string, securityAnswer: string }, userId: number): Promise<{ ok: true }> => {
     let { securityQuestion, securityAnswer } = data
 
-    let user = await userRepo.findUser(userId)
-    if (!user) throw new NotFoundError()
-    if (!user.state) throw new ForbiddenError('Usuario inactivo')
+    let user = await requireActiveUserById(userId)
+    
 
     if (securityQuestion && securityQuestion === user.securityQuestion) {
       throw new ForbiddenError('La pregunta no puede ser la misma')
@@ -133,11 +124,25 @@ export const userService = {
   },
 
   changeUsername: async (data: { username: string }, userId: number): Promise<{ username: string, ok: true }> => {
-    const user = await userRepo.findUser(userId)
-    if (!user) throw new NotFoundError()
-    if (!user.state) throw new ForbiddenError('Usuario inactivo')
+    await requireActiveUserById(userId)
 
     const res = await userRepo.changeUsername(data, userId)
     return { username: res.username, ok: true }
+  },
+
+  passwordRecovery: async (data: RecoverPassword): Promise<{ ok: true }> => {
+    let { email, securityQuestion, securityAnswer } = data
+
+    let user = await requireActiveUserByEmail(email)
+
+    if(securityQuestion && securityQuestion !== user.securityQuestion) {
+      throw new ForbiddenError('Credenciales invalidas')
+    }
+
+    const isValid = await bcrypt.compare(securityAnswer, user.securityAnswer)
+    if(!isValid) throw new ForbiddenError('Credenciales invalidas')
+
+    
+    return { ok: true }
   }
 }

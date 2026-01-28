@@ -7,6 +7,8 @@ export const userRepo = {
 
     findUser: async (id: number): Promise<User | null> => await prisma.user.findUnique({ where: { id } }),
 
+    findByEmail: async (email: string) => await prisma.user.findUnique({ where: { email } }),
+
     changePassword: async (password: string, userId: number): Promise<User> => {
         return await prisma.user.update({ where: { id: userId }, data: { password } })
     },
@@ -17,5 +19,5 @@ export const userRepo = {
         return await prisma.user.update({ where: { id: userId }, data })
     },
 
-    changeUsername: async (data:{username:string}, userId:number): Promise<User> => await prisma.user.update({ where:{id:userId}, data:{username:data.username}})
+    changeUsername: async (data: { username: string }, userId: number): Promise<User> => await prisma.user.update({ where: { id: userId }, data: { username: data.username } })
 }

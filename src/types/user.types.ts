@@ -21,3 +21,9 @@ export type AuthorizedUser = {
   email: string,
   username: string
 }
+
+export type RecoverPassword = {
+  email:string,
+  securityQuestion: string,
+  securityAnswer: string
+}

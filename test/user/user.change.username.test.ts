@@ -68,6 +68,13 @@ describe('PATCH /api/user', () => {
         expect(body.ok).toBe(true)
         expect(body.username).toBe('brunoc88')
     })
+
+    it('Duplicado', async()=> {
+        await mockAuthenticatedSession()
+
+        const res = await PATCH(makeRequest({username:'admin2'}))
+        expect(res.status).toBe(409)
+    })
 })
 
 afterAll(async () => {
