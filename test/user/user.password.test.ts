@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, afterAll, expect, vi } from 'vitest'
+import { describe, it, beforeEach, afterAll,afterEach, expect, vi } from 'vitest'
 import { PATCH } from "@/api/user/password/route"
 import { loadUsers, getUsers } from '../fake.user'
 import { prisma } from "@/lib/prisma"
@@ -170,7 +170,9 @@ describe('PATCH /api/user/password', () => {
 })
 
 
-
+afterEach(() => {
+  vi.resetAllMocks()
+})
 
 afterAll(async () => {
     await prisma.$disconnect()

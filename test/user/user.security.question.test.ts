@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { getUsers, loadUsers } from "../fake.user"
-import { vi, describe, expect, it, beforeEach, afterAll } from "vitest"
+import { vi, describe, expect, it, beforeEach, afterAll, afterEach } from "vitest"
 import { getServerSession } from "next-auth"
 import { PATCH } from "@/api/user/security-question/route"
 
@@ -149,6 +149,9 @@ describe('PATCH /api/user/security-question', () => {
     })
 })
 
+afterEach(() => {
+  vi.resetAllMocks()
+})
 
 afterAll(async () => {
     await prisma.$disconnect()

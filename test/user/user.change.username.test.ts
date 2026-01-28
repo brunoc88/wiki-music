@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { getUsers, loadUsers } from "../fake.user"
-import { vi, describe, expect, it, beforeEach, afterAll } from "vitest"
+import { vi, describe, expect, it, beforeEach, afterAll, afterEach } from "vitest"
 import { getServerSession } from "next-auth"
 import { PATCH } from "@/api/user/route"
 
@@ -75,6 +75,10 @@ describe('PATCH /api/user', () => {
         const res = await PATCH(makeRequest({username:'admin2'}))
         expect(res.status).toBe(409)
     })
+})
+
+afterEach(() => {
+  vi.resetAllMocks()
 })
 
 afterAll(async () => {

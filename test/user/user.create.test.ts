@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll, vi } from "vitest"
+import { describe, it, expect, beforeEach, afterAll, vi, afterEach } from "vitest"
 import { prisma } from "@/lib/prisma"
 import { POST } from "@/api/user/route"
 import * as cloudinaryLib from "@/lib/cloudinary"
@@ -170,6 +170,10 @@ describe("POST /api/users", () => {
       expect(body.error.password2).toContain("Las contraseñas no coinciden")
     })
   })
+})
+
+afterEach(() => {
+  vi.resetAllMocks()
 })
 
 afterAll(async () => {

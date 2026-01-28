@@ -118,6 +118,10 @@ describe('DELETE /api/user', () => {
     })
 })
 
+afterEach(() => {
+  vi.resetAllMocks()
+})
+
 afterAll(async () => {
     await prisma.$disconnect()
 })
