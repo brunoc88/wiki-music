@@ -18,4 +18,7 @@ model User {
   pic              String 
   picPublicId      String?
   state            Boolean @default(true)
+
+  recoveryToken    String?
+  recoveryExpires  DateTime?
 }

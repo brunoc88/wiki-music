@@ -19,5 +19,41 @@ export const userRepo = {
         return await prisma.user.update({ where: { id: userId }, data })
     },
 
-    changeUsername: async (data: { username: string }, userId: number): Promise<User> => await prisma.user.update({ where: { id: userId }, data: { username: data.username } })
+    changeUsername: async (data: { username: string }, userId: number): Promise<User> => await prisma.user.update({ where: { id: userId }, data: { username: data.username } }),
+
+    setRecoveryToken: async (data: { id: number, token: string, expires: Date }): Promise<void> => {
+        await prisma.user.update({
+            where: { id: data.id }, data: {
+                recoveryToken: data.token,
+                recoveryExpires: data.expires
+            }
+        })
+    },
+
+    getUserByRecoveryToken: async (token: string) => {
+        return prisma.user.findFirst({
+            where: {
+                recoveryToken: token,
+                recoveryExpires: {
+                    gt: new Date()
+                },
+                state: true
+            }
+        })
+    },
+
+    resetPasswordByRecovery: async (data: {
+        userId: number
+        hashedPassword: string
+    }) => {
+        await prisma.user.update({
+            where: { id: data.userId },
+            data: {
+                password: data.hashedPassword,
+                recoveryToken: null,
+                recoveryExpires: null
+            }
+        })
+    }
+
 }

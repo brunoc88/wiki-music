@@ -2,10 +2,11 @@ import { userRepo } from "@/repositories/user.repository"
 import { RegisterUser, RecoverPassword } from "@/types/user.types"
 import bcrypt from "bcryptjs"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
-import { NotFoundError, ForbiddenError, UnAuthorizedError } from "@/error/appError"
+import { ForbiddenError, UnAuthorizedError } from "@/error/appError"
 import { PublicUserDTO } from "@/dtos/user.dto"
 import { requireActiveUserById, requireActiveUserByEmail } from "@/domain/user/userAccess"
-
+import crypto from 'crypto'
+import { mailService } from "./mail.service"
 
 export const userService = {
   create: async (data: RegisterUser, imageFile?: File | null): Promise<PublicUserDTO> => {
@@ -101,7 +102,7 @@ export const userService = {
     let { securityQuestion, securityAnswer } = data
 
     let user = await requireActiveUserById(userId)
-    
+
 
     if (securityQuestion && securityQuestion === user.securityQuestion) {
       throw new ForbiddenError('La pregunta no puede ser la misma')
@@ -130,19 +131,49 @@ export const userService = {
     return { username: res.username, ok: true }
   },
 
-  passwordRecovery: async (data: RecoverPassword): Promise<{ ok: true }> => {
+  startPasswordRecovery: async (data: RecoverPassword): Promise<{ ok: true }> => {
     let { email, securityQuestion, securityAnswer } = data
 
     let user = await requireActiveUserByEmail(email)
 
-    if(securityQuestion && securityQuestion !== user.securityQuestion) {
+    if (securityQuestion && securityQuestion !== user.securityQuestion) {
       throw new ForbiddenError('Credenciales invalidas')
     }
 
     const isValid = await bcrypt.compare(securityAnswer, user.securityAnswer)
-    if(!isValid) throw new ForbiddenError('Credenciales invalidas')
+    if (!isValid) throw new ForbiddenError('Credenciales invalidas')
 
-    
+    const token = crypto.randomUUID()
+    const expires = new Date(Date.now() + 15 * 60 * 1000)
+
+
+    await userRepo.setRecoveryToken({ id: user.id, token, expires })
+    await mailService.sendPasswordRecovery(user.email, token)
+
+    return { ok: true }
+
+  },
+
+  confirmPasswordRecovery: async (data: {
+    token: string
+    newPassword: string
+  }): Promise<{ ok: true }> => {
+    const { token, newPassword } = data
+    console.log('token', token)
+    const user = await userRepo.getUserByRecoveryToken(token)
+
+    if (!user || !user.state) {
+      throw new ForbiddenError('Token inválido o usuario inactivo')
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+    await userRepo.resetPasswordByRecovery({
+      userId: user.id,
+      hashedPassword
+    })
+
     return { ok: true }
   }
+
 }

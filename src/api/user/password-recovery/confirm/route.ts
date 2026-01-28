@@ -1,0 +1,24 @@
+import { NextResponse } from 'next/server'
+import errorHandler from '@/error/errorHandler'
+import userPasswordRecoveryConfirmSchema from '@/lib/schemas/user/user.password-recovery-confirm'
+import { userService } from '@/services/user.service'
+
+export const POST = async (req: Request) => {
+  try {
+    const data = await req.json()
+
+    const parsed = userPasswordRecoveryConfirmSchema.safeParse(data)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      )
+    }
+
+    const res = await userService.confirmPasswordRecovery(parsed.data)
+
+    return NextResponse.json(res, { status: 200 })
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
