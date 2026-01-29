@@ -54,6 +54,24 @@ export const userRepo = {
                 recoveryExpires: null
             }
         })
+    },
+
+    updateProfilePic: async (userId: number, data: { pic: string, picPublicId: string }): Promise<User> => {
+        return await prisma.user.update({ where: { id: userId }, data })
+    },
+
+    deleteProfilePic: async (
+        userId: number,
+        data: {
+            pic: string
+            picPublicId: string | null
+        }
+    ): Promise<User> => {
+        return prisma.user.update({
+            where: { id: userId },
+            data,
+        })
     }
+
 
 }

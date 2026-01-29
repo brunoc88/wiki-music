@@ -2,7 +2,7 @@ import { userRepo } from "@/repositories/user.repository"
 import { RegisterUser, RecoverPassword } from "@/types/user.types"
 import bcrypt from "bcryptjs"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
-import { ForbiddenError, UnAuthorizedError } from "@/error/appError"
+import { BadRequestError, ForbiddenError, UnAuthorizedError } from "@/error/appError"
 import { PublicUserDTO } from "@/dtos/user.dto"
 import { requireActiveUserById, requireActiveUserByEmail } from "@/domain/user/userAccess"
 import crypto from 'crypto'
@@ -171,6 +171,64 @@ export const userService = {
     await userRepo.resetPasswordByRecovery({
       userId: user.id,
       hashedPassword
+    })
+
+    return { ok: true }
+  },
+
+  changeProfilePic: async (
+    imageFile: File,
+    userId: number
+  ): Promise<{ ok: true }> => {
+
+    const user = await requireActiveUserById(userId)
+
+    let uploadResult: { url: string; publicId: string } | null = null
+
+    try {
+
+      // 0 Compruebo si hay imagen
+      if (!(imageFile instanceof File)) {
+        throw new BadRequestError('Imagen requerida')
+      }
+      // 1 subir nueva imagen
+      uploadResult = await uploadImage(imageFile, "user")
+
+      // 2 actualizar DB
+      await userRepo.updateProfilePic(userId, {
+        pic: uploadResult.url,
+        picPublicId: uploadResult.publicId,
+      })
+
+      // 3 borrar imagen vieja (si existía)
+      if (user.picPublicId) {
+        await deleteImage(user.picPublicId)
+      }
+
+      return { ok: true }
+
+    } catch (error) {
+      // rollback solo del upload nuevo
+      if (uploadResult?.publicId) {
+        await deleteImage(uploadResult.publicId)
+      }
+      throw error
+    }
+  },
+
+  deleteProfilePic: async (userId: number): Promise<{ ok: true }> => {
+    const user = await requireActiveUserById(userId)
+
+    if (!user.picPublicId) {
+      return { ok: true }
+    }
+
+    await deleteImage(user.picPublicId)
+
+    let imagePublicId: string | null = null
+    await userRepo.deleteProfilePic(userId, {
+      pic: process.env.DEFAULT_USER_IMAGE_URL!,
+      picPublicId: imagePublicId,
     })
 
     return { ok: true }

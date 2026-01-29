@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "test": "dotenv -e .env.test vitest",
-    "test:u": "dotenv -e .env.test vitest test/user/user.password-recovery-start.test.ts",
+    "test:u": "dotenv -e .env.test vitest test/user/user.delete-avatar.test.ts",
     "test:l": "dotenv -e .env.test vitest test/login",
     "prisma:generate": "dotenv -e .env prisma generate",
     "prisma:migrate": "dotenv -e .env prisma migrate dev",
