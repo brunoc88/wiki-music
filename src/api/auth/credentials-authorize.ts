@@ -17,5 +17,5 @@ export const authorizeUser = async ({ user, password }: AuthorizeInput) : Promis
     const isValid = await bcrypt.compare(password, userDB.password)
     if(!isValid) return null
 
-    return { id: userDB.id, email: userDB.email, username:userDB.username }
+    return { id: userDB.id, email: userDB.email, username:userDB.username, rol:userDB.rol }
 }

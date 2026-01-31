@@ -26,6 +26,7 @@ export const authOptions: AuthOptions = {
           id: user.id,
           email: user.email,
           name: user.username,
+          rol: user.rol
         }
       }
 
@@ -43,6 +44,7 @@ export const authOptions: AuthOptions = {
         token.email = user.email
         token.name = user.name
         token.picture = user.image
+        token.rol = user.rol
       }
       return token
     },
@@ -53,6 +55,7 @@ export const authOptions: AuthOptions = {
         session.user.email = token.email as string
         session.user.name = token.name as string
         session.user.image = token.picture as string
+        session.user.rol = token.rol as string
       }
       return session
     }

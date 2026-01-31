@@ -19,7 +19,8 @@ export type AuthorizeInput = {
 export type AuthorizedUser = {
   id:number,
   email: string,
-  username: string
+  username: string,
+  rol: string
 }
 
 export type RecoverPassword = {
