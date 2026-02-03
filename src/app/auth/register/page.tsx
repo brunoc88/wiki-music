@@ -4,12 +4,14 @@ import UserInputs from '@/components/UserInputs'
 import { useState } from 'react'
 import { RegisterUserFront } from '@/types/user.types'
 import { handleForm } from './handleForm'
-import './style.css'
+import { useRouter } from "next/navigation"
+import { useError } from '@/context/ErrorContext'
+
 
 const UserRegisterForm = () => {
     let [user, setUser] = useState<RegisterUserFront>({ email: '', username: "", securityQuestion: "", securityAnswer: "", password: "", password2: "" })
-
-    const [errors, setErrors] = useState<Record<string, string[]>>({})
+    const { setErrors } = useError()
+    const router = useRouter()
 
     const handleUser = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -18,6 +20,8 @@ const UserRegisterForm = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        setErrors({})
 
         const formData = new FormData()
         formData.append("email", user.email)
@@ -38,12 +42,15 @@ const UserRegisterForm = () => {
             setErrors(result.error)
             return
         }
+
+        // ver si reemplazamos por logeo automatico
+        router.push('/welcome')
     }
 
     return (
         <div className='container'>
             <form onSubmit={handleSubmit}>
-                <UserInputs handleUser={handleUser} errors={errors} mode={'register'} />
+                <UserInputs handleUser={handleUser} mode={'register'} />
             </form>
         </div>
     )
