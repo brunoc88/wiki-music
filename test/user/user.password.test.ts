@@ -1,5 +1,5 @@
 import { describe, it, beforeEach, afterAll,afterEach, expect, vi } from 'vitest'
-import { PATCH } from "@/api/user/password/route"
+import { PATCH } from "@/app/api/user/password/route"
 import { loadUsers, getUsers } from '../fake.user'
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from 'next-auth'

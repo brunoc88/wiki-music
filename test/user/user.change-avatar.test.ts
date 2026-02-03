@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterAll, vi, afterEach } from "vites
 import { prisma } from "@/lib/prisma"
 import fs from "fs"
 import path from "path"
-import { PATCH } from "@/api/user/avatar/router"
+import { PATCH } from "@/app/api/user/avatar/router"
 import { getServerSession } from "next-auth"
 import { getUsers, loadUsers } from "../fake.user"
 

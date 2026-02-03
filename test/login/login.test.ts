@@ -1,7 +1,7 @@
 import { describe, it, beforeEach, afterAll, expect } from "vitest"
 import { prisma } from "@/lib/prisma"
 import { getUsers, loadUsers } from "../fake.user"
-import { authorizeUser } from "@/api/auth/credentials-authorize"
+import { authorizeUser } from "@/app/api/auth/credentials-authorize"
 
 let users: any[] = []
 

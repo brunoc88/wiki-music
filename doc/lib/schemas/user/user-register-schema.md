@@ -55,9 +55,8 @@ const UserRegisterSchema = z.object({
   securityAnswer: z
     .string()
     .nonempty("Debe escribir una respuesta")
-    .min(10, "Min 10 caracteres"),
+    .min(10, "Min 10 caracteres")
 
-  pic: z.string().optional()
 }).refine(data => data.password === data.password2, {
   message: "Las contraseñas no coinciden",
   path: ["password2"],
@@ -102,9 +101,6 @@ export default UserRegisterSchema.transform(({ password2, ...data }) => data)
 - Mínimo: 10 caracteres
 - Se almacenará hasheada en el backend
 
-### pic
-- Opcional
-- Imagen de perfil del usuario
 
 ---
 

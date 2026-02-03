@@ -36,9 +36,7 @@ const UserRegisterSchema = z.object({
     securityAnswer: z
         .string()
         .nonempty('Debe escribir una respuesta')
-        .min(10, 'Min 10 caracteres'),
-
-    pic: z.string().optional()
+        .min(10, 'Min 10 caracteres')
 
 }).refine(data => data.password === data.password2, {
     message: 'Las contraseñas no coinciden',

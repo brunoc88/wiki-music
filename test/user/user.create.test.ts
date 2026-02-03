@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterAll, vi, afterEach } from "vitest"
 import { prisma } from "@/lib/prisma"
-import { POST } from "@/api/user/route"
+import { POST } from "@/app/api/user/route"
 import * as cloudinaryLib from "@/lib/cloudinary"
 import fs from "fs"
 import path from "path"

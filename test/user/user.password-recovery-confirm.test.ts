@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { vi, beforeEach, afterEach, describe, it, expect, afterAll } from "vitest"
-import { POST } from "@/api/user/password-recovery/confirm/route"
+import { POST } from "@/app/api/user/password-recovery/confirm/route"
 import { getUsers, loadUsers } from "../fake.user"
 
 let users: any[]

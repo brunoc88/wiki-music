@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { getUsers, loadUsers } from "../fake.user"
 import { vi, describe, expect, it, beforeEach, afterAll, afterEach } from "vitest"
 import { getServerSession } from "next-auth"
-import { PATCH } from "@/api/user/security-question/route"
+import { PATCH } from "@/app/api/user/security-question/route"
 
 let users: any[]
 

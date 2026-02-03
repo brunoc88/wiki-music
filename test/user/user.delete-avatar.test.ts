@@ -10,7 +10,7 @@ vi.mock('@/lib/cloudinary', () => ({
 
 
 
-import { DELETE } from "@/api/user/avatar/router"
+import { DELETE } from "@/app/api/user/avatar/router"
 
 
 let users: any[]

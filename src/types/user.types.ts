@@ -28,3 +28,10 @@ export type RecoverPassword = {
   securityQuestion: string,
   securityAnswer: string
 }
+
+// front-end
+
+export type RegisterUserFront = RegisterUser & {
+  password2: string
+}
+
