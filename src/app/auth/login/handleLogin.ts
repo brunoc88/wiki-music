@@ -3,7 +3,7 @@ import LoginSchema from "@/lib/schemas/login.schema";
 import { AuthorizeInput } from "@/types/user.types";
 
 export const handleLogin = async (data: AuthorizeInput) => {
-    const parsed = await LoginSchema.safeParseAsync(data)
+    const parsed =  LoginSchema.safeParse(data)
     if (!parsed.success) return {error: parsed.error.flatten().fieldErrors}
 
     const res = await loginUser(data)

@@ -1,7 +1,6 @@
 import { registerUser } from "@/lib/auth/api/user.api"
 import userSchema from "@/lib/schemas/user/user.schema"
 
-
 export const handleForm = async (formData: FormData) => {
   const data = {
     email: formData.get("email")?.toString() || "",
@@ -16,6 +15,7 @@ export const handleForm = async (formData: FormData) => {
 
   if (!parsed.success) {
     return {
+      ok:false,
       error: parsed.error.flatten().fieldErrors
     }
   }

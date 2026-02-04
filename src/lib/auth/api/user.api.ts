@@ -1,3 +1,5 @@
+import { userValid } from "@/types/user.types"
+
 export const registerUser = async (formData: FormData) => {
   const res = await fetch("/api/user", {
     method: "POST",
@@ -8,12 +10,16 @@ export const registerUser = async (formData: FormData) => {
 
   if (!res.ok) {
     return {
+      ok: false,
       error: body.error ?? "Error del servidor"
     }
   }
 
+
+  let user: userValid = body.user
+
   return {
-    ok:true,
-    user:body.user
+    ok: true,
+    user
   }
 }

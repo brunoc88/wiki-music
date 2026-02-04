@@ -35,3 +35,13 @@ export type RegisterUserFront = RegisterUser & {
   password2: string
 }
 
+// usuario valido despues de registro exitoso
+export type userValid = {
+    id: number
+    email: string
+    username: string
+    rol: string,
+    pic: string
+  }
+
+

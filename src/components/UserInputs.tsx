@@ -1,7 +1,11 @@
 import { useError } from "@/context/ErrorContext"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 const UserInputs = ({ handleUser, mode }) => {
-    const { errors } = useError()
+    const { errors, setErrors } = useError()
+    const router = useRouter()
+
     return (
         <div>
             {mode && mode === 'register' &&
@@ -52,7 +56,7 @@ const UserInputs = ({ handleUser, mode }) => {
             {mode && mode === 'login' &&
                 <p className="error">{errors.credentials}</p>
             }
-            
+
             {mode && mode === 'register' &&
                 <div>
                     Confirmar Password:
@@ -92,7 +96,19 @@ const UserInputs = ({ handleUser, mode }) => {
 
             <div className='btn-form'>
                 <button className="btn" type="submit">Enviar</button>
-                <button className="btn">Volver</button>
+                {mode && mode === 'register' && <button className="btn" onClick={(e:React.FormEvent) => { 
+                    e.preventDefault()
+                    setErrors({})
+                router.push('/auth/login')} }>Volver</button>}
+                {mode && mode === 'login' && 
+                <button className="btn" onClick={(e:React.FormEvent) =>{ 
+                    e.preventDefault()
+                    setErrors({})
+                    router.push('/auth/register') }}>Registrarse</button>
+                }
+                {mode && mode === 'login' &&
+                 <Link href={'/password-recovery'}>¿Olvidaste tu contraseña?</Link>
+                }
             </div>
         </div >
     )

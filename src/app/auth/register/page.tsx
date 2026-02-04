@@ -4,14 +4,13 @@ import UserInputs from '@/components/UserInputs'
 import { useState } from 'react'
 import { RegisterUserFront } from '@/types/user.types'
 import { handleForm } from './handleForm'
-import { useRouter } from "next/navigation"
 import { useError } from '@/context/ErrorContext'
+import { signIn } from 'next-auth/react'
 
 
 const UserRegisterForm = () => {
     let [user, setUser] = useState<RegisterUserFront>({ email: '', username: "", securityQuestion: "", securityAnswer: "", password: "", password2: "" })
     const { setErrors } = useError()
-    const router = useRouter()
 
     const handleUser = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -38,13 +37,17 @@ const UserRegisterForm = () => {
 
         const result = await handleForm(formData)
 
-        if (result?.error) {
+        if (!result?.ok) {
             setErrors(result.error)
             return
         }
 
-        // ver si reemplazamos por logeo automatico
-        router.push('/welcome')
+        signIn('credentials',{
+            user: result.user?.email,
+            password: user.password,
+            callbackUrl:'/welcome'
+        })
+
     }
 
     return (
