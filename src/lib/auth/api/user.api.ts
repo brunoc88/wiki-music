@@ -1,4 +1,4 @@
-import { userValid } from "@/types/user.types"
+import { EditUserFront, userValid } from "@/types/user.types"
 
 export const registerUser = async (formData: FormData) => {
   const res = await fetch("/api/user", {
@@ -22,4 +22,17 @@ export const registerUser = async (formData: FormData) => {
     ok: true,
     user
   }
+}
+
+export const changeUserName = async (data: EditUserFront) => {
+  console.log('dentro de changeusername')
+  const res = await fetch('/api/user', {
+    method: 'PATCH',
+    body: JSON.stringify(data)
+  })
+
+  const body = await res.json()
+
+  if(res.ok) return {ok:true, username: body.username}
+  else return {ok: false, error:body.error?? "Error del servidor"}
 }

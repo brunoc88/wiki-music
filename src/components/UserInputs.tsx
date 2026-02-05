@@ -20,7 +20,7 @@ const UserInputs = ({ handleUser, mode }) => {
                 </div>
             }
 
-            {mode && mode === 'register' &&
+            {mode && mode === 'register' || mode === 'username' &&
                 <div>
                     Nombre de usuario:
                     <input className="input-form" type="text"
@@ -43,7 +43,7 @@ const UserInputs = ({ handleUser, mode }) => {
                     {errors.user && <p className="error">{errors.user[0]}</p>}
                 </div>
             }
-            {mode && (mode === 'login' || mode === 'register') &&
+            {mode && (mode === 'login' || mode === 'register' || mode === 'delete') &&
                 <div>
                     Password:
                     <input className="input-form" type="password"
@@ -95,7 +95,8 @@ const UserInputs = ({ handleUser, mode }) => {
             }
 
             <div className='btn-form'>
-                <button className="btn" type="submit">Enviar</button>
+                {mode && mode === 'register' && <button className="btn" type="submit">Enviar</button>}
+                {mode && mode !== 'register' && <button className="btn" type="submit">Enviar</button>}
                 {mode && mode === 'register' && <button className="btn" onClick={(e:React.FormEvent) => { 
                     e.preventDefault()
                     setErrors({})

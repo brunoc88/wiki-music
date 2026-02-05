@@ -44,4 +44,11 @@ export type userValid = {
     pic: string
   }
 
-
+// cuando editamos el usuario
+export type EditUserFront = {
+    username?: string,
+    securityQuestion?:string,
+    securityAnswer?:string,
+    password?:string,
+    password2?:string
+}
