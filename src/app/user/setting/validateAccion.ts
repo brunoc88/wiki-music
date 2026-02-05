@@ -1,4 +1,5 @@
 import usernameChangeSchema from "@/lib/schemas/user/user.change.username"
+import userDeleteAccountSchema from "@/lib/schemas/user/user.deleteAccount.schema"
 import { EditUserFront } from "@/types/user.types"
 
 export const validateAccion = (data:EditUserFront, mode:string) => {
@@ -7,6 +8,10 @@ export const validateAccion = (data:EditUserFront, mode:string) => {
 
     if(mode === 'username') {
         parsed = usernameChangeSchema.safeParse(data)
+    }
+
+    if(mode === 'delete') {
+        parsed = userDeleteAccountSchema.safeParse(data)
     }
 
     if(parsed && !parsed?.success) return {

@@ -38,7 +38,7 @@ const UserInputs = ({ handleUser, mode }) => {
                     <input className="input-form" type="text"
                         name='user'
                         onChange={handleUser}
-                        placeholder="Ingrese su eamil o nombre de usuario"
+                        placeholder="Ingrese su email o nombre de usuario"
                     />
                     {errors.user && <p className="error">{errors.user[0]}</p>}
                 </div>
@@ -112,6 +112,7 @@ const UserInputs = ({ handleUser, mode }) => {
                 }
             </div>
         </div >
+        
     )
 }
 

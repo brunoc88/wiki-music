@@ -36,3 +36,20 @@ export const changeUserName = async (data: EditUserFront) => {
   if(res.ok) return {ok:true, username: body.username}
   else return {ok: false, error:body.error?? "Error del servidor"}
 }
+
+export const deleteAccount = async (data: EditUserFront) => {
+  const res = await fetch('/api/user', {
+    method:'DELETE',
+    body:JSON.stringify(data)
+  })
+
+  const body = await res.json()
+
+  console.log('body',body)
+  if(res.ok) {
+    return {ok:true}
+  }else {
+    return {ok:false, error:{password:[body.error?? "Error del servidor"]}}
+  }
+
+}
