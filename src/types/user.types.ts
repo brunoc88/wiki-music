@@ -50,5 +50,6 @@ export type EditUserFront = {
     securityQuestion?:string,
     securityAnswer?:string,
     password?:string,
-    password2?:string
+    password2?:string,
+    oldpassword?:string
 }

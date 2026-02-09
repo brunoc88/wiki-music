@@ -38,13 +38,17 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id
         token.email = user.email
         token.name = user.name
         token.picture = user.image
         token.rol = user.rol
+      }
+      // update() desde el cliente
+      if (trigger === "update" && session?.user) {
+        token.name = session.user.name
       }
       return token
     },

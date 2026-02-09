@@ -43,7 +43,18 @@ const UserInputs = ({ handleUser, mode }) => {
                     {errors.user && <p className="error">{errors.user[0]}</p>}
                 </div>
             }
-            {mode && (mode === 'login' || mode === 'register' || mode === 'delete') &&
+            {mode && mode === 'password' &&
+                <div>
+                    <p>Al cambiar su password, automáticamente se cerrará su sesión.</p>
+                    Password anterior:
+                    <input className="input-form" type="password"
+                        name="oldpassword"
+                        onChange={handleUser}
+                    />
+                    {errors.oldpassword && <p className="error">{errors.oldpassword[0]}</p>}
+                </div>
+            }
+            {mode && (mode === 'login' || mode === 'register' || mode === 'delete' || mode === 'password') &&
                 <div>
                     Password:
                     <input className="input-form" type="password"
@@ -57,7 +68,7 @@ const UserInputs = ({ handleUser, mode }) => {
                 <p className="error">{errors.credentials}</p>
             }
 
-            {mode && mode === 'register' &&
+            {mode && (mode === 'register' || mode === 'password') &&
                 <div>
                     Confirmar Password:
                     <input className="input-form" type="password"
@@ -97,22 +108,24 @@ const UserInputs = ({ handleUser, mode }) => {
             <div className='btn-form'>
                 {mode && mode === 'register' && <button className="btn" type="submit">Enviar</button>}
                 {mode && mode !== 'register' && <button className="btn" type="submit">Enviar</button>}
-                {mode && mode === 'register' && <button className="btn" onClick={(e:React.FormEvent) => { 
+                {mode && mode === 'register' && <button className="btn" onClick={(e: React.FormEvent) => {
                     e.preventDefault()
                     setErrors({})
-                router.push('/auth/login')} }>Volver</button>}
-                {mode && mode === 'login' && 
-                <button className="btn" onClick={(e:React.FormEvent) =>{ 
-                    e.preventDefault()
-                    setErrors({})
-                    router.push('/auth/register') }}>Registrarse</button>
+                    router.push('/auth/login')
+                }}>Volver</button>}
+                {mode && mode === 'login' &&
+                    <button className="btn" onClick={(e: React.FormEvent) => {
+                        e.preventDefault()
+                        setErrors({})
+                        router.push('/auth/register')
+                    }}>Registrarse</button>
                 }
                 {mode && mode === 'login' &&
-                 <Link href={'/password-recovery'}>¿Olvidaste tu contraseña?</Link>
+                    <Link href={'/password-recovery'}>¿Olvidaste tu contraseña?</Link>
                 }
             </div>
         </div >
-        
+
     )
 }
 

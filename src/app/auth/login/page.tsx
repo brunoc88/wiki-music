@@ -27,7 +27,7 @@ const LoginPage = () => {
         e.preventDefault()
         setErrors({})
         const res = await handleLogin(user)
-        console.log('res', res)
+        
         if (res?.error) setErrors(res.error)
         else router.push("/welcome")
 

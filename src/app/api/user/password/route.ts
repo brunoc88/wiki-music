@@ -17,7 +17,7 @@ export const PATCH = async (req: Request) => {
 
 
         const res = await userService.changePassword(parsed.data, userId)
-
+        
         return NextResponse.json(res, { status: 200 })
 
     } catch (error) {

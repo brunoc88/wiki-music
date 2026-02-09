@@ -5,7 +5,7 @@ const ChangePasswordSchema = z.object({
         .string()
         .trim()
         .min(6, 'Min 6 caracteres')
-        .nonempty('Debe ingresar un password')
+        .nonempty('Debe ingresar su anterior password')
         .refine(v => !v.includes(' '), {
             message: 'El password no puede contener espacios',
         }),
@@ -20,7 +20,7 @@ const ChangePasswordSchema = z.object({
     password2: z
         .string()
         .trim()
-        .nonempty('Debe ingresar un password')
+        .nonempty('Debe ingresar un password de confirmacion!')
         .min(6, 'Min 6 caracteres')
 })
     .refine(data => data.password === data.password2, {

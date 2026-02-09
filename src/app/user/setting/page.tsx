@@ -9,12 +9,21 @@ import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 const SettingPage = () => {
-    const [user, setUser] = useState<EditUserFront>({
-        username: '', securityQuestion: '', securityAnswer: '', password: '', password2: ''
-    })
+
+    const INITIAL_USER: EditUserFront = {
+        username: '',
+        securityQuestion: '',
+        securityAnswer: '',
+        password: '',
+        password2: '',
+        oldpassword: ''
+    }
+
+    const [user, setUser] = useState<EditUserFront>(INITIAL_USER)
+
     const [mode, setMode] = useState<string>("")
     const { setErrors } = useError()
-    const { data: session, status } = useSession()
+    const { data: session, status, update } = useSession()
     const router = useRouter()
 
     useEffect(() => {
@@ -34,12 +43,63 @@ const SettingPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErrors({})
+        if (!mode) return // nada seleccionado
 
         const res = await handleForm(user, mode)
-        if (res?.ok && mode === 'username') setUser(user.username = res?.username)
-        if (res?.ok && mode === 'delete') signOut({ callbackUrl: "/auth/login" })
-        if(res?.ok || res?.error)setErrors(res?.error)
+
+        if (res.ok && mode === 'username') {
+            setUser(prev => ({
+                ...INITIAL_USER,
+                username: res?.username
+            }))
+            await update({
+                user: {
+                    ...session?.user,
+                    name: res?.username
+                }
+            })
+
+            setMode('')
+        }
+
+
+        if (res?.ok && mode === 'delete') {
+            signOut({ callbackUrl: "/auth/login" })
+            return
+        }
+
+        if (res?.ok && mode === 'password') {
+            signOut({ callbackUrl: "/auth/login" })
+            return
+        }
+
+        if (!res?.ok && res?.error) {
+            setErrors(res.error)
+            return
+        }
+
+        
+        if (!res?.ok && res.status === 401) {
+            setErrors({
+                credentials: ["Tu sesión expiró"]
+            })
+            signOut({ callbackUrl: "/auth/login" })
+            return
+        }
+
+        
+        if (!res?.ok && res.status === 403) {
+            setErrors({
+                credentials: ["Tu cuenta fue suspendida"]
+            })
+            signOut({ callbackUrl: "/auth/login" })
+            return
+        }
+
+        
+       
     }
+
 
 
     if (status === "loading") {
