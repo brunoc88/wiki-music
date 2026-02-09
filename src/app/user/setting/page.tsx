@@ -20,7 +20,6 @@ const SettingPage = () => {
     }
 
     const [user, setUser] = useState<EditUserFront>(INITIAL_USER)
-
     const [mode, setMode] = useState<string>("")
     const { setErrors } = useError()
     const { data: session, status, update } = useSession()
@@ -96,7 +95,9 @@ const SettingPage = () => {
             return
         }
 
-        
+        // IMPORTANTE: HACER UN HANDLEGUARDEDERROR(RES)
+        // & UN handleSuccessResponse(mode, res)
+
        
     }
 
