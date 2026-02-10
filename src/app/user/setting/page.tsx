@@ -72,6 +72,11 @@ const SettingPage = () => {
             return
         }
 
+        if(res?.ok && mode === 'security') {
+            signOut({ callbackUrl: "/auth/login" })
+            return
+        }
+
         if (!res?.ok && res?.error) {
             setErrors(res.error)
             return

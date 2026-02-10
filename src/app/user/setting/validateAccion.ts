@@ -1,6 +1,7 @@
 import usernameChangeSchema from "@/lib/schemas/user/user.change.username"
 import userDeleteAccountSchema from "@/lib/schemas/user/user.deleteAccount.schema"
 import ChangePasswordSchema from "@/lib/schemas/user/user.editpassword.schema"
+import userSecurtiyQuestionSchema from "@/lib/schemas/user/user.questionSecurity.schema"
 import { EditUserFront } from "@/types/user.types"
 
 export const validateAccion = (data:EditUserFront, mode:string) => {
@@ -17,6 +18,10 @@ export const validateAccion = (data:EditUserFront, mode:string) => {
 
     if(mode === 'password') {
         parsed = ChangePasswordSchema.safeParse(data)
+    }
+
+    if(mode === 'security') {
+        parsed = userSecurtiyQuestionSchema.safeParse(data)
     }
 
     if(parsed && !parsed?.success) return {

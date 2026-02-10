@@ -55,9 +55,6 @@ export const deleteAccount = async (data: EditUserFront) => {
 }
 
 export const changePassword = async (data: EditUserFront) => {
-  console.log('data fetch', data)
-  
-  
   
   const res = await fetch('/api/user/password', {
     method: 'PATCH',
@@ -69,4 +66,19 @@ export const changePassword = async (data: EditUserFront) => {
   
   if (res.ok) return { ok: true, msj: { password: ['password actualizado'] } }
   else return { ok: false, error: {password2:[body.error??"Error del servidor"]}, status: res.status }
+}
+
+export const security = async (data:EditUserFront) => {
+  const res = await fetch('/api/user/security-question',{
+    method:'PATCH',
+    body:JSON.stringify(data)
+  })
+
+  const body = await res.json()
+
+  if(res.ok) {
+    return {ok:true}
+  }else {
+    return {ok:false, status:res.status, error:{securityAnswer:[body.error?? "Error del servidor"]}}
+  }
 }

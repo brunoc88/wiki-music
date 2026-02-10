@@ -1,10 +1,13 @@
 import { useError } from "@/context/ErrorContext"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useState } from "react"
 
 const UserInputs = ({ handleUser, mode }) => {
     const { errors, setErrors } = useError()
     const router = useRouter()
+    const [radio, setRadio] = useState<{ action: string }>({ action: "" })
+
 
     return (
         <div>
@@ -20,7 +23,7 @@ const UserInputs = ({ handleUser, mode }) => {
                 </div>
             }
 
-            {mode && mode === 'register' || mode === 'username' &&
+            {mode && (mode === 'register' || mode === 'username') &&
                 <div>
                     Nombre de usuario:
                     <input className="input-form" type="text"
@@ -79,16 +82,42 @@ const UserInputs = ({ handleUser, mode }) => {
                 </div>
             }
 
-            {mode && mode === 'register' &&
+            {mode && (mode === 'register' || mode === 'security') &&
                 <div>
-                    Seleccione una pregunta
-                    < select className="select-form" name="securityQuestion" id="securityQuestion" onChange={handleUser} >
-                        <option value=""></option>
-                        <option value="Banda Favorita?">Banda Favorita?</option>
-                        <option value="Album Favorito?">Album Favorito?</option>
-                        <option value="Cancion Favorita?">Cancion Favorita?</option>
-                    </select >
-                    {errors.securityQuestion && <p className="error">{errors.securityQuestion[0]}</p>}
+                    {mode && mode === 'security' &&
+                        <div>
+                            <p>Al cambiar su regunta y/o respuesta de seguridad, automáticamente se cerrará su sesión. </p>
+
+                            <p>Que desea cambiar?</p>
+
+                            Solo Respuesta
+                            <input type="radio" name="answer"
+                                checked={radio.action === 'answer'}
+                                onChange={() => setRadio({ action: 'answer' })}
+                            />
+
+                            Pregunta
+                            <input type="radio" name="question"
+                                checked={radio.action === 'question'}
+                                onChange={() => setRadio({ action: 'question' })}
+                            />
+                        </div>
+
+                    }
+                    {mode && (mode === 'register' || (mode === 'security' && radio.action === 'question')) &&
+                        <div>
+                            Seleccione una pregunta
+                            < select className="select-form" name="securityQuestion" id="securityQuestion" onChange={handleUser} >
+                                <option value=""></option>
+                                <option value="Banda Favorita?">Banda Favorita?</option>
+                                <option value="Album Favorito?">Album Favorito?</option>
+                                <option value="Cancion Favorita?">Cancion Favorita?</option>
+                            </select >
+                            {errors.securityQuestion && <p className="error">{errors.securityQuestion[0]}</p>}
+
+                        </div>
+                    }
+
                     Respuesta:
                     <input className="input-form" type="text"
                         name='securityAnswer'

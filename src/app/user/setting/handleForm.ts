@@ -1,6 +1,6 @@
 import { EditUserFront } from "@/types/user.types"
 import { validateAccion } from "./validateAccion"
-import { changePassword, changeUserName, deleteAccount } from "@/lib/auth/api/user.api"
+import { changePassword, changeUserName, deleteAccount, security } from "@/lib/auth/api/user.api"
 
 const handleForm = async (data: EditUserFront, mode: string) => {
 
@@ -9,7 +9,8 @@ const handleForm = async (data: EditUserFront, mode: string) => {
     if (isValid.ok && mode === 'username') return await changeUserName(data)
     if (isValid.ok && mode === 'delete') return await deleteAccount(data)
     if (isValid.ok && mode === 'password') return await changePassword(data)
-        
+    if (isValid.ok && mode === 'security') return await security(data)
+
     return {error:isValid.error}
 }
 
