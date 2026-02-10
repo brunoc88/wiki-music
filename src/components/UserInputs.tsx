@@ -106,6 +106,9 @@ const UserInputs = ({ handleUser, mode }) => {
                     }
                     {mode && (mode === 'register' || (mode === 'security' && radio.action === 'question')) &&
                         <div>
+                            {mode === 'security' && radio.action === 'question' &&
+                            <p>Si elige pregunta y la envia vacía se dejara la anterior</p>
+                            }
                             Seleccione una pregunta
                             < select className="select-form" name="securityQuestion" id="securityQuestion" onChange={handleUser} >
                                 <option value=""></option>
