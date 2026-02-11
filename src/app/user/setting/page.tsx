@@ -100,9 +100,6 @@ const SettingPage = () => {
             return
         }
 
-        // IMPORTANTE: HACER UN HANDLEGUARDEDERROR(RES)
-        // & UN handleSuccessResponse(mode, res)
-
        
     }
 

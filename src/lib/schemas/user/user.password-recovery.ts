@@ -3,8 +3,8 @@ import { z } from "zod"
 const userPasswordRecoverySchema = z.object({
     email: z
         .string()
-        .email()
-        .nonempty('Ingrese un email'),
+        .nonempty('Ingrese un email')
+        .email('Email inválido'),
 
     securityQuestion: z
         .string()

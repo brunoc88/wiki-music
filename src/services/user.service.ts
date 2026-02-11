@@ -159,7 +159,7 @@ export const userService = {
     newPassword: string
   }): Promise<{ ok: true }> => {
     const { token, newPassword } = data
-    console.log('token', token)
+    
     const user = await userRepo.getUserByRecoveryToken(token)
 
     if (!user || !user.state) {

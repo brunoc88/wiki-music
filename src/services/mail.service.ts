@@ -3,7 +3,7 @@ import nodemailer from "nodemailer"
 export const mailService = {
   sendPasswordRecovery(email: string, token: string) {
     const link = `${process.env.FRONT_URL}/recover-password?token=${token}`
-
+    
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,

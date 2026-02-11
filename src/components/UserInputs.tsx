@@ -1,3 +1,5 @@
+"use client"
+
 import { useError } from "@/context/ErrorContext"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -11,7 +13,7 @@ const UserInputs = ({ handleUser, mode }) => {
 
     return (
         <div>
-            {mode && mode === 'register' &&
+            {mode && (mode === 'register' || mode === 'recover') &&
                 <div>
                     Email:
                     <input className="input-form" type="text"
@@ -82,7 +84,7 @@ const UserInputs = ({ handleUser, mode }) => {
                 </div>
             }
 
-            {mode && (mode === 'register' || mode === 'security') &&
+            {mode && (mode === 'register' || mode === 'security' || mode === 'recover') &&
                 <div>
                     {mode && mode === 'security' &&
                         <div>
@@ -104,10 +106,10 @@ const UserInputs = ({ handleUser, mode }) => {
                         </div>
 
                     }
-                    {mode && (mode === 'register' || (mode === 'security' && radio.action === 'question')) &&
+                    {mode && (mode === 'register' || (mode === 'security' && radio.action === 'question') || mode === 'recover') &&
                         <div>
                             {mode === 'security' && radio.action === 'question' &&
-                            <p>Si elige pregunta y la envia vacía se dejara la anterior</p>
+                                <p>Si elige pregunta y la envia vacía se dejara la anterior</p>
                             }
                             Seleccione una pregunta
                             < select className="select-form" name="securityQuestion" id="securityQuestion" onChange={handleUser} >
@@ -140,7 +142,7 @@ const UserInputs = ({ handleUser, mode }) => {
             <div className='btn-form'>
                 {mode && mode === 'register' && <button className="btn" type="submit">Enviar</button>}
                 {mode && mode !== 'register' && <button className="btn" type="submit">Enviar</button>}
-                {mode && mode === 'register' && <button className="btn" onClick={(e: React.FormEvent) => {
+                {mode && (mode === 'register' || mode === 'recover') && <button className="btn" onClick={(e: React.FormEvent) => {
                     e.preventDefault()
                     setErrors({})
                     router.push('/auth/login')
@@ -153,7 +155,7 @@ const UserInputs = ({ handleUser, mode }) => {
                     }}>Registrarse</button>
                 }
                 {mode && mode === 'login' &&
-                    <Link href={'/password-recovery'}>¿Olvidaste tu contraseña?</Link>
+                    <Link href={'/auth/password-recovery-start'}>¿Olvidaste tu contraseña?</Link>
                 }
             </div>
         </div >
