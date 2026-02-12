@@ -26,7 +26,6 @@ export default function RecoverPasswordPage() {
       "recovery-confirm"
     )
 
-    console.log('res',res)
 
     if (!res?.ok) {
       if(res.status === 403)setError("Token inválido o credenciales inválidas")
