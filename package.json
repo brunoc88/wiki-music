@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "test": "dotenv -e .env.test vitest",
-    "test:ux": "dotenv -e .env.dev next dev",
+    "test:ux": "dotenv -e .env.test next dev",
     "test:u": "dotenv -e .env.test vitest test/user/user.delete-avatar.test.ts",
     "test:l": "dotenv -e .env.test vitest test/login",
     "prisma:generate": "dotenv -e .env prisma generate",

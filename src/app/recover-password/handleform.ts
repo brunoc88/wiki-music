@@ -8,7 +8,7 @@ const handleForm = async (data:any, mode:string) => {
     
     const res = await passwordRecoveryConfirm (data)
     if(res.ok) return {ok:true}
-    else return {ok:false, error:res.error}
+    else return {ok:false, error:res.error, status:res.status}
 
 }
 

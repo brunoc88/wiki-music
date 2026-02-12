@@ -9,8 +9,9 @@ export default function RecoverPasswordPage() {
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
 
-  const [password, setPassword] = useState("")
+  const [password, setPassword] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
+  const [ok, setOk] = useState<boolean>(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,17 +26,28 @@ export default function RecoverPasswordPage() {
       "recovery-confirm"
     )
 
+    console.log('res',res)
+
     if (!res?.ok) {
-      setError("Token inválido o credenciales inválidas")
+      if(res.status === 403)setError("Token inválido o credenciales inválidas")
+      else setError(res.error.newPassword)
       return
     }
 
-    router.push("/auth/login")
+    setOk(true)
+
   }
 
+  if (ok) return (
+    <div>
+      <p>Recuperacion de password Exitoso</p>
+      <button onClick={()=>router.push('/auth/login')}>Salir</button>
+    </div>
+  )
   return (
     <div>
       <form onSubmit={handleSubmit}>
+        <h3>Vencimiento del token: en 15 minutos.</h3>
         <p>Ingrese su nuevo password:</p>
 
         <input
