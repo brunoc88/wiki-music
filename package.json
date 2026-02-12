@@ -10,9 +10,12 @@
     "test:ux": "dotenv -e .env.test next dev",
     "test:u": "dotenv -e .env.test vitest test/user/user.delete-avatar.test.ts",
     "test:l": "dotenv -e .env.test vitest test/login",
+    "test:g": "dotenv -e .env.test vitest test/gender/gender.create.test.ts",
     "prisma:generate": "dotenv -e .env prisma generate",
     "prisma:migrate": "dotenv -e .env prisma migrate dev",
+    "prisma:generate:test": "dotenv -e .env.test prisma generate",
     "prisma:migrate:test": "dotenv -e .env.test prisma migrate dev",
+    "prisma:migrate:reset:test": "dotenv -e .env.test prisma migrate reset",
     "prisma:migrate:test:deploy": "dotenv -e .env.test prisma migrate deploy"
   },
   "dependencies": {
