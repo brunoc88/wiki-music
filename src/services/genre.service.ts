@@ -32,5 +32,9 @@ export const genreService = {
         if(genre.state) return await genreRepo.deactivateGenre(genre.id)
         else return await genreRepo.activateGenre(genre.id)
         
+    },
+
+    editGenre: async (userId:number, genderId:number) => {
+
     }
 }

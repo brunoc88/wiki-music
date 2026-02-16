@@ -76,7 +76,35 @@ export const loadUsers = async () => {
           pic:""
         }
       ]
+    }),
+
+    // USER SUPERADMIN
+
+    prisma.user.createMany({
+      data:[
+        {
+          email: 'super1@test.com',
+          username: 'super1',
+          password: passwordHash,
+          rol: 'super',
+          securityQuestion: 'videojuego fav?',
+          securityAnswer: answerHash,
+          state: true,
+          pic:""
+        },
+        {
+          email: 'super2@test.com',
+          username: 'super2',
+          password: passwordHash,
+          rol: 'super',
+          securityQuestion: 'videojuego fav?',
+          securityAnswer: answerHash,
+          state: true,
+          pic:""
+        },
+      ]
     })
+    
   ])
 }
 
