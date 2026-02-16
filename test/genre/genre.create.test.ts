@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { describe, expect, it, beforeEach, afterAll, vi } from "vitest"
 import { getUsers, loadUsers } from "../fake.user"
-import { POST } from "@/app/api/gender/page"
+import { POST } from "@/app/api/gender/route"
 
 
 vi.mock('next-auth', async () => {
@@ -115,7 +115,7 @@ describe('POST /api/gender', () => {
         })
     })
 
-    it.only('Creacion exitosa', async () => {
+    it('Creacion exitosa', async () => {
         mockAuthenticatedSession(0)
         
         const res = await POST(makeRequest({ name: 'ro' }))
