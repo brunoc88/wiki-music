@@ -2,39 +2,50 @@ import { requireActiveUserById } from "@/domain/user/userAccess"
 import { PublicGenderDTO } from "@/dtos/gender.dto"
 import { ForbiddenError, NotFoundError } from "@/error/appError"
 import { genreRepo } from "@/repositories/genre.repository"
+import { Gender } from "@prisma/client"
 
 export const genreService = {
-    createGenre: async (data: { name: string }, userId: number): Promise<{ ok: true, gender:PublicGenderDTO }> => {
+    createGenre: async (data: { name: string }, userId: number): Promise<{ ok: true, gender: PublicGenderDTO }> => {
         const user = await requireActiveUserById(userId)
         const isAdminOrSuperAdmin = user.rol === 'admin' || user.rol === 'super'
 
         if (!isAdminOrSuperAdmin) throw new ForbiddenError()
-        
+
         const res = await genreRepo.createGender(data)
-        
+
         let gender = {
             id: res.id,
             name: res.name,
             state: res.state
         }
-        return { ok: true , gender}
+        return { ok: true, gender }
     },
 
-    toggleActive: async (userId:number, genderId:number): Promise<{ ok: true }> => {
+    toggleActive: async (userId: number, genreId: number): Promise<{ ok: true }> => {
         let user = await requireActiveUserById(userId)
 
         let isSuperAdmin = user.rol === 'super'
-        if(!isSuperAdmin) throw new ForbiddenError()
+        if (!isSuperAdmin) throw new ForbiddenError()
 
-        let genre = await genreRepo.findGenrer(genderId)
-        if(!genre) throw new NotFoundError()
-        
-        if(genre.state) return await genreRepo.deactivateGenre(genre.id)
+        let genre = await genreRepo.findGenrer(genreId)
+        if (!genre) throw new NotFoundError()
+
+        if (genre.state) return await genreRepo.deactivateGenre(genre.id)
         else return await genreRepo.activateGenre(genre.id)
-        
+
     },
 
-    editGenre: async (userId:number, genderId:number) => {
+    editGenre: async (userId: number, genreId: number, data: { name: string }): Promise<Gender> => {
+        let user = await requireActiveUserById(userId)
+    
+        const isAdminOrSuperAdmin = user.rol === 'admin' || user.rol === 'super'
+        if(!isAdminOrSuperAdmin) throw new ForbiddenError()
+
+        let genre = await genreRepo.findGenrer(genreId)
+        if(!genre) throw new NotFoundError()
+        if(!genre.state) throw new ForbiddenError('Genre desactivate')
+
+        return await genreRepo.editGenre(genreId, data)
 
     }
 }

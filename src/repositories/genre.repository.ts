@@ -18,4 +18,6 @@ export const genreRepo = {
         await prisma.gender.update({ where: { id: genderId }, data: { state: true } })
         return { ok: true }
     },
+
+    editGenre: async (genderId:number, data:{name:string}) : Promise<Gender> => await prisma.gender.update({where:{id:genderId},data})
 }
