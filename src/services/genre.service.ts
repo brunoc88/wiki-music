@@ -46,5 +46,14 @@ export const genreService = {
 
         return await genreRepo.editGenre(genreId, data)
 
+    },
+
+    getGenres: async (userId: number): Promise<Gender []| null> => {
+        const user = await requireActiveUserById(userId)
+        
+        const isAdminOrSuperAdmin = user.rol === 'admin' || user.rol === 'super'
+        if(!isAdminOrSuperAdmin) throw new ForbiddenError()
+        
+        return await genreRepo.getGenres()
     }
 }

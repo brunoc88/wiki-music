@@ -19,5 +19,8 @@ export const genreRepo = {
         return { ok: true }
     },
 
-    editGenre: async (genderId:number, data:{name:string}) : Promise<Gender> => await prisma.gender.update({where:{id:genderId},data})
+    editGenre: async (genderId:number, data:{name:string}) : Promise<Gender> => await prisma.gender.update({where:{id:genderId},data}),
+
+    getGenres: async () : Promise<Gender []| null>=> await prisma.gender.findMany()
+
 }
