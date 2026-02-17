@@ -43,7 +43,6 @@ export const genreService = {
 
         let genre = await genreRepo.findGenrer(genreId)
         if(!genre) throw new NotFoundError()
-        if(!genre.state) throw new ForbiddenError('Genre desactivate')
 
         return await genreRepo.editGenre(genreId, data)
 
