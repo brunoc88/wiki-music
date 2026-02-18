@@ -21,10 +21,27 @@ model User {
 
   recoveryToken    String?
   recoveryExpires  DateTime?
+
+  artistsCreated   Artist[] @relation("ArtistCreatedBy")
+  artistsUpdated   Artist[] @relation("ArtistUpdatedBy")
 }
 
 model Gender {
   id               Int     @id @default(autoincrement())
-  name             String @unique
+  name             String  @unique
   state            Boolean @default(true)
+  artists          Artist[]
+}
+
+model Artist {
+  id               Int     @id @default(autoincrement())
+  name             String  @unique 
+  bio              String 
+  state            Boolean @default(true)
+  createdById      Int
+  updatedById      Int?
+  createdBy        User    @relation("ArtistCreatedBy", fields: [createdById], references: [id])
+  updatedBy        User?   @relation("ArtistUpdatedBy", fields: [updatedById], references: [id])
+  userId           Int
+  genres           Gender[]
 }
