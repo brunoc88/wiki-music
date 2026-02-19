@@ -42,7 +42,6 @@ model Artist {
   updatedById      Int?
   createdBy        User    @relation("ArtistCreatedBy", fields: [createdById], references: [id])
   updatedBy        User?   @relation("ArtistUpdatedBy", fields: [updatedById], references: [id])
-  userId           Int
   genres           Gender[]
   pic              String 
   picPublicId      String?
