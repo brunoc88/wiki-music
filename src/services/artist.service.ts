@@ -12,9 +12,11 @@ export const artistService = {
         userId: number,
         imageFile?: File | null
     ) => {
+
         const user = await requireActiveUserById(userId)
 
         let imageUrl = process.env.DEFAULT_USER_IMAGE_URL!
+
         let imagePublicId: string | null = null
 
         try {
@@ -23,7 +25,7 @@ export const artistService = {
                 imageUrl = uploadResult.url
                 imagePublicId = uploadResult.publicId
             }
-
+           
             const active = await activeGenres(artist.genres)
 
             if (active.length !== artist.genres.length) {
@@ -32,6 +34,7 @@ export const artistService = {
                 )
             }
 
+            
             const artistToCreate = {
                 name: artist.name,
                 bio: artist.bio,
@@ -46,6 +49,7 @@ export const artistService = {
             )
 
         } catch (error) {
+            
             if (imagePublicId) {
                 await deleteImage(imagePublicId)
             }

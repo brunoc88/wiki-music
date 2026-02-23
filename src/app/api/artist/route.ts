@@ -12,12 +12,13 @@ export const POST = async (req: Request) => {
         const validation = await validateRequest(req, ArtistRegisterSchema)
         if (!validation.success) return validation.response
 
-        const formData = await req.formData()
-        const file: File | null = formData.get('file') as File
+        const res = await artistService.createArtist(
+            validation.data,
+            userId,
+            validation.file
+        )
 
-        const res = await artistService.createArtist(validation.data, userId, file)
-
-        return NextResponse.json(res, {status:201})
+        return NextResponse.json(res, { status: 201 })
     } catch (error) {
         return errorHandler(error)
     }

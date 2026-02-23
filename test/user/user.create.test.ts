@@ -8,7 +8,11 @@ import path from "path"
 //  limpiar DB antes de cada test
 beforeEach(async () => {
   process.env.DEFAULT_USER_IMAGE_URL = "https://res.cloudinary.com/fake/default.png"
+  await prisma.artist.deleteMany()
+  await prisma.gender.deleteMany()
   await prisma.user.deleteMany()
+  console.log("Artists:", await prisma.artist.count())
+  console.log("Users:", await prisma.user.count())
 })
 
 //  Mockear Cloudinary
@@ -82,7 +86,7 @@ describe("POST /api/users", () => {
 
       const res = await POST(req)
       const body = await res.json()
-
+      
       expect(res.status).toBe(201)
       expect(body.user).toBeDefined()
       expect(body.user.pic).toBe("https://res.cloudinary.com/fake/image.png")

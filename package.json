@@ -8,7 +8,7 @@
     "start": "next start",
     "test": "dotenv -e .env.test vitest",
     "test:ux": "dotenv -e .env.test next dev",
-    "test:u": "dotenv -e .env.test vitest test/user/user.delete-avatar.test.ts",
+    "test:u": "dotenv -e .env.test vitest test/user/user.create.test.ts",
     "test:l": "dotenv -e .env.test vitest test/login",
     "test:g": "dotenv -e .env.test vitest test/genre/genre.get.test.ts",
     "test:a": "dotenv -e .env.test vitest test/artist/artist.create.test.ts",

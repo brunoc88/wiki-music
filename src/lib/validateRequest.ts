@@ -5,12 +5,14 @@ export const validateRequest = async <S extends ZodTypeAny>(
   req: Request,
   schema: S
 ): Promise<
-  | { success: true; data: zInfer<S> }
+  | { success: true; data: zInfer<S>; file: File | null }
   | { success: false; response: NextResponse }
 > => {
 
   const contentType = req.headers.get("content-type") ?? ""
   let rawData: unknown
+  let file: File | null = null
+  let formData: FormData | null = null
 
   if (contentType.includes("multipart/form-data")) {
     const formData = await req.formData()
@@ -24,6 +26,7 @@ export const validateRequest = async <S extends ZodTypeAny>(
     }
 
     rawData = raw
+    file = formData.get("file") as File | null
   }
   else {
     rawData = await req.json()
@@ -31,7 +34,9 @@ export const validateRequest = async <S extends ZodTypeAny>(
 
   const parsed = schema.safeParse(rawData)
 
+
   if (!parsed.success) {
+
     return {
       success: false,
       response: NextResponse.json(
@@ -43,6 +48,7 @@ export const validateRequest = async <S extends ZodTypeAny>(
 
   return {
     success: true,
-    data: parsed.data
+    data: parsed.data,
+    file
   }
 }

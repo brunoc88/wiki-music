@@ -70,38 +70,117 @@ const makeRequest = (formData: FormData) => {
 
 describe('POST /api/artist', () => {
 
-  it('Crear artista correctamente', async () => {
+    it('Crear artista correctamente sin imagen', async () => {
 
-    mockAuthenticatedSession(0)
+        mockAuthenticatedSession(0)
 
-    const formData = new FormData()
-    formData.append('name', 'Led Zeppelin')
-    formData.append('bio', 'Considerada una de las mejores bandas del rock de los 70')
+        const formData = new FormData()
+        formData.append('name', 'Led Zeppelin')
+        formData.append('bio', 'Considerada una de las mejores bandas del rock de los 70')
 
-    // multiselect
-    formData.append('genres', String(genres[0].id))
-    formData.append('genres', String(genres[1].id))
+        // multiselect
+        formData.append('genres', String(genres[0].id))
+        formData.append('genres', String(genres[1].id))
 
-    
+        const response = await POST(makeRequest(formData))
 
-    const response = await POST(makeRequest(formData))
+        expect(response.status).toBe(201)
 
-    expect(response.status).toBe(201)
+        const data = await response.json()
+        console.log('data', data)
+        expect(data.name).toBe('led zeppelin')
 
-    const data = await response.json()
+        // verificar en DB
+        const artistInDb = await prisma.artist.findFirst({
+            where: { name: 'led zeppelin' },
+            include: { genres: true }
+        })
 
-    expect(data.name).toBe('led zeppelin') 
-    expect(data.genres.length).toBe(2)
-
-    // verificar en DB
-    const artistInDb = await prisma.artist.findFirst({
-      where: { name: 'led zeppelin' },
-      include: { genres: true }
+        expect(artistInDb).not.toBeNull()
+        expect(artistInDb?.genres.length).toBe(2)
     })
 
-    expect(artistInDb).not.toBeNull()
-    expect(artistInDb?.genres.length).toBe(2)
-  })
+    it('Crear artista correctamente con imagen', async () => {
+
+        mockAuthenticatedSession(0)
+
+        const formData = new FormData()
+        formData.append('name', 'Led Zeppelin')
+        formData.append('bio', 'Considerada una de las mejores bandas del rock de los 70')
+
+        // multiselect
+        formData.append('genres', String(genres[0].id))
+        formData.append('genres', String(genres[1].id))
+
+        // imagen desde fixtures
+        const filePath = path.resolve(__dirname, "../fixtures/default.png")
+        const buffer = fs.readFileSync(filePath)
+        const file = new File([buffer], "default.png", { type: "image/png" })
+        formData.append("file", file)
+
+        const response = await POST(makeRequest(formData))
+
+        expect(response.status).toBe(201)
+
+        const data = await response.json()
+        
+        expect(data.name).toBe('led zeppelin')
+        expect(data.publicId).not.toBeNull()
+
+        // verificar en DB
+        const artistInDb = await prisma.artist.findFirst({
+            where: { name: 'led zeppelin' },
+            include: { genres: true }
+        })
+        
+        expect(artistInDb).not.toBeNull()
+        expect(artistInDb?.genres.length).toBe(2)
+    })
+
+    it('Crear artista correctamente un genero en false', async () => {
+
+        mockAuthenticatedSession(0)
+
+        const formData = new FormData()
+        formData.append('name', 'Led Zeppelin')
+        formData.append('bio', 'Considerada una de las mejores bandas del rock de los 70')
+
+        // multiselect
+        formData.append('genres', String(genres[0].id))
+        formData.append('genres', String(genres[3].id))
+
+
+        const response = await POST(makeRequest(formData))
+        const body = await response.json()
+
+        expect(response.status).toBe(400)
+        expect(body).toHaveProperty('error')
+        expect(body.error).toBe('Uno o más géneros no están disponibles')
+       
+    })
+
+    it('Mandar form vacio', async () => {
+
+        mockAuthenticatedSession(0)
+
+        const formData = new FormData()
+        formData.append('name', '')
+        formData.append('bio', '')
+
+
+        formData.append('genres', '')
+
+
+        const response = await POST(makeRequest(formData))
+        const body = await response.json()
+
+        expect(response.status).toBe(400)
+        expect(body).toHaveProperty('error')
+        expect(body.error.name).toContain('Debe ingresar un nombre')
+        expect(body.error.bio).toContain('Debe ingresar biografia')
+        expect(body.error.genres).toContain('Seleccione un genero')
+       
+    })
 })
 
 afterEach(() => {
