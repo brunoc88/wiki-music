@@ -1,6 +1,6 @@
-import {prisma} from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import { ArtistToCreate } from "@/types/artist.types"
-
+import { Artist } from "@prisma/client"
 
 export const artistRepo = {
   createArtist: async (
@@ -15,5 +15,15 @@ export const artistRepo = {
         }
       }
     })
+  },
+
+  findArtist: async (artistId: number): Promise<Artist | null> => await prisma.artist.findUnique({ where: { id: artistId } }),
+
+  deleteArtist: async (artistId: number): Promise<{ ok: true }> => {
+    await prisma.artist.update({
+      where: { id: artistId },
+      data: { state: false },
+    })
+    return { ok: true }
   }
 }

@@ -3,7 +3,7 @@ import { artistRepo } from "@/repositories/artist.repository"
 import { RegisterArtist } from "@/types/artist.types"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { activeGenres } from "@/domain/artist/activeGenres"
-import { BadRequestError } from "@/error/appError"
+import { BadRequestError, ForbiddenError, NotFoundError } from "@/error/appError"
 
 
 export const artistService = {
@@ -55,6 +55,18 @@ export const artistService = {
             }
             throw error
         }
+    },
+    
+    deleteArtist: async (artistId:number, userId:number) => {
+        const user = await requireActiveUserById(userId)
+        let isAdminOrSuper = user.rol === 'admin' || user.rol === 'super'
+        if(!isAdminOrSuper) throw new ForbiddenError()
+        
+        const artist = await artistRepo.findArtist(artistId)
+        if(!artist) throw new NotFoundError()
+        if(!artist.state) throw new ForbiddenError('Artista inactivo')
+        
+        return await artistRepo.deleteArtist(artistId)
     }
 
 }
