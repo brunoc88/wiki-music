@@ -25,5 +25,10 @@ export const artistRepo = {
       data: { state: false },
     })
     return { ok: true }
+  },
+
+  reactiveArtist: async (artistId: number) : Promise<{ ok: true }> => {
+    await prisma.artist.update({where:{id:artistId}, data:{state:true}})
+    return {ok:true}
   }
 }

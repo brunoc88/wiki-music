@@ -45,4 +45,5 @@ model Artist {
   genres           Gender[]
   pic              String 
   picPublicId      String?
+  createdAt   DateTime @default(now())
 }

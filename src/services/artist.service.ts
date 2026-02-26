@@ -64,9 +64,19 @@ export const artistService = {
         
         const artist = await artistRepo.findArtist(artistId)
         if(!artist) throw new NotFoundError()
-        if(!artist.state) throw new ForbiddenError('Artista inactivo')
         
         return await artistRepo.deleteArtist(artistId)
+    },
+
+    reactiveArtist: async (artistId:number, userId:number): Promise<{ok:true}> => {
+        const user = await requireActiveUserById(userId)
+        const isAdminOrSuper = user.rol === 'admin' || user.rol === 'super'
+        if(!isAdminOrSuper) throw new ForbiddenError()
+        
+        const artist = await artistRepo.findArtist(artistId)
+        if(!artist) throw new NotFoundError()
+            
+        return await artistRepo.reactiveArtist(artist.id)
     }
 
 }
