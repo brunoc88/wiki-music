@@ -1,6 +1,6 @@
 import { requireActiveUserById } from "@/domain/user/userAccess"
 import { artistRepo } from "@/repositories/artist.repository"
-import { RegisterArtist } from "@/types/artist.types"
+import { RegisterArtist, UpdateArtistData } from "@/types/artist.types"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { activeGenres } from "@/domain/artist/activeGenres"
 import { BadRequestError, ForbiddenError, NotFoundError } from "@/error/appError"
@@ -80,32 +80,36 @@ export const artistService = {
     },
 
     updateArtist: async (
-        data: RegisterArtist,
-        imageFile: File | null | undefined,
-        artistId: number,
-        userId: number
-    ) => {
-        await requireActiveUserById(userId)
+    data: RegisterArtist,
+    imageFile: File | null | undefined,
+    artistId: number,
+    userId: number
+) => {
+    await requireActiveUserById(userId)
 
-        const artist = await artistRepo.findArtist(artistId)
-        if (!artist) throw new NotFoundError()
-        if (!artist.state) throw new ForbiddenError('Artista inactivo')
+    const artist = await artistRepo.findArtist(artistId)
+    if (!artist) throw new NotFoundError()
+    if (!artist.state) throw new ForbiddenError("Artista inactivo")
 
-        let updatedFields = { ...data }
-
-        if (imageFile instanceof File) {
-            const uploadResult = await uploadImage(imageFile, "artist")
-
-            updatedFields = {
-                ...updatedFields,
-                pic: uploadResult.url,
-                picPublicId: uploadResult.publicId
-            }
-        }
-
-        await artistRepo.updateArtist(artistId, updatedFields)
-
-        return { ok: true }
+    const active = await activeGenres(data.genres)
+    if (active.length !== data.genres.length) {
+        throw new BadRequestError(
+            "Uno o más géneros no están disponibles"
+        )
     }
+
+    let updatedFields: UpdateArtistData = { ...data }
+
+    if (imageFile instanceof File) {
+        const uploadResult = await uploadImage(imageFile, "artist")
+
+        updatedFields.pic = uploadResult.url
+        updatedFields.picPublicId = uploadResult.publicId
+    }
+
+    await artistRepo.updateArtist(artistId, updatedFields)
+
+    return { ok: true }
+}
 
 }

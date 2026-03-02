@@ -39,14 +39,31 @@ export const artistRepo = {
     return { ok: true }
   },
 
-  updateArtist: async (artistId: number, data: {
-    pic: string
-    picPublicId: string
-    name: string
-    bio: string
-    genres: number[]
-  }): Promise<{ ok: true }> => {
-    await prisma.artist.update({ where: { id: artistId }, data })
+  updateArtist: async (
+    artistId: number,
+    data: {
+      name?: string
+      bio?: string
+      genres?: number[]
+      pic?: string
+      picPublicId?: string
+    }
+  ): Promise<{ ok: true }> => {
+
+    const { genres, ...rest } = data
+
+    await prisma.artist.update({
+      where: { id: artistId },
+      data: {
+        ...rest,
+        ...(genres && {
+          genres: {
+            set: genres.map(id => ({ id }))
+          }
+        })
+      }
+    })
+
     return { ok: true }
   }
 }

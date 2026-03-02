@@ -11,3 +11,11 @@ export type ArtistToCreate = {
   pic: string
   picPublicId: string | null
 }
+
+export type UpdateArtistData = {
+  name?: string
+  bio?: string
+  genres?: number[]
+  pic?: string
+  picPublicId?: string
+}
