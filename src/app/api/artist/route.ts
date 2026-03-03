@@ -24,7 +24,7 @@ export const POST = async (req: Request) => {
     }
 }
 
-export const PUT = async (req: Request, context:{params:{id:number}}) => {
+export const PUT = async (req: Request, context:{params:{id:string}}) => {
     try {
         const userId = await requireSessionUserId()
         

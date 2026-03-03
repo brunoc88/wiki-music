@@ -17,5 +17,6 @@ export type UpdateArtistData = {
   bio?: string
   genres?: number[]
   pic?: string
-  picPublicId?: string
+  picPublicId?: string,
+  updatedById:number
 }

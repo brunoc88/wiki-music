@@ -15,8 +15,15 @@ const ArtistRegisterSchema = z.object({
         .min(10, 'Min 10 caracteres'),
 
     genres: z
-    .array(z.coerce.number()) // 👈 convierte string → number
-    .nonempty('Seleccione un genero')
+        .union([z.string(), z.array(z.string())])
+        .transform(val => {
+            if (!val) return []
+            return Array.isArray(val) ? val : [val]
+        })
+        .refine(arr => arr.length > 0, {
+            message: "Debe seleccionar al menos un género"
+        })
+        .transform(arr => arr.map(Number))
 
 
 })

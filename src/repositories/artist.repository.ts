@@ -46,13 +46,14 @@ export const artistRepo = {
       bio?: string
       genres?: number[]
       pic?: string
-      picPublicId?: string
+      picPublicId?: string,
+      updatedById: number
     }
   ): Promise<{ ok: true }> => {
 
     const { genres, ...rest } = data
 
-    await prisma.artist.update({
+     await prisma.artist.update({
       where: { id: artistId },
       data: {
         ...rest,
@@ -64,6 +65,7 @@ export const artistRepo = {
       }
     })
 
+    
     return { ok: true }
   }
 }

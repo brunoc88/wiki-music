@@ -98,7 +98,7 @@ export const artistService = {
         )
     }
 
-    let updatedFields: UpdateArtistData = { ...data }
+    let updatedFields: UpdateArtistData = { ...data, updatedById:userId }
 
     if (imageFile instanceof File) {
         const uploadResult = await uploadImage(imageFile, "artist")
@@ -107,6 +107,7 @@ export const artistService = {
         updatedFields.picPublicId = uploadResult.publicId
     }
 
+    
     await artistRepo.updateArtist(artistId, updatedFields)
 
     return { ok: true }
