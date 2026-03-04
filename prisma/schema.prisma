@@ -24,6 +24,8 @@ model User {
 
   artistsCreated   Artist[] @relation("ArtistCreatedBy")
   artistsUpdated   Artist[] @relation("ArtistUpdatedBy")
+  albumsCreated    Album[]  @relation("AlbumCreateBy")
+  albumsUpdated    Album[]  @relation("AlbumUpdatedBy")
 }
 
 model Gender {
@@ -31,6 +33,7 @@ model Gender {
   name             String  @unique
   state            Boolean @default(true)
   artists          Artist[]
+  albums           Album[]
 }
 
 model Artist {
@@ -45,5 +48,32 @@ model Artist {
   genres           Gender[]
   pic              String 
   picPublicId      String?
-  createdAt   DateTime @default(now())
+  createdAt        DateTime @default(now())
+  albums           Album[]
+}
+
+model Album {
+  id               Int     @id @default(autoincrement())
+  name             String   
+  state            Boolean @default(true)
+  genres           Gender[]
+  pic              String 
+  picPublicId      String?
+  createdAt        DateTime @default(now())
+  songs            Song[]
+  createdById      Int
+  updatedById      Int?
+  createdBy        User     @relation("AlbumCreateBy", fields: [createdById], references: [id])
+  updatedBy        User?    @relation("AlbumUpdatedBy", fields: [updatedById], references: [id])
+  artistId         Int
+  artist           Artist   @relation(fields: [artistId], references: [id])
+  @@unique([name, artistId])
+}
+
+model Song {
+  id               Int    @id @default(autoincrement())
+  name             String 
+  albumId          Int    
+  album            Album  @relation(fields:[albumId], references:[id])
+  @@unique([name, albumId])
 }
