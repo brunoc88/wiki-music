@@ -52,7 +52,7 @@ const UserRegisterForm = () => {
 
     return (
         <div className='container'>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="user-form">
                 <UserInputs handleUser={handleUser} mode={'register'} />
             </form>
         </div>

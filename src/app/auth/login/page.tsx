@@ -36,8 +36,12 @@ const LoginPage = () => {
 
 
     return (
-        <div>
-            <form onSubmit={handleForm}>
+        <div className="login-container">
+            <div className="message">
+                <h1>WikiMusic</h1>
+                <p>Encuentra toda la informacion sobre tus artistas favoritos</p>
+            </div>
+            <form onSubmit={handleForm} className="login-form">
                 <UserInputs handleUser={handleUser} mode={'login'} />
                 <button
                     type="button"

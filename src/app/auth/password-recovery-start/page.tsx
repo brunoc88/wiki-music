@@ -42,7 +42,7 @@ const PasswordRecovery = () => {
     return (
         <div>
             <p>Al completar la solicitud reciviras un e-mail.</p>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
                 <UserInputs handleUser={handleUser} mode={'recover'} />
                 {errors.service && <p>{errors.service[0]}</p>}
             </form>
