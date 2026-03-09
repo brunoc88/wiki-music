@@ -5,8 +5,7 @@ export const AlbumSchema = z.object({
         .string()
         .nonempty('Debe escribir nombre')
         .min(2, 'Min 2 caracteres')
-        .trim()
-        .toLowerCase(),
+        .trim(),
 
     genres: z
         .union([z.string(), z.array(z.string())])
@@ -26,7 +25,11 @@ export const AlbumSchema = z.object({
 
     songs: z.array(
         z.object({
-            name: z.string().min(1)
+            name: z
+            .string()
+            .trim()
+            .toLowerCase()
+            .min(2, "La canción debe tener mínimo 2 caracteres")
         })
     ).optional()
 })

@@ -15,7 +15,7 @@ export const albumService = {
         let imagePublicId: string | null = null
         try {
             const artist = await artistRepo.findArtist(data.artistId)
-            if (!artist) throw new NotFoundError()
+            if (!artist) throw new NotFoundError('Artist not found')
             if (!artist.state) throw new BadRequestError()
 
             const active = await activeGenres(data.genres)
