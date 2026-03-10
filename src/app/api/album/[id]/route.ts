@@ -3,7 +3,7 @@ import requireSessionUserId from "@/lib/auth/requireSessionUserId"
 import { albumService } from "@/services/album.service"
 import { NextResponse } from "next/server"
 
-export const PATCH = async (context:{params:{id:string}}) => {
+export const PATCH = async (req:Request, context:{params:{id:string}}) => {
     try {
         const userId = await requireSessionUserId()
 

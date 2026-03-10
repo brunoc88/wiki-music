@@ -44,7 +44,7 @@ export const albumRepo = {
   desactiveAlbum: async (albumId: number): Promise<{ ok: true }> => {
     await prisma.album.update({
       where: { id: albumId },
-      data: { state: true }
+      data: { state: false }
     })
 
     return { ok: true }
