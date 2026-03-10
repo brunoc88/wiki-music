@@ -1,10 +1,11 @@
 import { requireActiveUserById } from "@/domain/user/userAccess"
-import { BadRequestError, NotFoundError } from "@/error/appError"
+import { BadRequestError, ForbiddenError, NotFoundError } from "@/error/appError"
 import { artistRepo } from "@/repositories/artist.repository"
 import { CreateAlbum, RegisterAlbum } from "@/types/album.types"
 import { activeGenres } from "@/domain/artist/activeGenres"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { albumRepo } from "@/repositories/album.repository"
+import requireSessionUserId from "@/lib/auth/requireSessionUserId"
 
 export const albumService = {
     createAlbum: async (userId: number, data: RegisterAlbum, imageFile?: File | null): Promise<{ ok: true }> => {
@@ -52,5 +53,20 @@ export const albumService = {
             throw error
         }
 
+    },
+
+    toggleAlbum: async (userId: number, albumId:number) : Promise<{ok:true}>=> {
+        const user = await requireActiveUserById(userId)
+
+        const isAdminOrSuper = user.rol === 'admin' || user.rol === 'super'
+        if(!isAdminOrSuper) throw new ForbiddenError()
+
+        const album = await albumRepo.findAlbum(albumId)
+        if(!album) throw new NotFoundError()
+        
+        if(album.state) await albumRepo.desactiveAlbum(album.id) 
+        else await albumRepo.activeAlbum(album.id)
+
+        return {ok:true}
     }
 }
