@@ -21,8 +21,11 @@ export const validateRequest = async <S extends ZodTypeAny>(
 
     for (const key of formData.keys()) {
       const values = formData.getAll(key)
-
       raw[key] = values.length > 1 ? values : values[0]
+    }
+
+    if (raw.songs) {
+      raw.songs = JSON.parse(raw.songs)
     }
 
     rawData = raw

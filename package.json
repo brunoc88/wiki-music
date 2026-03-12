@@ -12,7 +12,7 @@
     "test:l": "dotenv -e .env.test vitest test/login",
     "test:g": "dotenv -e .env.test vitest test/genre/genre.get.test.ts",
     "test:a": "dotenv -e .env.test vitest test/artist/artist.update.test.ts",
-    "test:al": "dotenv -e .env.test vitest test/album/album.toggle.test.ts",
+    "test:al": "dotenv -e .env.test vitest test/album/album.create.test.ts",
     "prisma:generate": "dotenv -e .env prisma generate",
     "prisma:migrate": "dotenv -e .env prisma migrate dev",
     "prisma:generate:test": "dotenv -e .env.test prisma generate",

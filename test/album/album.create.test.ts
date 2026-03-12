@@ -13,6 +13,7 @@ let users: any[]
 let genres: any[]
 
 beforeEach(async () => {
+    await prisma.song.deleteMany()
     await prisma.album.deleteMany()
     await prisma.artist.deleteMany()
     await prisma.gender.deleteMany()
@@ -179,6 +180,82 @@ describe('POST /api/album', () => {
 
         })
 
+        it('Crear album con imagen y canciones', async () => {
+            mockAuthenticatedSession(0)
+
+            const formData = new FormData()
+
+            formData.append('artistId', String(artists[0].id))
+            formData.append('genres', String(genres[1].id))
+            formData.append('name', 'the dark side of the moon')
+            formData.append(
+                "songs",
+                JSON.stringify([
+                    { name: "speak to me" },
+                    { name: "time" },
+                    { name: "breathe" }
+                ])
+            )
+
+            // imagen desde fixtures
+            const filePath = path.resolve(__dirname, "../fixtures/default.png")
+            const buffer = fs.readFileSync(filePath)
+            const file = new File([buffer], "default.png", { type: "image/png" })
+            formData.append("file", file)
+
+            const res = await POST(makeRequest(formData))
+            const body = await res.json()
+
+
+            expect(res.status).toBe(201)
+            expect(body).toHaveProperty('ok')
+            expect(body.ok).toBe(true)
+
+        })
+
+        it('Crear album sin imagen y una cancion con 1 caracter', async () => {
+            mockAuthenticatedSession(0)
+
+            const formData = new FormData()
+
+            formData.append('artistId', String(artists[1].id))
+            formData.append('genres', String(genres[1].id))
+            formData.append('name', 'the dark side of the moon')
+            formData.append(
+                "songs",
+                JSON.stringify([
+                    { name: "s" }
+                ])
+            )
+
+            const res = await POST(makeRequest(formData))
+            const body = await res.json()
+
+
+            expect(res.status).toBe(400)
+            expect(body).toHaveProperty('error')
+            expect(body.error.songs).toContain("La canción debe tener mínimo 2 caracteres")
+
+        })
+
+        it('Crear album sin imagen y sin canciones', async () => {
+            mockAuthenticatedSession(0)
+
+            const formData = new FormData()
+
+            formData.append('artistId', String(artists[1].id))
+            formData.append('genres', String(genres[1].id))
+            formData.append('name', 'the dark side of the moon')
+
+            const res = await POST(makeRequest(formData))
+            const body = await res.json()
+
+
+            expect(res.status).toBe(201)
+            expect(body).toHaveProperty('ok')
+            expect(body.ok).toBe(true)
+
+        })
     })
 })
 

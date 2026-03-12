@@ -4,6 +4,7 @@ import { Album } from "@prisma/client"
 
 export const albumRepo = {
   createAlbum: async (album: CreateAlbum): Promise<{ ok: true }> => {
+    
     await prisma.album.create({
       data: {
         name: album.name,

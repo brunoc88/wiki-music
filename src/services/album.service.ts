@@ -32,7 +32,7 @@ export const albumService = {
                 imagePublicId = uploadResult.publicId
             }
 
-
+            
             let albumToCreate: CreateAlbum = {
                 name: data.name,
                 genres: data.genres,
