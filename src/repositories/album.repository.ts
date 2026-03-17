@@ -53,7 +53,6 @@ export const albumRepo = {
   },
 
   updateAlbum: async (data: UploadAlbum, albumId: number): Promise<{ ok: true }> => {
-
     const { genres, ...rest } = data
 
     await prisma.album.update({
