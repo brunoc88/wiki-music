@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/prisma"
 import { CreateAlbum } from "@/types/album.types"
 import { Album } from "@prisma/client"
+import { UploadAlbum } from "@/types/album.types"
 
 export const albumRepo = {
   createAlbum: async (album: CreateAlbum): Promise<{ ok: true }> => {
-    
+
     await prisma.album.create({
       data: {
         name: album.name,
@@ -49,7 +50,23 @@ export const albumRepo = {
     })
 
     return { ok: true }
-  }
+  },
 
+  updateAlbum: async (data: UploadAlbum, albumId: number): Promise<{ ok: true }> => {
+
+    const { genres, ...rest } = data
+
+    await prisma.album.update({
+      where: { id: albumId },
+      data: {
+        ...rest,
+        genres: {
+          set: genres.map(id => ({ id }))
+        }
+      }
+    })
+
+    return { ok: true }
+  }
 
 }
