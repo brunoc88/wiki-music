@@ -1,7 +1,7 @@
 import { requireActiveUserById } from "@/domain/user/userAccess"
 import { BadRequestError, ForbiddenError, NotFoundError } from "@/error/appError"
 import { artistRepo } from "@/repositories/artist.repository"
-import { CreateAlbum, EditAlbum, RegisterAlbum } from "@/types/album.types"
+import { CreateAlbum, EditAlbum, EditSongs, RegisterAlbum} from "@/types/album.types"
 import { activeGenres } from "@/domain/artist/activeGenres"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { albumRepo } from "@/repositories/album.repository"
@@ -117,5 +117,23 @@ export const albumService = {
             }
             throw error
         }
+    },
+
+    updateSongs: async (
+        data: EditSongs,
+        albumId: number,
+        userId: number
+    ): Promise<{ ok: true }> => {
+
+        const user = await requireActiveUserById(userId)
+
+        const album = await albumRepo.findAlbum(albumId)
+        if (!album) throw new NotFoundError()
+
+        if (!album.state) throw new BadRequestError()
+
+        await albumRepo.updateSongs(data.songs, album.id, user.id)
+
+        return { ok: true }
     }
 }

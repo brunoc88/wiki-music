@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { CreateAlbum } from "@/types/album.types"
+import { CreateAlbum, EditSongs} from "@/types/album.types"
 import { Album } from "@prisma/client"
 import { UploadAlbum } from "@/types/album.types"
 
@@ -66,6 +66,37 @@ export const albumRepo = {
     })
 
     return { ok: true }
-  }
+  },
+
+  updateSongs: async (
+  songs: { name: string }[],
+  albumId: number,
+  userId: number
+): Promise<{ ok: true }> => {
+
+  await prisma.$transaction(async (tx) => {
+
+    await tx.song.deleteMany({
+      where: { albumId }
+    })
+
+    await tx.song.createMany({
+      data: songs.map(song => ({
+        name: song.name,
+        albumId
+      }))
+    })
+
+    await tx.album.update({
+      where: { id: albumId },
+      data: {
+        updatedById: userId
+      }
+    })
+
+  })
+
+  return { ok: true }
+}
 
 }

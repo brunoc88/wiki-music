@@ -17,15 +17,19 @@ export type CreateAlbum = {
 
 export type EditAlbum = {
     name: string,
-    genres:number[],
-    artistId:number
+    genres: number[],
+    artistId: number
 }
 
 export type UploadAlbum = {
     name: string,
-    genres:number[],
-    artistId:number
-    pic?: string ;
+    genres: number[],
+    artistId: number
+    pic?: string;
     picPublicId?: string;
     updatedById: number
+}
+
+export type EditSongs = {
+    songs: { name: string }[]
 }
