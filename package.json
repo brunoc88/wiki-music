@@ -21,6 +21,7 @@
     "prisma:migrate:test:deploy": "dotenv -e .env.test prisma migrate deploy"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.19.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.9.0",

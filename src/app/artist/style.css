@@ -1,0 +1,47 @@
+.container {
+    border-color: white;
+    border-style: solid;
+    border-radius: 5px;
+    width: 300px;
+    height: 450px;
+    margin: auto;
+    margin-top: 50px;
+    padding: 10px;
+}
+
+.input-form {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.select-form {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.btn-form {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.btn {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    border-style: hidden;
+}
+
+.error{
+    margin-bottom: 5px;
+    color: red;
+}
+
+.auth-google-btn {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: black;
+}

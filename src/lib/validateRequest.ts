@@ -20,6 +20,7 @@ export const validateRequest = async <S extends ZodTypeAny>(
     const raw: Record<string, any> = {}
 
     for (const key of formData.keys()) {
+      if (key === "file") continue
       const values = formData.getAll(key)
       raw[key] = values.length > 1 ? values : values[0]
     }

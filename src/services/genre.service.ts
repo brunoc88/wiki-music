@@ -55,5 +55,11 @@ export const genreService = {
         if(!isAdminOrSuperAdmin) throw new ForbiddenError()
         
         return await genreRepo.getGenres()
+    },
+
+    getActiveGenres: async(userId:number ) : Promise<Gender []| null> => {
+        await requireActiveUserById(userId)
+
+        return await genreRepo.getActiveGenres()
     }
 }
