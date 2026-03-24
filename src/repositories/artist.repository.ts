@@ -17,7 +17,7 @@ export const artistRepo = {
     })
   },
 
-  findArtist: async (artistId: number) => {
+  findArtist: async (artistId: number): Promise<Artist | null> => {
     return await prisma.artist.findUnique({
       where: { id: artistId },
       include: {

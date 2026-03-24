@@ -6,6 +6,7 @@ import { activeGenres } from "@/domain/artist/activeGenres"
 import { BadRequestError, ForbiddenError, NotFoundError } from "@/error/appError"
 
 
+
 export const artistService = {
     createArtist: async (
         artist: RegisterArtist,
@@ -111,6 +112,15 @@ export const artistService = {
     await artistRepo.updateArtist(artistId, updatedFields)
 
     return { ok: true }
-}
+    },
+
+    getArtistById: async (artistId:number) => {
+        const artist = await artistRepo.findArtist(artistId)
+
+        if(!artist) throw new NotFoundError('Artist Not Found')
+        if(!artist.state) throw new BadRequestError()
+
+        return artist
+    }
 
 }

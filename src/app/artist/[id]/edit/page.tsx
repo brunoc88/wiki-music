@@ -1,15 +1,16 @@
 "use client"
 
-import { useError } from "@/context/ErrorContext"
-import { getActiveGenres } from "@/lib/auth/api/genre.api"
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { RegisterArtist } from "@/types/artist.types"
-import { createArtist } from "@/lib/auth/api/artist.api"
 import ArstistInpust from "@/components/ArtistInputs"
+import { useError } from "@/context/ErrorContext"
+import { useState, useEffect } from "react"
+import { getActiveGenres } from "@/lib/auth/api/genre.api"
+import { useSession } from "next-auth/react"
+import { RegisterArtist } from "@/types/artist.types"
+import { useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
+import { getArtistById } from "@/lib/auth/api/artist.api"
 
-const ArtistForm = () => {
+const EditArtistForm = () => {
     const [genres, setGenres] = useState<{ id: number, name: string, state: boolean }[]>([])
     const [artist, setArtist] = useState<RegisterArtist>({
         name: "",
@@ -17,7 +18,7 @@ const ArtistForm = () => {
         genres: []
     })
     const [file, setFile] = useState<File | null>(null)
-
+    const [loading, setLoading] = useState(true)
     const { setErrors, errors } = useError()
     const { status } = useSession()
     const router = useRouter()
@@ -35,6 +36,38 @@ const ArtistForm = () => {
         }
         loadGenres()
     }, [])
+
+    const { id } = useParams()
+
+    useEffect(() => {
+        if (!id) return
+
+        const loadArtist = async () => {
+            setLoading(true)
+
+            const res = await getArtistById(Number(id))
+
+            if (res.ok) {
+                setArtist({
+                    name: res.artist.name,
+                    bio: res.artist.bio,
+                    genres: res.artist.genres.map((g: any) => g.id)
+                })
+            } else if (res.status === 400 || res.status === 404) {
+                setErrors({
+                    notFound: ['Artista no encontrado o inactivo']
+                })
+            } else {
+                setErrors({
+                    server: ['Error inesperado']
+                })
+            }
+
+            setLoading(false)
+        }
+
+        loadArtist()
+    }, [id])
 
     //  inputs normales
     const handleArtist = (
@@ -63,49 +96,31 @@ const ArtistForm = () => {
         }
     }
 
-    //  submit
-    const handleForm = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setErrors({})
-
-        const formData = new FormData()
-
-        formData.append("name", artist.name)
-        formData.append("bio", artist.bio)
-
-        artist.genres.forEach(g => {
-            formData.append("genres", String(g))
-        })
-
-        if (file) {
-            formData.append("file", file) // 👈 importante
-        }
-
-        const res = await createArtist(formData)
-
-        if (!res.ok) {
-            if (res.status === 409) {
-                setErrors({
-                    duplicado: ["El artista ya se encuentra creado"]
-                })
-            } else {
-                setErrors(res.error ?? {})
-            }
-        } else {
-            setArtist({ name: "", bio: "", genres: [] })
-            router.push('/welcome')
-        }
-
-
+    // ⏳ Loading
+    if (loading) {
+        return <p>Cargando artista...</p>
     }
 
-    if (status === "loading") return <p>loading...</p>
+    // ❌ Error
+    if (errors.notFound) {
+        return (
+            <div>
+                <p>{errors.notFound[0]}</p>
+                <button onClick={() => router.push("/artist")}>
+                    Volver
+                </button>
+            </div>
+        )
+    }
+
+    // ❌ Error server
+    if (errors.server) {
+        return <p>{errors.server[0]}</p>
+    }
 
     return (
         <div>
-            <h2>Registro de Artista</h2>
-            <p>{errors.duplicado}</p>
-            <form onSubmit={handleForm}>
+            <form>
                 <ArstistInpust
                     errors={errors}
                     genres={genres}
@@ -119,4 +134,4 @@ const ArtistForm = () => {
     )
 }
 
-export default ArtistForm
+export default EditArtistForm
