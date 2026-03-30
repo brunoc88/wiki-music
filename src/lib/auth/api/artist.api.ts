@@ -22,7 +22,7 @@ export const createArtist = async (formData: FormData) => {
 }
 
 export const getArtistById = async (id: number) => {
-   
+    
     const res = await fetch(`/api/artist/${id}`, {
         method: 'GET'
     })
@@ -33,12 +33,30 @@ export const getArtistById = async (id: number) => {
         return {
             ok: false,
             error: body.error ?? "Error del servidor",
-            status:res.status
+            status: res.status
         }
     }
 
     return {
-        ok:true,
+        ok: true,
         artist: body
+    }
+}
+
+export const updateArtist = async (formData:FormData, id:number) => {
+    const res = await fetch(`/api/artist/${id}/edit`, {
+        method:'PUT',
+        body:formData
+    })
+
+    const body = await res.json()
+
+    if(!res.ok) return {
+        ok:false,
+        error:body.error ?? "Error del servidor"
+    }
+
+    return {
+        ok:true
     }
 }

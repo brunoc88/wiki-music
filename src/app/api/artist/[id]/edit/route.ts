@@ -5,11 +5,11 @@ import { validateRequest } from "@/lib/validateRequest"
 import { artistService } from "@/services/artist.service"
 import { NextResponse } from "next/server"
 
-export const PUT = async (req: Request, context:{params:{id:string}}) => {
+export const PUT = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const userId = await requireSessionUserId()
         
-        const {id} = context.params
+        const {id} = await params
         const artistId = Number(id)
 
         const validation = await validateRequest(req, ArtistRegisterSchema)

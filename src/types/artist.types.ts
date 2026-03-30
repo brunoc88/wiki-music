@@ -20,3 +20,9 @@ export type UpdateArtistData = {
   picPublicId?: string,
   updatedById:number
 }
+
+export type ArtistDescription = {
+  name:string,
+  bio:string, 
+  genres: {id: number , name:string}[]
+}

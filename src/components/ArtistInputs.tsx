@@ -4,16 +4,21 @@ const ArstistInpust = ({
     handleArtist,
     handleGenres,
     handleFile,
-    router 
+    router,
+    artist
 }) => {
     return (
         <div>
             Nombre:
-            <input type="text" name="name" onChange={handleArtist} />
+            <input type="text" name="name" onChange={handleArtist} value={artist ? artist.name : ''} />
             {errors?.name && <p className="error">{errors.name[0]}</p>}
 
             Genero:
-            <select multiple onChange={handleGenres}>
+            <select
+                multiple
+                value={artist ? artist.genres : []}
+                onChange={handleGenres}
+            >
                 {genres.length > 0 ? (
                     genres.map(g => (
                         <option key={g.id} value={g.id}>
@@ -27,14 +32,14 @@ const ArstistInpust = ({
             {errors?.genres && <p className="error">Debe seleccionar un genero</p>}
 
             Biografia:
-            <textarea name="bio" onChange={handleArtist}></textarea>
+            <textarea name="bio" onChange={handleArtist} value={artist ? artist.bio : ''}></textarea>
             {errors?.bio && <p className="error">{errors.bio[0]}</p>}
 
             Imagen:
             <input type="file" onChange={handleFile} />
 
             <button type="submit">Enviar</button>
-            <button type="button" onClick={()=> router.push('/welcome')}>Volver</button>
+            <button type="button" onClick={() => router.push('/welcome')}>Volver</button>
         </div>
     )
 
