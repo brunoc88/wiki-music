@@ -69,5 +69,9 @@ export const artistRepo = {
 
     
     return { ok: true }
+  },
+
+  getAllActiveArtist: async () : Promise<Artist[] | null>=> {
+    return await prisma.artist.findMany({where:{state:true}})
   }
 }

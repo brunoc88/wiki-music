@@ -60,3 +60,20 @@ export const updateArtist = async (formData:FormData, id:number) => {
         ok:true
     }
 }
+
+export const getAllActiveArtist = async () => {
+    const res = await fetch('/api/artist',{
+        method:'GET'
+    })
+
+    const body = await res.json()
+
+    if(res.ok) return {
+        ok:true,
+        artists: body
+    }
+    else return {
+        ok:false,
+        error: 'Error Server'
+    }
+}

@@ -24,3 +24,11 @@ export const POST = async (req: Request) => {
     }
 }
 
+export const GET = async (req:Request) => {
+    try {
+        const res = await artistService.getAllActiveArtist()
+        return NextResponse.json(res, {status:200})
+    } catch (error) {
+        return errorHandler(error)
+    }
+}

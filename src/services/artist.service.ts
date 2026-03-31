@@ -6,7 +6,6 @@ import { activeGenres } from "@/domain/artist/activeGenres"
 import { BadRequestError, ForbiddenError, NotFoundError } from "@/error/appError"
 
 
-
 export const artistService = {
     createArtist: async (
         artist: RegisterArtist,
@@ -121,6 +120,19 @@ export const artistService = {
         if(!artist.state) throw new BadRequestError()
 
         return artist
+    },
+
+    getAllActiveArtist: async () : Promise< {id: number, name:string, state:boolean}[]| null> => {
+        const res = await artistRepo.getAllActiveArtist()
+        if(!res) return null
+
+        let artists:{id: number, name:string, state:boolean}[] = []
+
+        res.forEach(a => {
+            artists.push(a)
+        })
+
+        return artists
     }
 
 }
