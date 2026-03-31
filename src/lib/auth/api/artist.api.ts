@@ -28,7 +28,7 @@ export const getArtistById = async (id: number) => {
     })
 
     const body = await res.json()
-
+    
     if (!res.ok) {
         return {
             ok: false,

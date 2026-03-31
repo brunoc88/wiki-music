@@ -21,7 +21,9 @@ export const artistRepo = {
     return await prisma.artist.findUnique({
       where: { id: artistId },
       include: {
-        genres: true
+        genres: true,
+        createdBy:true,
+        updatedBy:true
       }
     })
   },

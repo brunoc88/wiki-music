@@ -20,8 +20,13 @@ const ArtistProfile = () => {
 
             const res = await getArtistById(Number(id))
 
-            if (!res.ok) setErrors(res.error)
-            else setArtist(res.artist)
+            if (!res.ok) {
+                setErrors(res.error)
+            }
+            else {
+                setArtist(res.artist)
+                setErrors({})
+            }
             setLoading(false)
         }
 
@@ -30,7 +35,7 @@ const ArtistProfile = () => {
     }, [id])
 
     if (loading) return <p>Loading...</p>
-    //if(errors) return <p>Artista no encontrado</p>
+    if (errors?.length) return <p>Artista no encontrado</p>
 
     return (
         <div>
@@ -49,6 +54,11 @@ const ArtistProfile = () => {
                     <li key={g.id}>{g.name}</li>
                 ))
             }
+            {artist?.updatedBy?.username ? (
+                <p>Creado/editado por: {artist.updatedBy.username}</p>
+            ) : (
+                <p>Creado/editado por: {artist?.createdBy?.username}</p>
+            )}
         </div>
     )
 }

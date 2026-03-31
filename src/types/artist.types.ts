@@ -24,5 +24,11 @@ export type UpdateArtistData = {
 export type ArtistDescription = {
   name:string,
   bio:string, 
-  genres: {id: number , name:string}[]
+  genres: {id: number , name:string}[],
+  createdBy: {
+    username:string
+  },
+  updatedBy?: {
+    username:string
+  }
 }

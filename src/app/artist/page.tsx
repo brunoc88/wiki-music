@@ -113,6 +113,7 @@ const ArtistForm = () => {
                     handleGenres={handleGenres}
                     handleFile={handleFile}
                     router={router}
+                    artist={artist}
                 />
             </form>
         </div>
