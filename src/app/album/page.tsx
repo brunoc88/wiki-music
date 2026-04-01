@@ -2,56 +2,145 @@
 
 import AlbumInputs from "@/components/AlbumInputs"
 import { getActiveGenres } from "@/lib/auth/api/genre.api"
-import { RegisterAlbum } from "@/types/album.types"
-import { EnableGenres } from "@/types/genre.types"
+import { getAllActiveArtist } from "@/lib/auth/api/artist.api"
 import React, { useState, useEffect } from "react"
 import { useError } from "@/context/ErrorContext"
-import { getAllActiveArtist } from "@/lib/auth/api/artist.api"
+import { RegisterAlbum } from "@/types/album.types"
+import { createAlbum } from "@/lib/auth/api/album.api"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 const AlbumForm = () => {
 
-    const [genres, setGenres] = useState<EnableGenres>()
-    const [album, setAlbum] = useState<RegisterAlbum>()
-    const [artists, setArtists] = useState<{id:number, name:string, state:boolean}[]>()
+    const [genres, setGenres] = useState([])
+    const [artists, setArtists] = useState([])
     const [loading, setLoading] = useState(true)
-    //const {errors, setErrors} = useError()
-    const [addSongs, setAddsongs] = useState(false)
-    const [plus, setPlus] = useState<number[]>([])
+    const [showSongs, setShowSongs] = useState(false)
+    const [songs, setSongs] = useState([""])
+    const { errors, setErrors } = useError()
+    const [album, setAlbum] = useState<RegisterAlbum>({
+        name: "",
+        genres: [],
+        artistId: 0,
+        songs: []
+    })
+    const [file, setFile] = useState<File | null>(null)
+    const { data: session, status } = useSession()
+    const router = useRouter()
 
-    useEffect(()=>{
-        const loadingGenres = async() =>{
-            const res = await getActiveGenres()
-            if(res.ok) setGenres(res.genres)
+    useEffect(() => {
+        if (status === "loading") return 
+
+        if (!session) {
+            router.push("/auth/login")
         }
+    }, [session, status])
 
-        if(loading)loadingGenres()
-    },[loading])
+    useEffect(() => {
+        const loadData = async () => {
+            const resGenres = await getActiveGenres()
+            if (resGenres.ok) setGenres(resGenres.genres)
 
-    useEffect(()=>{
-        const loadingArtists = async () => {
-            const res = await getAllActiveArtist()
-            if(res.ok) setArtists(res.artists)
+            const resArtists = await getAllActiveArtist()
+            if (resArtists.ok) setArtists(resArtists.artists)
+
             setLoading(false)
         }
-        loadingArtists()
-    },[loading])
 
-    const handleSUbmit = (e: React.FormEvent) => {
+        loadData()
+    }, [])
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        const formData = new FormData()
+        formData.append('name', album.name)
+        formData.append('artistId', String(album.artistId))
+
+        album.genres.forEach(g => {
+            formData.append("genres", String(g))
+        })
+
+        formData.append(
+            "songs",
+            JSON.stringify(
+                songs
+                    .filter(s => s.trim() !== "")
+                    .map(s => ({ name: s }))
+            )
+        )
+        if (file) {
+            formData.append("file", file) 
+        }
+
+        const res = await createAlbum(formData)
+        if (res.ok) {
+            console.log('exito')
+        } else if (res.status === 409) {
+            setErrors({ duplicado: ['Ya existe un album registrado a este artista'] })
+        }
+        else setErrors(res.error)
     }
 
-    if(loading) return <p>Loading...</p>
+    const handleSongChange = (index: number, value: string) => {
+        const updated = [...songs]
+        updated[index] = value
+        setSongs(updated)
+    }
+
+    const addSongInput = () => {
+        setSongs([...songs, ""])
+    }
+
+    const removeSong = (index: number) => {
+        const updated = songs.filter((_, i) => i !== index)
+        setSongs(updated)
+    }
+
+    const handleSelectArtist = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target
+
+        setAlbum(prev => ({
+            ...prev,
+            [name]: Number(value) //
+        }))
+    }
+
+    const handleGenres = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOptions = Array.from(e.target.selectedOptions)
+
+        const values = selectedOptions.map(option => Number(option.value))
+
+        setAlbum(prev => ({
+            ...prev,
+            genres: values
+        }))
+    }
+
+    const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.value
+        setAlbum(prev => ({ ...prev, name }))
+    }
+    if (loading) return <p>Loading...</p>
+
     return (
         <div>
             <h1>Registro de album</h1>
-            <form onSubmit={handleSUbmit}>
+            {errors.duplicado &&
+                <p>{errors.duplicado}</p>}
+            <form onSubmit={handleSubmit}>
                 <AlbumInputs
-                genres={genres}
-                artists= {artists}
-                addSongs = {addSongs}
-                setAddSongs = {setAddsongs}
-                plus={plus}
-                setPlus={setPlus}
+                    genres={genres}
+                    artists={artists}
+                    songs={songs}
+                    showSongs={showSongs}
+                    setShowSongs={setShowSongs}
+                    handleSongChange={handleSongChange}
+                    addSongInput={addSongInput}
+                    removeSong={removeSong}
+                    errors={errors}
+                    handleAlbumName={handleAlbumName}
+                    handleSelectArtist={handleSelectArtist}
+                    handleGenres={handleGenres}
                 />
             </form>
         </div>
