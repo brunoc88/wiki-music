@@ -97,6 +97,17 @@ export const albumRepo = {
   })
 
   return { ok: true }
-}
+},
+
+  findActiveAlbum: async (albumId:number) : Promise<Album | null> =>{
+    return prisma.album.findUnique({
+      where:{id:albumId, state:true},
+      include:{
+        genres:true,
+        artist:true,
+        songs:true
+      }
+    })
+  }
 
 }

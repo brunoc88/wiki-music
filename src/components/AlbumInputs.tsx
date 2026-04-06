@@ -10,7 +10,8 @@ const AlbumInputs = ({
     errors,
     handleAlbumName,
     handleSelectArtist,
-    handleGenres
+    handleGenres,
+    handleFile
 }) => {
     return (
         <div>
@@ -46,7 +47,7 @@ const AlbumInputs = ({
             {errors?.genres && <p className="error">Debe seleccionar un genero</p>}
 
             <p>Imagen:</p>
-            <input type="file" />
+            <input type="file" onChange={handleFile}/>
 
             {!showSongs && (
                 <div>

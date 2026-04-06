@@ -116,6 +116,13 @@ const AlbumForm = () => {
         }))
     }
 
+     //  file
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0])
+        }
+    }
+
     const handleAlbumName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value
         setAlbum(prev => ({ ...prev, name }))
@@ -141,6 +148,7 @@ const AlbumForm = () => {
                     handleAlbumName={handleAlbumName}
                     handleSelectArtist={handleSelectArtist}
                     handleGenres={handleGenres}
+                    handleFile={handleFile}
                 />
             </form>
         </div>

@@ -6,6 +6,7 @@ import { activeGenres } from "@/domain/artist/activeGenres"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { albumRepo } from "@/repositories/album.repository"
 import { UploadAlbum } from "@/types/album.types"
+import { Album } from "@prisma/client"
 
 
 export const albumService = {
@@ -135,5 +136,13 @@ export const albumService = {
         await albumRepo.updateSongs(data.songs, album.id, user.id)
 
         return { ok: true }
+    },
+
+    getActiveAlbumById: async (albumId:number) => {
+        const album = await albumRepo.findActiveAlbum(albumId)
+        if(!album) throw new NotFoundError('Album not found')
+        if(!album.state) throw new BadRequestError('Inactive Album')
+
+        return album
     }
 }

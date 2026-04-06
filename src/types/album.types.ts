@@ -33,3 +33,18 @@ export type UploadAlbum = {
 export type EditSongs = {
     songs: { name: string }[]
 }
+
+export type AlbumInfo = {
+    name: string,
+    state: boolean,
+    genres: { id: number, name: string }[],
+    createdBy: {
+        username: string
+    },
+    updatedBy?: {
+        username: string
+    },
+    songs: { name: string }[],
+    pic: string,
+    artist:{name:string}
+}
