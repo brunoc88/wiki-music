@@ -9,11 +9,12 @@ import { RegisterAlbum } from "@/types/album.types"
 import { createAlbum } from "@/lib/auth/api/album.api"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { ArtistSelection } from "@/types/artist.types"
 
 const AlbumForm = () => {
 
     const [genres, setGenres] = useState([])
-    const [artists, setArtists] = useState([])
+    const [artists, setArtists] = useState<ArtistSelection>([])
     const [loading, setLoading] = useState(true)
     const [showSongs, setShowSongs] = useState(false)
     const [songs, setSongs] = useState([""])
@@ -29,7 +30,7 @@ const AlbumForm = () => {
     const router = useRouter()
 
     useEffect(() => {
-        if (status === "loading") return 
+        if (status === "loading") return
 
         if (!session) {
             router.push("/auth/login")
@@ -42,7 +43,14 @@ const AlbumForm = () => {
             if (resGenres.ok) setGenres(resGenres.genres)
 
             const resArtists = await getAllActiveArtist()
-            if (resArtists.ok) setArtists(resArtists.artists)
+            if (resArtists.ok) {
+                const allArtist: ArtistSelection = resArtists.artists.map(a => ({
+                    id: a.id,
+                    name: a.name
+                }))
+
+                setArtists(allArtist)
+            }
 
             setLoading(false)
         }
@@ -52,6 +60,7 @@ const AlbumForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setErrors({})
         const formData = new FormData()
         formData.append('name', album.name)
         formData.append('artistId', String(album.artistId))
@@ -69,7 +78,7 @@ const AlbumForm = () => {
             )
         )
         if (file) {
-            formData.append("file", file) 
+            formData.append("file", file)
         }
 
         const res = await createAlbum(formData)
@@ -77,6 +86,9 @@ const AlbumForm = () => {
             console.log('exito')
         } else if (res.status === 409) {
             setErrors({ duplicado: ['Ya existe un album registrado a este artista'] })
+        }
+        else if(album.artistId === 0){
+            setErrors(prev=>({...res.error, artistId:['Debe seleccionar artista']}))
         }
         else setErrors(res.error)
     }
@@ -93,7 +105,12 @@ const AlbumForm = () => {
 
     const removeSong = (index: number) => {
         const updated = songs.filter((_, i) => i !== index)
-        setSongs(updated)
+
+        if (updated.length === 0) {
+            setSongs([""]) // 👈 clave
+        } else {
+            setSongs(updated)
+        }
     }
 
     const handleSelectArtist = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -116,7 +133,7 @@ const AlbumForm = () => {
         }))
     }
 
-     //  file
+    //  file
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0])
@@ -127,6 +144,12 @@ const AlbumForm = () => {
         const name = e.target.value
         setAlbum(prev => ({ ...prev, name }))
     }
+
+    const cleanSongs = () => {
+        if(songs.length > 0) setSongs([])
+        else return
+    }
+
     if (loading) return <p>Loading...</p>
 
     return (
@@ -149,6 +172,7 @@ const AlbumForm = () => {
                     handleSelectArtist={handleSelectArtist}
                     handleGenres={handleGenres}
                     handleFile={handleFile}
+                    cleanSongs = {cleanSongs}
                 />
             </form>
         </div>

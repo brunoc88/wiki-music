@@ -1,7 +1,7 @@
 export type RegisterArtist = {
-    name:string,
-    bio:string,
-    genres: number[]
+  name: string,
+  bio: string,
+  genres: number[]
 }
 
 export type ArtistToCreate = {
@@ -18,17 +18,24 @@ export type UpdateArtistData = {
   genres?: number[]
   pic?: string
   picPublicId?: string,
-  updatedById:number
+  updatedById: number
 }
 
 export type ArtistDescription = {
-  name:string,
-  bio:string, 
-  genres: {id: number , name:string}[],
+  name: string,
+  bio: string,
+  genres: { id: number, name: string }[],
   createdBy: {
-    username:string
+    username: string
   },
   updatedBy?: {
-    username:string
+    username: string
   }
 }
+
+export type ArtistOption = {
+  id: number,
+  name: string
+}
+
+export type ArtistSelection = ArtistOption[]

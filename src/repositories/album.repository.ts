@@ -105,7 +105,9 @@ export const albumRepo = {
       include:{
         genres:true,
         artist:true,
-        songs:true
+        songs:true,
+        createdBy:true,
+        updatedBy:true
       }
     })
   }

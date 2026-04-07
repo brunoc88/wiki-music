@@ -11,7 +11,8 @@ const AlbumInputs = ({
     handleAlbumName,
     handleSelectArtist,
     handleGenres,
-    handleFile
+    handleFile,
+    cleanSongs
 }) => {
     return (
         <div>
@@ -21,6 +22,7 @@ const AlbumInputs = ({
             {errors?.name && <p className="error">{errors.name[0]}</p>}
             <p>Artista/Banda:</p>
             <select name="artistId" onChange={handleSelectArtist}>
+                <option value="">Seleccionar artista</option>
                 {artists?.length > 0 ? (
                     artists.map((a) => (
                         <option key={a.id} value={a.id}>
@@ -51,7 +53,7 @@ const AlbumInputs = ({
 
             {!showSongs && (
                 <div>
-                    <button type="button" onClick={() => setShowSongs(true)}>
+                    <button type="button" onClick={() => {setShowSongs(true)}}>
                         Agregar Canciones
                     </button>
                 </div>
@@ -89,7 +91,11 @@ const AlbumInputs = ({
                             )}
                         </div>
                     ))}
-                    <button onClick={()=>setShowSongs(false)}>Cancelar</button>
+                    <button onClick={()=>{
+                        setShowSongs(false)
+                        cleanSongs()
+                    }
+                    }>Cancelar</button>
                 </div>
             )}
             {errors?.songs && <span>{errors.songs[0]}</span>}
