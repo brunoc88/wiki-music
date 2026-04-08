@@ -35,6 +35,7 @@ export type EditSongs = {
 }
 
 export type AlbumInfo = {
+    id: number,
     name: string,
     state: boolean,
     genres: { id: number, name: string }[],
@@ -46,5 +47,5 @@ export type AlbumInfo = {
     },
     songs: { name: string }[],
     pic: string,
-    artist:{name:string}
+    artist: { name: string }
 }

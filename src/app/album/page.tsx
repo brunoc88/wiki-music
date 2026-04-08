@@ -83,12 +83,19 @@ const AlbumForm = () => {
 
         const res = await createAlbum(formData)
         if (res.ok) {
-            console.log('exito')
+            const albumId = res.album?.id
+
+            if (!albumId) {
+                console.error("ID inválido:", res.album)
+                return
+            }
+
+            router.push(`/album/${albumId}`)
         } else if (res.status === 409) {
             setErrors({ duplicado: ['Ya existe un album registrado a este artista'] })
         }
-        else if(album.artistId === 0){
-            setErrors(prev=>({...res.error, artistId:['Debe seleccionar artista']}))
+        else if (album.artistId === 0) {
+            setErrors(prev => ({ ...res.error, artistId: ['Debe seleccionar artista'] }))
         }
         else setErrors(res.error)
     }
@@ -146,7 +153,7 @@ const AlbumForm = () => {
     }
 
     const cleanSongs = () => {
-        if(songs.length > 0) setSongs([])
+        if (songs.length > 0) setSongs([])
         else return
     }
 
@@ -172,7 +179,7 @@ const AlbumForm = () => {
                     handleSelectArtist={handleSelectArtist}
                     handleGenres={handleGenres}
                     handleFile={handleFile}
-                    cleanSongs = {cleanSongs}
+                    cleanSongs={cleanSongs}
                 />
             </form>
         </div>

@@ -1,15 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getAlbumById } from "@/lib/auth/api/album.api"
+import { getAlbumById, toggleAlbumById } from "@/lib/auth/api/album.api"
 import { useParams } from "next/navigation"
 import { useError } from "@/context/ErrorContext"
-import { AlbumInfo } from "@/types/album.types"
+import { AlbumInfo as AlbumType } from "@/types/album.types"
 import { useSession } from "next-auth/react"
 
 const AlbumInfo = () => {
-    const [album, setAlbum] = useState<AlbumInfo>({
-        name: '',
+    const [album, setAlbum] = useState<AlbumType>({
+        id: 0,
+        name: "",
         state: false,
         genres: [],
         createdBy: { username: "" },
@@ -18,91 +19,118 @@ const AlbumInfo = () => {
         pic: "",
         artist: { name: "" }
     })
-    const [loading, setLoading] = useState<Boolean>(true)
-    const { errors, setErrors } = useError()
+
+    const [loading, setLoading] = useState(true)
+    const [empty, setEmpty] = useState(false)
+    const [open, setOpen] = useState(false)
+
     const { id } = useParams()
     const albumId = Number(id)
-    const [status, setStatus] = useState<Number>()
-    const [open, setOpen] = useState<Boolean>(false)
+
     const { data: session } = useSession()
-    const isAdmin = ['admin', 'super'].includes(session?.user?.rol)
+    const isAdmin = ["admin", "super"].includes(session?.user?.rol)
+
+    // 🔹 Permiso centralizado
+    const canView = album.state || isAdmin
 
     useEffect(() => {
         if (!id) return
 
         const loadAlbum = async () => {
             const res = await getAlbumById(albumId)
-            setStatus(res.status)
-            if (res.ok) setAlbum(res.album)
-            else setErrors(res?.error)
+
+            if (res?.ok && res?.album) {
+                setAlbum(res.album)
+            } else {
+                setEmpty(true)
+            }
+
             setLoading(false)
         }
-        loadAlbum()
-    }, [loading])
 
-    if (loading) return <p>loading...</p>
-    if (status === 404) return (
-        <div>
-            <p>{errors}</p>
-            <button>Volver</button>
-        </div>
-    )
+        loadAlbum()
+    }, [id])
+
+    const toggleStateAlbum = async () => {
+        const message = album.state
+            ? "¿Seguro que querés desactivar el álbum?"
+            : "¿Seguro que querés activar el álbum?"
+
+        if (!confirm(message)) return
+
+        const res = await toggleAlbumById(album.id)
+
+        if (res.ok) {
+            setAlbum(prev => ({
+                ...prev,
+                state: !prev.state
+            }))
+        }
+    }
+
+    // 🔹 Estados base
+    if (loading) return <p>Loading...</p>
+
+    if (empty || !canView) {
+        return (
+            <div>
+                <p>Álbum no disponible o inexistente</p>
+                <button>Volver</button>
+            </div>
+        )
+    }
+
+    // 🔹 UI principal
     return (
         <div>
-            {!album.state && isAdmin || (album.state) &&
-                <div>
+            <h2>{album.name}</h2>
 
-                    <h2>{album?.name}</h2>
-                    <img
-                        src={album?.pic}
-                        alt={album?.name}
-                        style={{ width: 200, height: 200, objectFit: "cover" }}
-                    />
-                    {session?.user.id && !open && <button onClick={() => setOpen(true)} style={{ fontSize: "20px" }}>
-                        ⋮
-                    </button>}
-                    {session?.user.id && open &&
-                        <li>
-                            <button>Editar</button>
-                            {isAdmin && (
-                                <div>
-                                    {album.state ? (
-                                        <button>Desactivar Album</button>
-                                    ) : (
-                                        <button>Activar Album</button>
-                                    )}
-                                </div>
-                            )}
-                            <button onClick={() => setOpen(false)}>Cancelar</button>
-                        </li>
-                    }
-                    <p>Artista/Banda: {album?.artist.name}</p>
-                    <p>
-                        Géneros: {album.genres.map(g => g.name).join(", ")}
-                    </p>
-                    {album?.songs && album.songs.length > 0 ? (
-                        <div>
-                            Canciones:
-                            <ol style={{ listStyle: "decimal", paddingLeft: "20px" }}>
-                                {album.songs.map(s => (
-                                    <li key={s.id}>{s.name}</li>
-                                ))}
-                            </ol>
-                        </div>
-                    ) : (
-                        <div>
-                            <p>Agregar Canciones</p>
-                        </div>
-                    )}
-                </div>
-            }
-            {!album.state && (!isAdmin) &&
+            <img
+                src={album.pic}
+                alt={album.name}
+                style={{ width: 200, height: 200, objectFit: "cover" }}
+            />
+
+            {/* Menú */}
+            {session?.user?.id && !open && (
+                <button onClick={() => setOpen(true)} style={{ fontSize: "20px" }}>
+                    ⋮
+                </button>
+            )}
+
+            {session?.user?.id && open && (
                 <div>
-                    <p>Album no disponible</p>
-                    <button>Volver</button>
+                    <button>Editar</button>
+
+                    {isAdmin && (
+                        <button onClick={toggleStateAlbum}>
+                            {album.state ? "Desactivar álbum" : "Activar álbum"}
+                        </button>
+                    )}
+
+                    <button onClick={() => setOpen(false)}>Cancelar</button>
                 </div>
-            }
-        </div >
+            )}
+
+            <p>Artista/Banda: {album.artist.name}</p>
+
+            <p>
+                Géneros: {album.genres.map(g => g.name).join(", ")}
+            </p>
+
+            {album.songs.length > 0 ? (
+                <div>
+                    <p>Canciones:</p>
+                    <ol style={{ paddingLeft: "20px" }}>
+                        {album.songs.map(song => (
+                            <li key={song.id}>{song.name}</li>
+                        ))}
+                    </ol>
+                </div>
+            ) : (
+                <p>Agregar canciones</p>
+            )}
+        </div>
     )
 }
 

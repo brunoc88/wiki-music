@@ -4,9 +4,9 @@ import { Album } from "@prisma/client"
 import { UploadAlbum } from "@/types/album.types"
 
 export const albumRepo = {
-  createAlbum: async (album: CreateAlbum): Promise<{ ok: true }> => {
+  createAlbum: async (album: CreateAlbum): Promise<Album> => {
 
-    await prisma.album.create({
+    return await prisma.album.create({
       data: {
         name: album.name,
         artistId: album.artistId,
@@ -27,7 +27,7 @@ export const albumRepo = {
         })
       }
     })
-    return { ok: true }
+    
   },
 
   findAlbum: async (albumId: number): Promise<Album | null> => {
@@ -99,9 +99,9 @@ export const albumRepo = {
   return { ok: true }
 },
 
-  findActiveAlbum: async (albumId:number) : Promise<Album | null> =>{
+  findAlbumById: async (albumId:number) : Promise<Album | null> =>{
     return prisma.album.findUnique({
-      where:{id:albumId, state:true},
+      where:{id:albumId},
       include:{
         genres:true,
         artist:true,

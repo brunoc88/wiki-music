@@ -10,7 +10,7 @@ import { Album } from "@prisma/client"
 
 
 export const albumService = {
-    createAlbum: async (userId: number, data: RegisterAlbum, imageFile?: File | null): Promise<{ ok: true }> => {
+    createAlbum: async (userId: number, data: RegisterAlbum, imageFile?: File | null): Promise<Album> => {
         const user = await requireActiveUserById(userId)
 
         let imageUrl = process.env.DEFAULT_USER_IMAGE_URL!
@@ -45,8 +45,8 @@ export const albumService = {
                 songs: data.songs
             }
 
-            await albumRepo.createAlbum(albumToCreate)
-            return { ok: true }
+            const album = await albumRepo.createAlbum(albumToCreate)
+            return album
 
         } catch (error) {
             if (imagePublicId) {
@@ -138,11 +138,8 @@ export const albumService = {
         return { ok: true }
     },
 
-    getActiveAlbumById: async (albumId:number) => {
-        const album = await albumRepo.findActiveAlbum(albumId)
-        if(!album) throw new NotFoundError('Album not found')
-        if(!album.state) throw new BadRequestError('Inactive Album')
-
+    getAlbumById: async (albumId:number) : Promise<Album | null>=> {
+        const album = await albumRepo.findAlbumById(albumId)
         return album
     }
 }
