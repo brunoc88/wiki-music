@@ -11,7 +11,7 @@ const NavBar = () => {
 
     return (
         <nav className={styles.navbar}>
-            {session?.user.id && <p className={styles.logo}>WikiMusic</p>}
+            <Link className={styles.logo} href={'/home'}>WikiMusic</Link>
             <div className={styles["user-logout"]}>
                 <ul>
                     {session?.user.id ? (

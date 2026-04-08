@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { CreateAlbum, EditSongs} from "@/types/album.types"
+import { CreateAlbum, EditSongs } from "@/types/album.types"
 import { Album } from "@prisma/client"
 import { UploadAlbum } from "@/types/album.types"
 
@@ -27,7 +27,7 @@ export const albumRepo = {
         })
       }
     })
-    
+
   },
 
   findAlbum: async (albumId: number): Promise<Album | null> => {
@@ -69,47 +69,56 @@ export const albumRepo = {
   },
 
   updateSongs: async (
-  songs: { name: string }[],
-  albumId: number,
-  userId: number
-): Promise<{ ok: true }> => {
+    songs: { name: string }[],
+    albumId: number,
+    userId: number
+  ): Promise<{ ok: true }> => {
 
-  await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
 
-    await tx.song.deleteMany({
-      where: { albumId }
+      await tx.song.deleteMany({
+        where: { albumId }
+      })
+
+      await tx.song.createMany({
+        data: songs.map(song => ({
+          name: song.name,
+          albumId
+        }))
+      })
+
+      await tx.album.update({
+        where: { id: albumId },
+        data: {
+          updatedById: userId
+        }
+      })
+
     })
 
-    await tx.song.createMany({
-      data: songs.map(song => ({
-        name: song.name,
-        albumId
-      }))
-    })
+    return { ok: true }
+  },
 
-    await tx.album.update({
-      where: { id: albumId },
-      data: {
-        updatedById: userId
-      }
-    })
-
-  })
-
-  return { ok: true }
-},
-
-  findAlbumById: async (albumId:number) : Promise<Album | null> =>{
+  findAlbumById: async (albumId: number): Promise<Album | null> => {
     return prisma.album.findUnique({
-      where:{id:albumId},
-      include:{
-        genres:true,
-        artist:true,
-        songs:true,
-        createdBy:true,
-        updatedBy:true
+      where: { id: albumId },
+      include: {
+        genres: true,
+        artist: true,
+        songs: true,
+        createdBy: true,
+        updatedBy: true
       }
     })
-  }
+  },
+
+  getAllActiveAlbums: async (): Promise<Album[] | null> => {
+  return await prisma.album.findMany({
+    where: { state: true },
+    orderBy: {
+      createdAt: "desc" 
+    }
+  })
+}
 
 }

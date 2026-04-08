@@ -21,3 +21,12 @@ export const POST = async (request: Request) => {
         return errorHandler(error)
     }
 }
+
+export const GET = async (request: Request) => {
+    try {
+        const res = await albumService.getAllActiveAlbums()
+        return NextResponse.json({ok:true, albums:res},{status:200})
+    } catch (error) {
+        return errorHandler(error)
+    }
+}

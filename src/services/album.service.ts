@@ -141,5 +141,9 @@ export const albumService = {
     getAlbumById: async (albumId:number) : Promise<Album | null>=> {
         const album = await albumRepo.findAlbumById(albumId)
         return album
+    },
+
+    getAllActiveAlbums: async () : Promise<Album[]| null>=> {
+        return await albumRepo.getAllActiveAlbums()
     }
 }

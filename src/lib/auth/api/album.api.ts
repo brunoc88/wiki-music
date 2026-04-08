@@ -38,7 +38,6 @@ export const getAlbumById = async (id: number) => {
     }
 }
 
-
 export const toggleAlbumById = async (id: number) => {
     const res = await fetch(`/api/album/${id}`, {
         method: 'PATCH'
@@ -58,4 +57,22 @@ export const toggleAlbumById = async (id: number) => {
             status: res.status
         }
     }
+}
+
+export const getAllActiveAlbums = async () => {
+    const res = await fetch('/api/album',{
+        method:'GET'
+    })
+
+    const body = await res.json()
+
+    if(!res.ok) return {
+        ok:false,
+        error: 'Server Error'
+    }
+    return {
+        ok:true,
+        albums: body.albums
+    }
+
 }

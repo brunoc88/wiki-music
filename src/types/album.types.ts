@@ -49,3 +49,5 @@ export type AlbumInfo = {
     pic: string,
     artist: { name: string }
 }
+
+export type Albums = AlbumInfo[]
