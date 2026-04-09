@@ -1,0 +1,35 @@
+.title{
+    color: black;
+    font-weight: bold;
+    font-size: 40px;
+    padding: 0px;
+    margin-bottom: 10px;
+}
+
+.albumTracks {
+    color: black;
+    padding-left: 20px;
+    margin: 15px;
+}
+
+.albumSong {
+    margin-bottom: 5px;
+    font-size: large;
+}
+
+.albumCover {
+    width: 200;
+    height: 200; 
+    object-Fit: "cover";
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.albumContainer {
+    margin-left: 20px;
+}
+
+.albumInfo {
+    margin-top: 10px;
+    padding: 2px;
+}

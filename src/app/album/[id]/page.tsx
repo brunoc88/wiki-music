@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation"
 import { AlbumInfo as AlbumType } from "@/types/album.types"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
+import styles from "./AlbumInfo.module.css"
 
 const AlbumInfo = () => {
     const [album, setAlbum] = useState<AlbumType>({
@@ -82,13 +83,13 @@ const AlbumInfo = () => {
 
 
     return (
-        <div>
-            <h2>{album.name}</h2>
+        <div className={styles.albumContainer}>
+            <h2 className={styles.title}>{album.name}</h2>
 
             <img
                 src={album.pic}
                 alt={album.name}
-                style={{ width: 200, height: 200, objectFit: "cover" }}
+                className={styles.albumCover}
             />
 
             {/* Menú */}
@@ -112,25 +113,28 @@ const AlbumInfo = () => {
                 </div>
             )}
 
-            <Link href={`/artist/${album.artist.id}/profile`}>
-                Artista/Banda: {album.artist.name}
-            </Link>
+            <div className={styles.albumInfo}>
+                <Link href={`/artist/${album.artist.id}/profile`}>
+                    Artista/Banda: {album.artist.name}
+                </Link>
 
-            <p>
-                Géneros: {album.genres.map(g => g.name).join(", ")}
-            </p>
+                <p>
+                    Géneros: {album.genres.map(g => g.name).join(", ")}
+                </p>
 
-            {album.updatedBy ? (
-                <p>Creado/Editado por {album?.updatedBy.username}</p>
-            ) : (
-                <p>Creado/Editado por {album?.createdBy.username}</p>
-            )}
+                {album.updatedBy ? (
+                    <p>Creado/Editado por {album?.updatedBy.username}</p>
+                ) : (
+                    <p>Creado/Editado por {album?.createdBy.username}</p>
+                )}
+            </div>
+
             {album.songs.length > 0 ? (
                 <div>
                     <p>Canciones:</p>
-                    <ol style={{ paddingLeft: "20px" }}>
+                    <ol className={styles.albumTracks}>
                         {album.songs.map(song => (
-                            <li key={song.id}>{song.name}</li>
+                            <li className={styles.albumSong} key={song.id}>{song.name}</li>
                         ))}
                     </ol>
                 </div>
