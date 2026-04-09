@@ -16,7 +16,7 @@ export const createArtist = async (formData: FormData) => {
 
     return {
         ok: true,
-        body
+        artist: body.artist
     }
 
 }

@@ -23,7 +23,8 @@ export const artistRepo = {
       include: {
         genres: true,
         createdBy:true,
-        updatedBy:true
+        updatedBy:true,
+        albums:true
       }
     })
   },

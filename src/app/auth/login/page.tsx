@@ -29,7 +29,7 @@ const LoginPage = () => {
         const res = await handleLogin(user)
         
         if (res?.error) setErrors(res.error)
-        else router.push("/welcome")
+        else router.push("/home")
 
     }
 

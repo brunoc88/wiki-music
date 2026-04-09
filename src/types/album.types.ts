@@ -47,7 +47,7 @@ export type AlbumInfo = {
     },
     songs: { name: string }[],
     pic: string,
-    artist: { name: string }
+    artist: { id:number, name: string }
 }
 
 export type Albums = AlbumInfo[]

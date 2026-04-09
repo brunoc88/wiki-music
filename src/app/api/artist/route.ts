@@ -18,16 +18,16 @@ export const POST = async (req: Request) => {
             validation.file
         )
 
-        return NextResponse.json(res, { status: 201 })
+        return NextResponse.json({ artist: res }, { status: 201 })
     } catch (error) {
         return errorHandler(error)
     }
 }
 
-export const GET = async (req:Request) => {
+export const GET = async (req: Request) => {
     try {
         const res = await artistService.getAllActiveArtist()
-        return NextResponse.json(res, {status:200})
+        return NextResponse.json(res, { status: 200 })
     } catch (error) {
         return errorHandler(error)
     }

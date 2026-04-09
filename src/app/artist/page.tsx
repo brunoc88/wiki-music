@@ -93,7 +93,7 @@ const ArtistForm = () => {
             }
         } else {
             setArtist({ name: "", bio: "", genres: [] })
-            router.push('/welcome')
+            router.push(`/artist/${res.artist.id}/profile`)
         }
 
 

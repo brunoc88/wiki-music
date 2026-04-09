@@ -30,7 +30,12 @@ export type ArtistDescription = {
   },
   updatedBy?: {
     username: string
-  }
+  },
+  albums: {
+    id: number,
+    name: string
+  }[],
+  state:boolean
 }
 
 export type ArtistOption = {
@@ -39,3 +44,4 @@ export type ArtistOption = {
 }
 
 export type ArtistSelection = ArtistOption[]
+

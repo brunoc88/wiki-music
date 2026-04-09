@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { getAlbumById, toggleAlbumById } from "@/lib/auth/api/album.api"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { AlbumInfo as AlbumType } from "@/types/album.types"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 const AlbumInfo = () => {
     const [album, setAlbum] = useState<AlbumType>({
@@ -16,7 +17,7 @@ const AlbumInfo = () => {
         updatedBy: { username: "" },
         songs: [],
         pic: "",
-        artist: { name: "" }
+        artist: { id: 0, name: "" }
     })
 
     const [loading, setLoading] = useState(true)
@@ -28,8 +29,8 @@ const AlbumInfo = () => {
 
     const { data: session } = useSession()
     const isAdmin = ["admin", "super"].includes(session?.user?.rol)
+    const router = useRouter()
 
-   
     const canView = album.state || isAdmin
 
     useEffect(() => {
@@ -67,19 +68,19 @@ const AlbumInfo = () => {
         }
     }
 
-    
+
     if (loading) return <p>Loading...</p>
 
     if (empty || !canView) {
         return (
             <div>
                 <p>Álbum no disponible o inexistente</p>
-                <button>Volver</button>
+                <button onClick={() => router.push('/home')}>Volver</button>
             </div>
         )
     }
 
-    
+
     return (
         <div>
             <h2>{album.name}</h2>
@@ -111,15 +112,17 @@ const AlbumInfo = () => {
                 </div>
             )}
 
-            <p>Artista/Banda: {album.artist.name}</p>
+            <Link href={`/artist/${album.artist.id}/profile`}>
+                Artista/Banda: {album.artist.name}
+            </Link>
 
             <p>
                 Géneros: {album.genres.map(g => g.name).join(", ")}
             </p>
 
-            {album.updatedBy?(
+            {album.updatedBy ? (
                 <p>Creado/Editado por {album?.updatedBy.username}</p>
-            ):(
+            ) : (
                 <p>Creado/Editado por {album?.createdBy.username}</p>
             )}
             {album.songs.length > 0 ? (
