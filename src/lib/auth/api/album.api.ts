@@ -26,15 +26,17 @@ export const getAlbumById = async (id: number) => {
     const body = await res.json()
 
     if (res.ok) {
-        if (res === null) {
-            return {
-                ok: false,
-            }
-        } else return {
-            ok: true,
-            album: body
+        return {
+            album: body,
+            ok: true
         }
-
+    }
+    else {
+        return {
+            ok: false,
+            status: res.status,
+            error: body.error ?? "Server error"
+        }
     }
 }
 
@@ -60,18 +62,18 @@ export const toggleAlbumById = async (id: number) => {
 }
 
 export const getAllActiveAlbums = async () => {
-    const res = await fetch('/api/album',{
-        method:'GET'
+    const res = await fetch('/api/album', {
+        method: 'GET'
     })
 
     const body = await res.json()
 
-    if(!res.ok) return {
-        ok:false,
+    if (!res.ok) return {
+        ok: false,
         error: 'Server Error'
     }
     return {
-        ok:true,
+        ok: true,
         albums: body.albums
     }
 

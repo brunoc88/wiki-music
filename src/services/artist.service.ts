@@ -80,59 +80,53 @@ export const artistService = {
     },
 
     updateArtist: async (
-    data: RegisterArtist,
-    imageFile: File | null | undefined,
-    artistId: number,
-    userId: number
-) => {
-    await requireActiveUserById(userId)
+        data: RegisterArtist,
+        imageFile: File | null | undefined,
+        artistId: number,
+        userId: number
+    ) => {
+        await requireActiveUserById(userId)
 
-    const artist = await artistRepo.findArtist(artistId)
-    if (!artist) throw new NotFoundError()
-    if (!artist.state) throw new ForbiddenError("Artista inactivo")
+        const artist = await artistRepo.findArtist(artistId)
+        if (!artist) throw new NotFoundError()
+        if (!artist.state) throw new ForbiddenError("Artista inactivo")
 
-    const active = await activeGenres(data.genres)
-    if (active.length !== data.genres.length) {
-        throw new BadRequestError(
-            "Uno o más géneros no están disponibles"
-        )
-    }
+        const active = await activeGenres(data.genres)
+        if (active.length !== data.genres.length) {
+            throw new BadRequestError(
+                "Uno o más géneros no están disponibles"
+            )
+        }
 
-    let updatedFields: UpdateArtistData = { ...data, updatedById:userId }
+        let updatedFields: UpdateArtistData = { ...data, updatedById: userId }
 
-    if (imageFile instanceof File) {
-        const uploadResult = await uploadImage(imageFile, "artist")
+        if (imageFile instanceof File) {
+            const uploadResult = await uploadImage(imageFile, "artist")
 
-        updatedFields.pic = uploadResult.url
-        updatedFields.picPublicId = uploadResult.publicId
-    }
+            updatedFields.pic = uploadResult.url
+            updatedFields.picPublicId = uploadResult.publicId
+        }
 
-    
-    await artistRepo.updateArtist(artistId, updatedFields)
 
-    return { ok: true }
+        await artistRepo.updateArtist(artistId, updatedFields)
+
+        return { ok: true }
     },
 
-    getArtistById: async (artistId:number) => {
+    getArtistById: async (artistId: number, userId?: number | null) => {
+        const user = userId ? await requireActiveUserById(userId) : null
+
         const artist = await artistRepo.findArtist(artistId)
+        if (!artist) throw new NotFoundError('Artist Not Found')
 
-        if(!artist) throw new NotFoundError('Artist Not Found')
-        if(!artist.state) throw new BadRequestError()
-
+        const isAdmin = ["admin", "super"].includes(user?.rol)
+        if (!artist.state && !isAdmin) throw new NotFoundError('Artist Not Found')
+        
         return artist
     },
 
-    getAllActiveArtist: async () : Promise< {id: number, name:string, state:boolean}[]| null> => {
-        const res = await artistRepo.getAllActiveArtist()
-        if(!res) return null
-
-        let artists:{id: number, name:string, state:boolean}[] = []
-
-        res.forEach(a => {
-            artists.push(a)
-        })
-
-        return artists
+    getAllActiveArtist: async (): Promise<{ id: number, name: string, state: boolean }[] | null> => {
+        return await artistRepo.getAllActiveArtist()
     }
 
 }

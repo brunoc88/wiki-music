@@ -1,14 +1,14 @@
 "use client"
 
 import { getAllActiveAlbums } from "@/lib/auth/api/album.api"
-import { Albums } from "@/types/album.types"
+import { ActiveAlbums } from "@/types/album.types"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { getAllActiveArtist } from "@/lib/auth/api/artist.api"
 import { useRouter } from "next/navigation"
 
 const HomePage = () => {
-    const [albums, setAlbums] = useState<Albums>([])
+    const [albums, setAlbums] = useState<ActiveAlbums>([])
     const [loading, setLoading] = useState(true)
     const [artists, setArtists] = useState<{ id: number, name: string, state: boolean, pic: string }[]>([])
     const router = useRouter()

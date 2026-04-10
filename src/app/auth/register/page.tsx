@@ -45,7 +45,7 @@ const UserRegisterForm = () => {
         signIn('credentials',{
             user: result.user?.email,
             password: user.password,
-            callbackUrl:'/welcome'
+            callbackUrl:'/home'
         })
 
     }

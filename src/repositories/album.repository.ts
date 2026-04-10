@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { CreateAlbum, EditSongs } from "@/types/album.types"
+import { ActiveAlbums, CreateAlbum, EditSongs } from "@/types/album.types"
 import { Album } from "@prisma/client"
 import { UploadAlbum } from "@/types/album.types"
 
@@ -112,13 +112,16 @@ export const albumRepo = {
     })
   },
 
-  getAllActiveAlbums: async (): Promise<Album[] | null> => {
-  return await prisma.album.findMany({
-    where: { state: true },
-    orderBy: {
-      createdAt: "desc" 
-    }
-  })
+  getAllActiveAlbums: async (): Promise<ActiveAlbums | null> => {
+    return await prisma.album.findMany({
+      where: { state: true },
+      select: {
+        id: true,
+        name: true,
+        state: true,
+        pic: true
+      }
+    })
+  }
 }
 
-}

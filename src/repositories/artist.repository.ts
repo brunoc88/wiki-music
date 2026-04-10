@@ -22,9 +22,13 @@ export const artistRepo = {
       where: { id: artistId },
       include: {
         genres: true,
-        createdBy:true,
-        updatedBy:true,
-        albums:true
+        createdBy: true,
+        updatedBy: true,
+        albums: {
+          where: {
+            state: true
+          }
+        }
       }
     })
   },
@@ -56,7 +60,7 @@ export const artistRepo = {
 
     const { genres, ...rest } = data
 
-     await prisma.artist.update({
+    await prisma.artist.update({
       where: { id: artistId },
       data: {
         ...rest,
@@ -68,11 +72,20 @@ export const artistRepo = {
       }
     })
 
-    
+
     return { ok: true }
   },
 
-  getAllActiveArtist: async () : Promise<Artist[] | null>=> {
-    return await prisma.artist.findMany({where:{state:true}})
+  getAllActiveArtist: async (): Promise<{ id: number, name: string, state: boolean }[] | null> => {
+    return await prisma.artist.findMany({ 
+      where: { state: true },
+      select:{
+        id:true,
+        name:true,
+        state:true,
+        pic:true
+      }    
+    }
+    )
   }
 }

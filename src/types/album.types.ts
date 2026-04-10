@@ -50,4 +50,11 @@ export type AlbumInfo = {
     artist: { id:number, name: string }
 }
 
-export type Albums = AlbumInfo[]
+export type BasicAlbumInfo = {
+    id:number,
+    name:string,
+    pic: string,
+    state:boolean
+}
+
+export type ActiveAlbums = BasicAlbumInfo[]

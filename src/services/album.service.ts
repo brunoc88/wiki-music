@@ -1,7 +1,7 @@
 import { requireActiveUserById } from "@/domain/user/userAccess"
 import { BadRequestError, ForbiddenError, NotFoundError } from "@/error/appError"
 import { artistRepo } from "@/repositories/artist.repository"
-import { CreateAlbum, EditAlbum, EditSongs, RegisterAlbum} from "@/types/album.types"
+import { ActiveAlbums, BasicAlbumInfo, CreateAlbum, EditAlbum, EditSongs, RegisterAlbum } from "@/types/album.types"
 import { activeGenres } from "@/domain/artist/activeGenres"
 import { uploadImage, deleteImage } from "@/lib/cloudinary"
 import { albumRepo } from "@/repositories/album.repository"
@@ -138,12 +138,23 @@ export const albumService = {
         return { ok: true }
     },
 
-    getAlbumById: async (albumId:number) : Promise<Album | null>=> {
+    getAlbumById: async (albumId: number, userId?: number | null) => {
+        const user = userId ? await requireActiveUserById(userId) : null
+
         const album = await albumRepo.findAlbumById(albumId)
+        if (!album) throw new NotFoundError('Album not found')
+
+        const isAdmin = ["admin", "super"].includes(user?.rol)
+
+        if (!album.state && !isAdmin) {
+            throw new NotFoundError('Album not found')
+        }
+
         return album
     },
 
-    getAllActiveAlbums: async () : Promise<Album[]| null>=> {
-        return await albumRepo.getAllActiveAlbums()
+    getAllActiveAlbums: async (): Promise<ActiveAlbums | null> => {
+        const albums = await albumRepo.getAllActiveAlbums()     
+        return albums
     }
 }
