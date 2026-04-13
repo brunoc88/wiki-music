@@ -3,11 +3,11 @@ import { artistService } from "@/services/artist.service"
 import errorHandler from "@/error/errorHandler"
 import { NextResponse } from "next/server"
 
-export const PATCH = async (request: Request, context: {params:{id:string}}) => {
+export const PATCH = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const userId = await requireSessionUserId()
 
-        const {id} = context.params
+        const {id} = await params
         const artistId = Number(id)
 
         const res = await artistService.reactiveArtist(artistId, userId)

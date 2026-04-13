@@ -22,6 +22,7 @@ export type UpdateArtistData = {
 }
 
 export type ArtistDescription = {
+  id: number,
   name: string,
   bio: string,
   genres: { id: number, name: string }[],

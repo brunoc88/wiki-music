@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { getArtistById } from "@/lib/auth/api/artist.api"
+import { deactivateArtisById, getArtistById, reactiveArtistById } from "@/lib/auth/api/artist.api"
 import { ArtistDescription } from "@/types/artist.types"
 import { useError } from "@/context/ErrorContext"
 import Link from "next/link"
@@ -40,6 +40,29 @@ const ArtistProfile = () => {
 
     }, [id])
 
+    const toggleArtist = async () => {
+        let msj = ""
+
+        if (artist?.state) {
+            msj = 'Deseas desactivar este artista?'
+            if (confirm(msj)) {
+                const res = await deactivateArtisById(artist.id)
+                if (res.ok) setArtist(prev => ({ ...prev, state: !prev?.state }))
+                else setErrors(res.error)
+            }
+            return
+        }
+        else {
+            msj = 'Deseas activar este artista?'
+            if (confirm(msj)) {
+                const res = await reactiveArtistById(artist.id)
+                if (res.ok) setArtist(prev => ({ ...prev, state: !prev?.state }))
+                else setErrors(res.error)
+            }
+            return
+        }
+    }
+
     if (loading) return <p>Loading...</p>
     if (errors?.length) return <p>Artista no encontrado</p>
 
@@ -64,7 +87,7 @@ const ArtistProfile = () => {
                     <button>Editar</button>
 
                     {isAdmin && (
-                        <button>
+                        <button onClick={() => toggleArtist()}>
                             {artist?.state ? "Desactivar Artista" : "Activar Artista"}
                         </button>
                     )}

@@ -3,11 +3,11 @@ import { artistService } from "@/services/artist.service"
 import errorHandler from "@/error/errorHandler"
 import { NextResponse } from "next/server"
 
-export const DELETE = async (request: Request, context: { params: { id: string } }) => {
+export const DELETE = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const userId = await requireSessionUserId()
 
-        let { id } = await context.params
+        let { id } = await params
         let artistId = Number(id)
 
         const res = await artistService.deleteArtist(artistId, userId)
