@@ -20,7 +20,7 @@ const EditArtistForm = () => {
     const [file, setFile] = useState<File | null>(null)
     const [loading, setLoading] = useState(true)
     const { setErrors, errors } = useError()
-    const { status } = useSession()
+    const { data: session, status } = useSession()
     const router = useRouter()
 
     useEffect(() => {
@@ -116,9 +116,9 @@ const EditArtistForm = () => {
             formData.append("file", file) // 👈 importante
         }
 
-        
+
         const res = await updateArtist(formData, artistId)
-        if(!res.ok) {
+        if (!res.ok) {
             setErrors(res.error)
         }
         else {

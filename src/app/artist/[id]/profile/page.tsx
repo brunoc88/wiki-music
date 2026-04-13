@@ -84,7 +84,7 @@ const ArtistProfile = () => {
 
             {session?.user?.id && open && (
                 <div>
-                    <button>Editar</button>
+                    <button onClick={()=> router.push(`/artist/${artist?.id}/edit`)}>Editar</button>
 
                     {isAdmin && (
                         <button onClick={() => toggleArtist()}>

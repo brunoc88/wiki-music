@@ -12,13 +12,14 @@ const AlbumInputs = ({
     handleSelectArtist,
     handleGenres,
     handleFile,
-    cleanSongs
+    cleanSongs,
+    album
 }) => {
     return (
         <div>
 
             <p>Titulo:</p>
-            <input type="text" onChange={handleAlbumName}/>
+            <input type="text" onChange={handleAlbumName} value={album?album.name:''}/>
             {errors?.name && <p className="error">{errors.name[0]}</p>}
             <p>Artista/Banda:</p>
             <select name="artistId" onChange={handleSelectArtist}>

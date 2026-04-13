@@ -101,7 +101,7 @@ const AlbumInfo = () => {
 
             {session?.user?.id && open && (
                 <div>
-                    <button>Editar</button>
+                    <button onClick={()=>router.push(`/album/${album.id}/edit`)}>Editar</button>
 
                     {isAdmin && (
                         <button onClick={toggleStateAlbum}>
