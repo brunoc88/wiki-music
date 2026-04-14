@@ -78,3 +78,47 @@ export const getAllActiveAlbums = async () => {
     }
 
 }
+
+export const editAlbumById = async (data: FormData, id: number) => {
+    const res = await fetch(`/api/album/edit/${id}`, {
+        method: 'PATCH',
+        body: data
+    })
+
+    const body = await res.json()
+
+    if (res.ok) {
+        return {
+            ok: true
+        }
+    } else {
+        return {
+            ok: false,
+            error: body.error ?? "error server",
+            status: res.status
+        }
+    }
+
+
+}
+
+export const updateSongsById = async (data: FormData, id: number) => {
+    const res = await fetch(`/api/album/${id}/songs`, {
+        method: 'PATCH',
+        body: data
+    })
+
+    const body = await res.json()
+    if(res.ok) {
+        return {
+            ok:true,
+        }
+    }
+    else {
+        return {
+            ok:false,
+            error: body.error,
+            status:res.status
+        }
+    }
+}
