@@ -12,7 +12,7 @@ export const POST = async (req: Request) => {
         let userId = await requireSessionUserId()
 
         const validation = await validateRequest(req, genderCreateSchema)
-
+        
         if (!validation.success) return validation.response
 
 

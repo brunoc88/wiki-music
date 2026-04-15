@@ -3,11 +3,11 @@ import requireSessionUserId from "@/lib/auth/requireSessionUserId"
 import { genreService } from "@/services/genre.service"
 import { NextResponse } from "next/server"
 
-export const PATCH = async (request: Request, context: { params: { id: string } }) => {
+export const PATCH = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const userId = await requireSessionUserId()
 
-        const { id } = context.params
+        const { id } = await params
 
         let genderId = Number(id)
 

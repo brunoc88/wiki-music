@@ -5,21 +5,21 @@ import { validateRequest } from "@/lib/validateRequest"
 import { genreService } from "@/services/genre.service"
 import { NextResponse } from "next/server"
 
-export const PATCH = async (request: Request, context: { params: { id: string } }) => {
+export const PATCH = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const userId = await requireSessionUserId()
 
         const parsed = await validateRequest(request, genderCreateSchema)
-        if(!parsed.success) return parsed.response
+        if (!parsed.success) return parsed.response
 
-        const { id } = context.params
+        const { id } = await params
 
         let genderId = Number(id)
 
         const res = await genreService.editGenre(userId, genderId, parsed.data)
 
-        return NextResponse.json(res,{status:200})
-        
+        return NextResponse.json(res, { status: 200 })
+
 
     } catch (error) {
         return errorHandler(error)
