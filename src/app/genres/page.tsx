@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react"
 import { useSession } from "next-auth/react"
-import { createGenre, getAllGenres, toggleStateGenre } from "@/lib/auth/api/genre.api"
+import { createGenre, getAllGenres, toggleStateGenre, updateGenreById } from "@/lib/auth/api/genre.api"
 import { useRouter } from "next/navigation"
 import { useError } from "@/context/ErrorContext"
 import "./style.css"
@@ -13,8 +13,9 @@ const GenresIndex = () => {
     const [loading, setLoading] = useState(true)
     const [genre, setGenre] = useState("")
     const [resStatus, setResStatus] = useState<number>()
+    const [editMode, setEditMode] = useState<{ state: boolean, id: number }>()
+    const [idGenreToEdit, setIdGenreToEdit] = useState<number>(0)
     const { errors, setErrors } = useError()
-
     const { data: session, status } = useSession()
     const router = useRouter()
 
@@ -73,6 +74,40 @@ const GenresIndex = () => {
         }
     }
 
+    const handleSunmitEditGenre = async (e: React.FormEvent) => {
+        console.log("dentro de submit editar")
+        console.log('genre:', genre)
+        e.preventDefault()
+        setErrors({})
+
+        const res = await updateGenreById({ name: genre }, idGenreToEdit)
+
+        if (res.ok) {
+            setGenres(prev =>
+                prev.map(g =>
+                    g.id === idGenreToEdit ? res.genre : g
+                )
+            )
+            setEditMode({ state: false, id: 0 })
+            setGenre("")
+        } else {
+            setErrors(res.error)
+            setResStatus(res.status)
+        }
+    }
+
+    const handleEditGenre = (id: number) => {
+        setEditMode({ state: true, id })
+        genres.filter(g => {
+            if (g.id === id) {
+                setGenre(g.name)
+                setIdGenreToEdit(g.id)
+            }
+            return
+        })
+
+    }
+
     if (loading) return <p className="loading">Loading...</p>
     if (!session || !isAdmin) return null
 
@@ -84,12 +119,13 @@ const GenresIndex = () => {
             {resStatus === 409 && <p className="error">El género ya existe</p>}
 
             <div className="controls">
-                <form onSubmit={handleSubmit} className="form">
-                    <label>Crear:</label>
+                <form onSubmit={editMode?.state ? handleSunmitEditGenre : handleSubmit} className="form">
+                    <label>{editMode?.state ? 'Editar:' : 'Crear:'}</label>
                     <input
                         type="text"
                         value={genre}
-                        onChange={(e) => setGenre(e.target.value)}
+                        onChange={(e) => { setGenre(e.target.value) }
+                        }
                     />
                     <button type="submit">Enviar</button>
                 </form>
@@ -124,7 +160,10 @@ const GenresIndex = () => {
                                         </span>
                                     </td>
                                     <td>
-                                        <button>Editar</button>
+                                        {!editMode?.state && <button onClick={() => handleEditGenre(g.id)}>Editar</button>}
+                                        {editMode?.state && editMode.id === g.id && <button onClick={() => {
+                                            setEditMode({ state: false, id: 0 })
+                                        }}>Cancelar</button>}
                                         {session.user.rol === "super" && (
                                             <button onClick={() => handleToggleGenreState(g.id)}>
                                                 {g.state ? "Desactivar" : "Activar"}

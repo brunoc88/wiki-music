@@ -10,6 +10,7 @@ import { createAlbum } from "@/lib/auth/api/album.api"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { ArtistSelection } from "@/types/artist.types"
+import './style.css'
 
 const AlbumForm = () => {
 
@@ -153,18 +154,17 @@ const AlbumForm = () => {
     }
 
     const cleanSongs = () => {
-        if (songs.length > 0) setSongs([])
-        else return
+        setSongs([""])
     }
 
     if (loading) return <p>Loading...</p>
 
     return (
-        <div>
-            <h1>Registro de album</h1>
+        <div className="container">
+            <h1 className="title">Registro de album</h1>
             {errors.duplicado &&
-                <p>{errors.duplicado}</p>}
-            <form onSubmit={handleSubmit}>
+                <p className="error">{errors.duplicado}</p>}
+            <form className="form-card" onSubmit={handleSubmit}>
                 <AlbumInputs
                     genres={genres}
                     artists={artists}
@@ -180,6 +180,7 @@ const AlbumForm = () => {
                     handleGenres={handleGenres}
                     handleFile={handleFile}
                     cleanSongs={cleanSongs}
+                    router={router}
                 />
             </form>
         </div>

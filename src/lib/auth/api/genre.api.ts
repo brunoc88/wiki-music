@@ -78,3 +78,27 @@ export const createGenre = async (data: { name: string }) => {
         }
     }
 }
+
+export const updateGenreById = async (data:{name:string}, id:number) => {
+    const res = await fetch (`/api/gender/${id}`, {
+        method:'PATCH',
+        body:JSON.stringify(data)
+    })
+
+    const body = await res.json()
+
+    if(res.ok) {
+        return {
+            ok:true,
+            genre: body
+        }
+    }else {
+        return {
+            ok:false,
+            error: body.error,
+            status:res.status
+        }
+    }
+
+
+}

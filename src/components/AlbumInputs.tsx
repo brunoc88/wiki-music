@@ -13,7 +13,8 @@ const AlbumInputs = ({
     handleGenres,
     handleFile,
     cleanSongs,
-    album
+    album,
+    router
 }) => {
     return (
         <div>
@@ -121,8 +122,12 @@ const AlbumInputs = ({
 
             <br />
 
-            <button type="submit">Enviar</button>
-            <button type="button">Volver</button>
+            <div className="form-actions">
+                <button type="submit">Enviar</button>
+                <button type="button" onClick={() => router.push('/home')}>
+                    Volver
+                </button>
+            </div>
         </div>
     )
 }

@@ -8,15 +8,20 @@ const ArstistInpust = ({
     artist
 }) => {
     return (
-        <div>
-            Nombre:
-            <input type="text" name="name" onChange={handleArtist} value={artist ? artist.name : ''} />
+        <>
+            <label>Nombre:</label>
+            <input
+                type="text"
+                name="name"
+                onChange={handleArtist}
+                value={artist.name}
+            />
             {errors?.name && <p className="error">{errors.name[0]}</p>}
 
-            Genero:
+            <label>Género/s:</label>
             <select
                 multiple
-                value={artist ? artist.genres : []}
+                value={artist.genres}
                 onChange={handleGenres}
             >
                 {genres.length > 0 ? (
@@ -31,20 +36,25 @@ const ArstistInpust = ({
             </select>
             {errors?.genres && <p className="error">Debe seleccionar un genero</p>}
 
-            Biografia:
-            <textarea name="bio" onChange={handleArtist} value={artist ? artist.bio : ''}></textarea>
+            <label>Biografía:</label>
+            <textarea
+                name="bio"
+                onChange={handleArtist}
+                value={artist.bio}
+            />
             {errors?.bio && <p className="error">{errors.bio[0]}</p>}
 
-            Imagen:
+            <label>Imagen:</label>
             <input type="file" onChange={handleFile} />
 
-            <button type="submit">Enviar</button>
-            <button type="button" onClick={() => router.push('/welcome')}>Volver</button>
-        </div>
+            <div className="form-actions">
+                <button type="submit">Enviar</button>
+                <button type="button" onClick={() => router.push('/home')}>
+                    Volver
+                </button>
+            </div>
+        </>
     )
-
-
-
 }
 
 export default ArstistInpust

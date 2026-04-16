@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { RegisterArtist } from "@/types/artist.types"
 import { createArtist } from "@/lib/auth/api/artist.api"
 import ArstistInpust from "@/components/ArtistInputs"
+import "./style.css"
 
 const ArtistForm = () => {
     const [genres, setGenres] = useState<{ id: number, name: string, state: boolean }[]>([])
@@ -88,9 +89,11 @@ const ArtistForm = () => {
                 setErrors({
                     duplicado: ["El artista ya se encuentra creado"]
                 })
-            } else {
+            } 
+            else {
                 setErrors(res.error ?? {})
             }
+            
         } else {
             setArtist({ name: "", bio: "", genres: [] })
             router.push(`/artist/${res.artist.id}/profile`)
@@ -102,10 +105,12 @@ const ArtistForm = () => {
     if (status === "loading") return <p>loading...</p>
 
     return (
-        <div>
-            <h2>Registro de Artista</h2>
-            <p>{errors.duplicado}</p>
-            <form onSubmit={handleForm}>
+        <div className="container">
+            <h1 className="title">Registro de Artista</h1>
+
+            <p className="error">{errors.duplicado}</p>
+
+            <form onSubmit={handleForm} className="form-card">
                 <ArstistInpust
                     errors={errors}
                     genres={genres}
