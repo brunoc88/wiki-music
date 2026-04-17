@@ -1,9 +1,72 @@
 .navbar {
-    height: 80px;
-    background-color: #0b1126;
+    height: 60px;
+    background-color: #07123a; /* azul oscuro similar */
     color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 40px;
+    padding: 0 18px;
+    font-family: Arial, sans-serif;
+    border-bottom: 1px solid #00ff66; /* línea verde abajo */
+}
+
+/* bloque izquierdo */
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+/* logo */
+.logo {
+    font-size: 1.9rem;
+    font-weight: 300;
+    color: white;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+/* links centrales */
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 26px;
+    margin: 0;
+    padding: 0;
+}
+
+.menu li a {
+    color: #d8d8d8;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 300;
+}
+
+.menu li a:hover {
+    color: white;
+}
+
+/* usuario derecha */
+.userLogout ul {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.userLogout a,
+.userLogout button {
+    color: white;
+    background: none;
+    border: none;
+    text-decoration: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.userLogout button:hover,
+.userLogout a:hover {
+    opacity: 0.8;
 }

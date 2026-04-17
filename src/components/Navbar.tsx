@@ -9,31 +9,67 @@ const NavBar = () => {
     const { data: session } = useSession()
     const router = useRouter()
 
+    const isAdmin = ["admin", "super"].includes(session?.user?.rol)
+
     return (
         <nav className={styles.navbar}>
-            <Link className={styles.logo} href={'/home'}>WikiMusic</Link>
-            <div className={styles["user-logout"]}>
+            <div className={styles.leftSection}>
+                <Link className={styles.logo} href="/home">
+                    WikiMusic
+                </Link>
+
+                <ul className={styles.menu}>
+                    <li>
+                        <Link href="/artists">Artistas</Link>
+                    </li>
+
+                    <li>
+                        <Link href="/album/index">Albums</Link>
+                    </li>
+
+                    {isAdmin && (
+                        <li>
+                            <Link href="/genres">Géneros</Link>
+                        </li>
+                    )}
+                </ul>
+            </div>
+
+            <div className={styles.userLogout}>
                 <ul>
-                    {session?.user.id ? (
-                        <div>
+                    {session?.user?.id ? (
+                        <>
                             <li>
                                 <Link href="/user/setting">
                                     {session.user.name}
                                 </Link>
                             </li>
+
+                            <li>|</li>
+
                             <li>
-                                <button onClick={() => signOut({ callbackUrl: "/auth/login" })}>
-                                    LogOut
+                                <button
+                                    onClick={() =>
+                                        signOut({
+                                            callbackUrl: "/auth/login",
+                                        })
+                                    }
+                                >
+                                    salir
                                 </button>
                             </li>
-                        </div>
-                    ) : 
-                    (
-                        <div>
-                            <button onClick={()=>{router.push('/auth/login')}}>LogIn</button>
-                        </div>
-                    )
-                    }
+                        </>
+                    ) : (
+                        <li>
+                            <button
+                                onClick={() =>
+                                    router.push("/auth/login")
+                                }
+                            >
+                                LogIn
+                            </button>
+                        </li>
+                    )}
                 </ul>
             </div>
         </nav>

@@ -131,16 +131,15 @@ const AlbumForm = () => {
     }
 
     const handleGenres = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = Array.from(e.target.selectedOptions)
-
-        const values = selectedOptions.map(option => Number(option.value))
+        const values = Array.from(e.target.selectedOptions).map(
+            option => Number(option.value)
+        )
 
         setAlbum(prev => ({
             ...prev,
             genres: values
         }))
     }
-
     //  file
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -181,6 +180,7 @@ const AlbumForm = () => {
                     handleFile={handleFile}
                     cleanSongs={cleanSongs}
                     router={router}
+                    album={album}
                 />
             </form>
         </div>

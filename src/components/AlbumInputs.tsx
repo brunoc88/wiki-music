@@ -18,7 +18,7 @@ const AlbumInputs = ({
 }) => {
     return (
         <div>
-            {errors?.duplicado &&<p>{errors.duplicado[0]}</p>}
+            {errors?.duplicado && <p>{errors.duplicado[0]}</p>}
             <p>Titulo:</p>
             <input
                 type="text"
@@ -47,18 +47,14 @@ const AlbumInputs = ({
             <p>Genero/s:</p>
             <select
                 multiple
-                value={album?.genres?.map(String) || []}
+                value={album.genres.map(String)}
                 onChange={handleGenres}
             >
-                {genres.length > 0 ? (
-                    genres.map(g => (
-                        <option key={g.id} value={g.id}>
-                            {g.name}
-                        </option>
-                    ))
-                ) : (
-                    <option disabled>No hay géneros</option>
-                )}
+                {genres.map(g => (
+                    <option key={g.id} value={String(g.id)}>
+                        {g.name}
+                    </option>
+                ))}
             </select>
             {errors?.genres && (
                 <p className="error">{errors.genres[0]}</p>

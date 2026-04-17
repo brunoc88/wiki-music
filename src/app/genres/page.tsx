@@ -75,8 +75,6 @@ const GenresIndex = () => {
     }
 
     const handleSunmitEditGenre = async (e: React.FormEvent) => {
-        console.log("dentro de submit editar")
-        console.log('genre:', genre)
         e.preventDefault()
         setErrors({})
 

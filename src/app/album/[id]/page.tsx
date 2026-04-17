@@ -139,7 +139,9 @@ const AlbumInfo = () => {
                     </ol>
                 </div>
             ) : (
-                <p>Agregar canciones</p>
+                <div>
+                    <button onClick={()=>router.push(`/album/${album.id}/edit`)}>Agregar canciones</button>
+                </div>
             )}
         </div>
     )

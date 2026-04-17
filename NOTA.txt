@@ -15,3 +15,17 @@ USER:
 NAVBAR:
 
 SECCIONES: ALBUM, ARTIST, GENRES
+
+ALBUM:
+
+Arreglas selector multiple:
+- se desmarcan las opciones
+
+DARLE ESTILO A EDICION DE ALBUM
+
+- Poner que si estamos en modo edicion en vez de volver al index
+  que valla al PERFIL del ALBUM
+
+HOME:
+  SI SE VE QUE HAY MUCHOS ALBUMS O ARTISTAS PONER COMO MAXIMO PARA MOSTRAR
+

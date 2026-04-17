@@ -40,6 +40,7 @@ const EditAlbumForm = () => {
 
     const { data: session, status } = useSession()
     const router = useRouter()
+    
 
     useEffect(() => {
         if (status === "loading") return
@@ -210,6 +211,7 @@ const EditAlbumForm = () => {
                 handleFile={handleFile}
                 cleanSongs={cleanSongs}
                 album={album}
+                router={router}
             />
         </form>
     )

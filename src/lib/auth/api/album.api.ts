@@ -74,7 +74,8 @@ export const getAllActiveAlbums = async () => {
     }
     return {
         ok: true,
-        albums: body.albums
+        albums: body.albums,
+        status:res.status
     }
 
 }
