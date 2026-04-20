@@ -9,6 +9,7 @@ import { RegisterArtist } from "@/types/artist.types"
 import { useRouter } from "next/navigation"
 import { useParams } from "next/navigation"
 import { getArtistById, updateArtist } from "@/lib/auth/api/artist.api"
+import "../../style.css"
 
 const EditArtistForm = () => {
     const [genres, setGenres] = useState<{ id: number, name: string, state: boolean }[]>([])
@@ -149,8 +150,8 @@ const EditArtistForm = () => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="container">
+            <form className="form-card" onSubmit={handleSubmit}>
                 <ArstistInpust
                     errors={errors}
                     genres={genres}

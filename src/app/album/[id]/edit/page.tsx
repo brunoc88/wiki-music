@@ -14,6 +14,7 @@ import { ArtistSelection } from "@/types/artist.types"
 import { useSession } from "next-auth/react"
 import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
+import '../../style.css'
 
 const EditAlbumForm = () => {
     const { id } = useParams()
@@ -40,7 +41,7 @@ const EditAlbumForm = () => {
 
     const { data: session, status } = useSession()
     const router = useRouter()
-    
+
 
     useEffect(() => {
         if (status === "loading") return
@@ -194,26 +195,29 @@ const EditAlbumForm = () => {
     if (loading) return <p>Loading...</p>
 
     return (
-        <form onSubmit={handleSubmit}>
-            <AlbumInputs
-                genres={genres}
-                artists={artists}
-                songs={songs}
-                showSongs={showSongs}
-                setShowSongs={setShowSongs}
-                handleSongChange={handleSongChange}
-                addSongInput={addSongInput}
-                removeSong={removeSong}
-                errors={errors}
-                handleAlbumName={handleAlbumName}
-                handleSelectArtist={handleSelectArtist}
-                handleGenres={handleGenres}
-                handleFile={handleFile}
-                cleanSongs={cleanSongs}
-                album={album}
-                router={router}
-            />
-        </form>
+        <div className="container">
+            <form className="form-card" onSubmit={handleSubmit}>
+                <AlbumInputs
+                    genres={genres}
+                    artists={artists}
+                    songs={songs}
+                    showSongs={showSongs}
+                    setShowSongs={setShowSongs}
+                    handleSongChange={handleSongChange}
+                    addSongInput={addSongInput}
+                    removeSong={removeSong}
+                    errors={errors}
+                    handleAlbumName={handleAlbumName}
+                    handleSelectArtist={handleSelectArtist}
+                    handleGenres={handleGenres}
+                    handleFile={handleFile}
+                    cleanSongs={cleanSongs}
+                    album={album}
+                    router={router}
+                />
+            </form>
+        </div>
+
     )
 }
 

@@ -20,7 +20,7 @@ const NavBar = () => {
 
                 <ul className={styles.menu}>
                     <li>
-                        <Link href="/artists">Artistas</Link>
+                        <Link href="/artist/index">Artistas</Link>
                     </li>
 
                     <li>

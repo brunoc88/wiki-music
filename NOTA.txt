@@ -1,27 +1,20 @@
-USUARIO:
-
-VISTAS:
-
-- SETTING:
-  - CAMBIAR o ELIMINAR IMAGEN DE PERFIL
-
-
 VISTAS:
 
 
 USER:
 - REVISAR TODAS LAS VISTAS
+- SETTING:
+  - CAMBIAR o ELIMINAR IMAGEN DE PERFIL
 
-NAVBAR:
-
-SECCIONES: ALBUM, ARTIST, GENRES
 
 ALBUM:
+
+AGREGAR BUSCADOR
 
 Arreglas selector multiple:
 - se desmarcan las opciones
 
-DARLE ESTILO A EDICION DE ALBUM
+
 
 - Poner que si estamos en modo edicion en vez de volver al index
   que valla al PERFIL del ALBUM
