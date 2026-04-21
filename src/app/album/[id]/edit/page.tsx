@@ -82,7 +82,10 @@ const EditAlbumForm = () => {
                 if (existingSongs.length > 0) {
                     setShowSongs(true)
                 }
-            } else {
+            } else if(resAlbum.status === 403 || resAlbum.status === 401){
+                router.push('/auth/login')
+            }
+            else {
                 setErrors(resAlbum.error)
             }
 

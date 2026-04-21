@@ -7,18 +7,16 @@ USER:
   - CAMBIAR o ELIMINAR IMAGEN DE PERFIL
 
 
-ALBUM:
-
-AGREGAR BUSCADOR
 
 Arreglas selector multiple:
 - se desmarcan las opciones
 
+- SI NOS DA 403 O 401 AL CREAR/EDITAR/TOGGLE nos devuelva al login
 
 
+SUGERENCIA
 - Poner que si estamos en modo edicion en vez de volver al index
   que valla al PERFIL del ALBUM
 
-HOME:
-  SI SE VE QUE HAY MUCHOS ALBUMS O ARTISTAS PONER COMO MAXIMO PARA MOSTRAR
+
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { ActiveAlbums } from "@/types/album.types"
-import { useState, useEffect } from "react"
+import { useState, useEffect, HtmlHTMLAttributes } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { getAllActiveAlbums } from "@/lib/auth/api/album.api"
@@ -9,6 +9,7 @@ import Link from "next/link"
 
 const AlbumsIndex = () => {
     const [albums, setAlbums] = useState<ActiveAlbums>([])
+    const [filterAlbums, setFilterAlbums] = useState<ActiveAlbums>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [status, setStatus] = useState<number>(0)
     const { data: session } = useSession()
@@ -18,12 +19,19 @@ const AlbumsIndex = () => {
         const loadAlbums = async () => {
             const res = await getAllActiveAlbums()
             if (res.ok) setAlbums(res.albums)
+            if (res.ok) setFilterAlbums(res.albums)
             else setStatus(res.status)
             setLoading(false)
         }
 
         loadAlbums()
     }, [])
+
+    const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const result = albums.filter(a => a.name.toLowerCase().includes(e.target.value.toLowerCase()))
+        if (result.length > 0) setFilterAlbums(result)
+        else setFilterAlbums(albums)
+    }
 
     if (loading) return <p>Loading...</p>
     if (status === 500) <p>Error de servidor</p>
@@ -32,18 +40,29 @@ const AlbumsIndex = () => {
         <div>
             <div>
                 <h2>Albums recientes</h2>
-                {session?.user.id?(
+                {session?.user.id ? (
                     <div>
                         <p>No te quedes atras y crea un album!</p>
-                        <button onClick={()=>router.push('/album')}>Crear Album!</button>
+                        <button onClick={() => router.push('/album')}>Crear Album!</button>
                     </div>
-                ):(
+                ) : (
                     <div>
                         <p>Quieres crear un album?. Registrate y disfruta de crear contenido de tus artistas favoritos!.
                         </p>
-                        <button onClick={()=>router.push('/auth/register')}>Registrarse</button>
+                        <button onClick={() => router.push('/auth/register')}>Registrarse</button>
                     </div>
-                )}                
+                )}
+                {filterAlbums.length > 0 &&
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="ingrese nombre del album..."
+                            onChange={handleOnchange}
+                            name="serching"
+                        />
+                    </div>
+                }
+
                 <div
                     style={{
                         display: "flex",
@@ -52,7 +71,7 @@ const AlbumsIndex = () => {
                         padding: "10px 0"
                     }}
                 >
-                    {albums.map(a => (
+                    {filterAlbums.map(a => (
                         <Link
                             key={a.id}
                             href={`/album/${a.id}`}

@@ -94,6 +94,8 @@ const AlbumForm = () => {
             router.push(`/album/${albumId}`)
         } else if (res.status === 409) {
             setErrors({ duplicado: ['Ya existe un album registrado a este artista'] })
+        } else if (res.status === 403 || res.status === 401){
+            router.push('/auth/login')
         }
         else if (album.artistId === 0) {
             setErrors(prev => ({ ...res.error, artistId: ['Debe seleccionar artista'] }))
