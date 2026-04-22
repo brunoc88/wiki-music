@@ -1,3 +1,5 @@
+import { useParams } from "next/navigation"
+
 const ArstistInpust = ({
     errors,
     genres,
@@ -7,6 +9,9 @@ const ArstistInpust = ({
     router,
     artist
 }) => {
+    const {id} = useParams()
+    let artistId: number = Number(id)
+
     return (
         <>
             <label>Nombre:</label>
@@ -49,7 +54,7 @@ const ArstistInpust = ({
 
             <div className="form-actions">
                 <button type="submit">Enviar</button>
-                <button type="button" onClick={() => router.push('/home')}>
+                <button type="button" onClick={() => router.push(`/artist/${artistId}/profile`)}>
                     Volver
                 </button>
             </div>

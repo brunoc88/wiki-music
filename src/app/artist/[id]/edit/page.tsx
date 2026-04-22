@@ -120,7 +120,12 @@ const EditArtistForm = () => {
 
         const res = await updateArtist(formData, artistId)
         if (!res.ok) {
-            setErrors(res.error)
+            if (res.status === 401 || res.status === 403) {
+                router.push('/auth/login')
+            } else {
+                setErrors(res.error)
+            }
+
         }
         else {
             router.push(`/artist/${id}/profile`)

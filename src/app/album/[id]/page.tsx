@@ -31,7 +31,6 @@ const AlbumInfo = () => {
     const { data: session } = useSession()
     const isAdmin = ["admin", "super"].includes(session?.user?.rol)
     const router = useRouter()
-
     const canView = album.state || isAdmin
 
     useEffect(() => {
@@ -81,7 +80,6 @@ const AlbumInfo = () => {
         )
     }
 
-
     return (
         <div className={styles.albumContainer}>
             <h2 className={styles.title}>{album.name}</h2>
@@ -101,7 +99,7 @@ const AlbumInfo = () => {
 
             {session?.user?.id && open && (
                 <div>
-                    <button onClick={()=>router.push(`/album/${album.id}/edit`)}>Editar</button>
+                    <button onClick={() => router.push(`/album/${album.id}/edit`)}>Editar</button>
 
                     {isAdmin && (
                         <button onClick={toggleStateAlbum}>
@@ -140,7 +138,7 @@ const AlbumInfo = () => {
                 </div>
             ) : (
                 <div>
-                    <button onClick={()=>router.push(`/album/${album.id}/edit`)}>Agregar canciones</button>
+                    {session?.user.id && <button onClick={() => router.push(`/album/${album.id}/edit`)}>Agregar canciones</button>}
                 </div>
             )}
         </div>

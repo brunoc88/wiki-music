@@ -89,7 +89,9 @@ const ArtistForm = () => {
                 setErrors({
                     duplicado: ["El artista ya se encuentra creado"]
                 })
-            } 
+            } else if(res.status === 401 || res.status === 403){
+                router.push('/auth/login')
+            }
             else {
                 setErrors(res.error ?? {})
             }

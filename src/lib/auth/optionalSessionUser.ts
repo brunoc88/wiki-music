@@ -4,10 +4,14 @@ import { getServerSession } from "next-auth"
 const getOptionalSessionUser = async () => {
     const session = await getServerSession(authOptions)
 
-    if (!session?.user) return null
+    if (!session?.user?.id) return null
+
+    const id = Number(session.user.id)
+
+    if (Number.isNaN(id)) return null
 
     return {
-        id: Number(session.user.id),
+        id,
         rol: session.user.rol
     }
 }

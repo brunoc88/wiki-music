@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { AuthorizeInput, AuthorizedUser } from "@/types/user.types"
 
-export const authorizeUser = async ({ user, password }: AuthorizeInput) : Promise<AuthorizedUser | null> => {
+export const authorizeUser = async ({ user, password }: AuthorizeInput): Promise<AuthorizedUser | null> => {
     const userDB = await prisma.user.findFirst({
         where: {
             OR: [
@@ -12,10 +12,10 @@ export const authorizeUser = async ({ user, password }: AuthorizeInput) : Promis
         }
     })
 
-    if(!userDB || !userDB.state) return null
-    
-    const isValid = await bcrypt.compare(password, userDB.password)
-    if(!isValid) return null
+    if (!userDB || !userDB.state) return null
 
-    return { id: userDB.id, email: userDB.email, username:userDB.username, rol:userDB.rol }
+    const isValid = await bcrypt.compare(password, userDB.password)
+    if (!isValid) return null
+
+    return { id: userDB.id, email: userDB.email, username: userDB.username, rol: userDB.rol }
 }

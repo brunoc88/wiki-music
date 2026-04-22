@@ -11,7 +11,7 @@ import { getAllActiveArtist } from "@/lib/auth/api/artist.api"
 import { getActiveGenres } from "@/lib/auth/api/genre.api"
 import { RegisterAlbum } from "@/types/album.types"
 import { ArtistSelection } from "@/types/artist.types"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import '../../style.css'
@@ -82,8 +82,6 @@ const EditAlbumForm = () => {
                 if (existingSongs.length > 0) {
                     setShowSongs(true)
                 }
-            } else if(resAlbum.status === 403 || resAlbum.status === 401){
-                router.push('/auth/login')
             }
             else {
                 setErrors(resAlbum.error)
@@ -164,7 +162,10 @@ const EditAlbumForm = () => {
                     ...resAlbum.error,
                     artistId: ['Debe seleccionar artista']
                 }))
-            } else {
+            } else if(resAlbum.status === 403 || resAlbum.status === 401 ){
+                router.push('/auth/login')
+            }
+            else {
                 setErrors(resAlbum.error)
             }
 

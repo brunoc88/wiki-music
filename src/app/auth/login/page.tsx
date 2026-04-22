@@ -20,7 +20,7 @@ const LoginPage = () => {
     }
 
     const handleGoogleLogin = () => {
-        signIn("google", { callbackUrl: "/welcome" })
+        signIn("google", { callbackUrl: "/home" })
     }
 
     const handleForm = async (e: React.FormEvent) => {

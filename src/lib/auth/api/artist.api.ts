@@ -53,7 +53,8 @@ export const updateArtist = async (formData: FormData, id: number) => {
 
     if (!res.ok) return {
         ok: false,
-        error: body.error ?? "Error del servidor"
+        error: body.error ?? "Error del servidor",
+        status:res.status
     }
 
     return {

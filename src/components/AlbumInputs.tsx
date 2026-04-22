@@ -1,3 +1,5 @@
+import { useParams } from "next/navigation"
+
 const AlbumInputs = ({
     genres,
     artists,
@@ -16,6 +18,9 @@ const AlbumInputs = ({
     album,
     router
 }) => {
+    const {id} = useParams()
+    let albumId = Number(id)
+
     return (
         <div>
             {errors?.duplicado && <p>{errors.duplicado[0]}</p>}
@@ -120,7 +125,7 @@ const AlbumInputs = ({
 
             <div className="form-actions">
                 <button type="submit">Enviar</button>
-                <button type="button" onClick={() => router.push('/home')}>
+                <button type="button" onClick={() => router.push(`/album/${albumId}`)}>
                     Volver
                 </button>
             </div>
