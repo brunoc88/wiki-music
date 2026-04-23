@@ -12,9 +12,6 @@ Arreglas selector multiple:
 - se desmarcan las opciones
 
 
-LOGIN CON GOOGLE
-- se accede al sitio pero da 500 a la hora de ver contenido de artistas/albums
-
 CSS
 - A veces no carga
 

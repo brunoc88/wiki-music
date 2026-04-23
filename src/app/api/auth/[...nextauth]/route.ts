@@ -3,6 +3,7 @@ import NextAuth, { type AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import { authorizeUser } from "../credentials-authorize"
+import { prisma } from "@/lib/prisma"
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -38,18 +39,42 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id
-        token.email = user.email
-        token.name = user.name
-        token.picture = user.image
-        token.rol = user.rol
+        if (account?.provider === "credentials") {
+          token.id = user.id
+          token.email = user.email
+          token.name = user.name
+          token.rol = user.rol
+        }
+
+        if (account?.provider === "google") {
+          let dbUser = await prisma.user.findUnique({
+            where: { email: user.email! }
+          })
+
+          if (!dbUser) {
+            dbUser = await prisma.user.create({
+              data: {
+                email: user.email!,
+                username: user.email!,
+                password: "",
+                rol: "user",
+                state: true,
+                securityQuestion: "google_oauth",
+                securityAnswer: "google_oauth",
+                pic: user.image ?? "/default-avatar.png"
+              }
+            })
+          }
+
+          token.id = String(dbUser.id)
+          token.email = dbUser.email
+          token.name = dbUser.username
+          token.rol = dbUser.rol
+        }
       }
-      // update() desde el cliente
-      if (trigger === "update" && session?.user) {
-        token.name = session.user.name
-      }
+
       return token
     },
 

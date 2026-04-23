@@ -7,6 +7,7 @@ import { handleLogin } from "./handleLogin"
 import { useError } from "@/context/ErrorContext"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
+import "./style.css"
 
 const LoginPage = () => {
     const [user, setUser] = useState<AuthorizeInput>({ user: "", password: "" })

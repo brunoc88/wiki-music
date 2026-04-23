@@ -1,0 +1,143 @@
+/* fondo general */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #5af7a3, #3edc88);
+}
+
+/* contenedor principal */
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+/* form principal */
+.user-form {
+  background: #0b1030;
+  color: white;
+  width: 100%;
+  max-width: 520px;
+  padding: 35px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* bloques de cada campo */
+.user-form > div > div,
+.user-form > div > p,
+.user-form > div > select {
+  margin-bottom: 16px;
+}
+
+/* labels / texto */
+.user-form {
+  font-size: 14px;
+}
+
+/* inputs */
+.input-form,
+.select-form,
+.user-form input[type="text"],
+.user-form input[type="password"],
+.user-form input[type="file"],
+.user-form select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid white;
+  background: #111842;
+  color: white;
+  box-sizing: border-box;
+}
+
+/* file input */
+.user-form input[type="file"] {
+  padding: 8px;
+}
+
+/* radio buttons */
+.user-form input[type="radio"] {
+  width: auto;
+  margin-left: 10px;
+  margin-right: 20px;
+}
+
+/* focus */
+.input-form:focus,
+.select-form:focus,
+.user-form input:focus,
+.user-form select:focus {
+  outline: none;
+  border-color: #5af7a3;
+}
+
+/* errores */
+.error {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+/* botones */
+.btn-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+/* boton */
+.btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid white;
+  background: #1c2559;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn:hover {
+  background: #2b3679;
+  transform: translateY(-1px);
+}
+
+/* links */
+.btn-form a {
+  color: #5af7a3;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.btn-form a:hover {
+  text-decoration: underline;
+}
+
+/* textos informativos */
+.user-form p {
+  margin-top: 6px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* responsive */
+@media (max-width: 600px) {
+  .user-form {
+    padding: 25px;
+  }
+
+  .btn-form {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

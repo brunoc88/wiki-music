@@ -6,11 +6,11 @@ import { RegisterUserFront } from '@/types/user.types'
 import { handleForm } from './handleForm'
 import { useError } from '@/context/ErrorContext'
 import { signIn } from 'next-auth/react'
-
+//import "./style.module.css"
 
 const UserRegisterForm = () => {
     let [user, setUser] = useState<RegisterUserFront>({ email: '', username: "", securityQuestion: "", securityAnswer: "", password: "", password2: "" })
-    const { setErrors } = useError()
+    const { errors, setErrors } = useError()
 
     const handleUser = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target

@@ -9,9 +9,28 @@ export const registerUser = async (formData: FormData) => {
   const body = await res.json()
 
   if (!res.ok) {
+    if (res.status === 409) {
+      if (body.error.toLowerCase().includes("email")) {
+        return {
+          ok: false,
+          error: { email: [body.error] },
+          status: 409
+        }
+      }
+
+      if (body.error.toLowerCase().includes("username")) {
+        return {
+          ok: false,
+          error: { username: [body.error] },
+          status: 409
+        }
+      }
+    }
+
     return {
       ok: false,
-      error: body.error ?? "Error del servidor"
+      error: { general: [body.error ?? "Error del servidor"] },
+      status: res.status
     }
   }
 
@@ -55,30 +74,30 @@ export const deleteAccount = async (data: EditUserFront) => {
 }
 
 export const changePassword = async (data: EditUserFront) => {
-  
+
   const res = await fetch('/api/user/password', {
     method: 'PATCH',
     body: JSON.stringify(data)
   })
 
   const body = await res.json()
-  
-  
+
+
   if (res.ok) return { ok: true, msj: { password: ['password actualizado'] } }
-  else return { ok: false, error: {password2:[body.error??"Error del servidor"]}, status: res.status }
+  else return { ok: false, error: { password2: [body.error ?? "Error del servidor"] }, status: res.status }
 }
 
-export const security = async (data:EditUserFront) => {
-  const res = await fetch('/api/user/security-question',{
-    method:'PATCH',
-    body:JSON.stringify(data)
+export const security = async (data: EditUserFront) => {
+  const res = await fetch('/api/user/security-question', {
+    method: 'PATCH',
+    body: JSON.stringify(data)
   })
 
   const body = await res.json()
 
-  if(res.ok) {
-    return {ok:true}
-  }else {
-    return {ok:false, status:res.status, error:{securityAnswer:[body.error?? "Error del servidor"]}}
+  if (res.ok) {
+    return { ok: true }
+  } else {
+    return { ok: false, status: res.status, error: { securityAnswer: [body.error ?? "Error del servidor"] } }
   }
 }
