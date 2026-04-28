@@ -1,10 +1,10 @@
 "use client"
 
+import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
 import handleForm from "./handleform"
 
-export default function RecoverPasswordPage() {
+function RecoverPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
@@ -26,23 +26,24 @@ export default function RecoverPasswordPage() {
       "recovery-confirm"
     )
 
-
     if (!res?.ok) {
-      if(res.status === 403)setError("Token inválido o credenciales inválidas")
+      if (res.status === 403) setError("Token inválido o credenciales inválidas")
       else setError(res.error.newPassword)
       return
     }
 
     setOk(true)
-
   }
 
-  if (ok) return (
-    <div>
-      <p>Recuperacion de password Exitoso</p>
-      <button onClick={()=>router.push('/auth/login')}>Salir</button>
-    </div>
-  )
+  if (ok) {
+    return (
+      <div>
+        <p>Recuperacion de password Exitoso</p>
+        <button onClick={() => router.push("/auth/login")}>Salir</button>
+      </div>
+    )
+  }
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -64,5 +65,13 @@ export default function RecoverPasswordPage() {
         Volver
       </button>
     </div>
+  )
+}
+
+export default function RecoverPasswordPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <RecoverPasswordContent />
+    </Suspense>
   )
 }
