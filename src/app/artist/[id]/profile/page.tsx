@@ -24,9 +24,10 @@ const ArtistProfile = () => {
   const { errors, setErrors } = useError()
   const { data: session } = useSession()
 
-  const isAdmin = ["admin", "super"].includes(
-    session?.user?.rol
-  )
+  const isAdmin = [
+    "admin",
+    "super",
+  ].includes(session?.user?.rol ?? "")
 
   useEffect(() => {
     if (!id) return
@@ -66,9 +67,9 @@ const ArtistProfile = () => {
       setArtist((prev) =>
         prev
           ? {
-              ...prev,
-              state: !prev.state,
-            }
+            ...prev,
+            state: !prev.state,
+          }
           : prev
       )
     } else {

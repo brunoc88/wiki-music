@@ -54,7 +54,7 @@ const AlbumInfo = () => {
   const isAdmin = [
     "admin",
     "super",
-  ].includes(session?.user?.rol)
+  ].includes(session?.user?.rol ?? "")
 
   const canView =
     album.state || isAdmin
@@ -265,70 +265,70 @@ const AlbumInfo = () => {
 
           {session?.user
             ?.id && (
-            <div
-              className={
-                styles.actions
-              }
-            >
-              {!open ? (
-                <button
-                  className={
-                    styles.button
-                  }
-                  onClick={() =>
-                    setOpen(
-                      true
-                    )
-                  }
-                >
-                  Opciones
-                </button>
-              ) : (
-                <>
+              <div
+                className={
+                  styles.actions
+                }
+              >
+                {!open ? (
                   <button
                     className={
                       styles.button
                     }
                     onClick={() =>
-                      router.push(
-                        `/album/${album.id}/edit`
+                      setOpen(
+                        true
                       )
                     }
                   >
-                    Editar
+                    Opciones
                   </button>
-
-                  {isAdmin && (
+                ) : (
+                  <>
                     <button
                       className={
-                        styles.buttonSecondary
+                        styles.button
                       }
-                      onClick={
-                        toggleStateAlbum
+                      onClick={() =>
+                        router.push(
+                          `/album/${album.id}/edit`
+                        )
                       }
                     >
-                      {album.state
-                        ? "Desactivar"
-                        : "Activar"}
+                      Editar
                     </button>
-                  )}
 
-                  <button
-                    className={
-                      styles.cancel
-                    }
-                    onClick={() =>
-                      setOpen(
-                        false
-                      )
-                    }
-                  >
-                    Cancelar
-                  </button>
-                </>
-              )}
-            </div>
-          )}
+                    {isAdmin && (
+                      <button
+                        className={
+                          styles.buttonSecondary
+                        }
+                        onClick={
+                          toggleStateAlbum
+                        }
+                      >
+                        {album.state
+                          ? "Desactivar"
+                          : "Activar"}
+                      </button>
+                    )}
+
+                    <button
+                      className={
+                        styles.cancel
+                      }
+                      onClick={() =>
+                        setOpen(
+                          false
+                        )
+                      }
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
         </div>
       </section>
 
@@ -347,7 +347,7 @@ const AlbumInfo = () => {
 
         {album.songs
           .length >
-        0 ? (
+          0 ? (
           <ol
             className={
               styles.tracklist
@@ -369,7 +369,7 @@ const AlbumInfo = () => {
                   <span>
                     {String(
                       index +
-                        1
+                      1
                     ).padStart(
                       2,
                       "0"
@@ -397,19 +397,19 @@ const AlbumInfo = () => {
 
             {session?.user
               ?.id && (
-              <button
-                className={
-                  styles.button
-                }
-                onClick={() =>
-                  router.push(
-                    `/album/${album.id}/edit`
-                  )
-                }
-              >
-                Agregar canciones
-              </button>
-            )}
+                <button
+                  className={
+                    styles.button
+                  }
+                  onClick={() =>
+                    router.push(
+                      `/album/${album.id}/edit`
+                    )
+                  }
+                >
+                  Agregar canciones
+                </button>
+              )}
           </div>
         )}
       </section>
