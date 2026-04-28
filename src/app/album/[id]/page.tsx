@@ -55,6 +55,7 @@ const AlbumInfo = () => {
     "admin",
     "super",
   ].includes(session?.user?.rol ?? "")
+  
 
   const canView =
     album.state || isAdmin
