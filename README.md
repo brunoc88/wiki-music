@@ -6,7 +6,7 @@ Aplicación fullstack centrada en música donde los usuarios pueden explorar art
 
 ## Demo Online
 
-👉 [Ver WikiMusic en vivo](PEGAR_LINK_VERCEL_AQUI)
+👉 [Ver WikiMusic en vivo](https://wiki-music-six.vercel.app/)
 
 ---
 
