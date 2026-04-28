@@ -19,7 +19,9 @@
     "prisma:generate:test": "dotenv -e .env.test prisma generate",
     "prisma:migrate:test": "dotenv -e .env.test prisma migrate dev",
     "prisma:migrate:reset:test": "dotenv -e .env.test prisma migrate reset",
-    "prisma:migrate:test:deploy": "dotenv -e .env.test prisma migrate deploy"
+    "prisma:migrate:test:deploy": "dotenv -e .env.test prisma migrate deploy",
+    "prisma:migrate:deploy": "dotenv -e .env prisma migrate deploy"
+
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

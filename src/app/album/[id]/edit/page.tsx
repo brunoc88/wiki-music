@@ -56,7 +56,7 @@ const EditAlbumForm = () => {
             const resArtists = await getAllActiveArtist()
             if (resArtists.ok) {
                 setArtists(
-                    resArtists.artists.map(a => ({
+                    resArtists.artists.map((a: { id: string; name: string }) => ({
                         id: a.id,
                         name: a.name
                     }))
@@ -162,7 +162,7 @@ const EditAlbumForm = () => {
                     ...resAlbum.error,
                     artistId: ['Debe seleccionar artista']
                 }))
-            } else if(resAlbum.status === 403 || resAlbum.status === 401 ){
+            } else if (resAlbum.status === 403 || resAlbum.status === 401) {
                 router.push('/auth/login')
             }
             else {
