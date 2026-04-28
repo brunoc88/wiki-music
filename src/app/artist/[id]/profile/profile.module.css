@@ -6,7 +6,7 @@
 /* HERO */
 .hero {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 28px;
   background: #0b1030;
   border: 1px solid rgba(90, 247, 163, 0.15);
@@ -17,7 +17,7 @@
 
 .cover {
   width: 100%;
-  height: 320px;
+  height: 280px;
   object-fit: cover;
   border-radius: 16px;
 }
@@ -35,9 +35,9 @@
   flex-wrap: wrap;
 }
 
-.title {
-  margin: 0;
+.name {
   font-size: 2.2rem;
+  margin: 0;
   color: white;
   text-shadow:
     0 1px 0 #07123a,
@@ -64,22 +64,10 @@
   border: 1px solid rgba(255,90,90,.25);
 }
 
-.artist {
-  width: fit-content;
-  color: #5af7a3;
-  text-decoration: none;
-  font-size: 1.05rem;
-  font-weight: bold;
-}
-
-.artist:hover {
-  text-decoration: underline;
-}
-
 .genres {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .genre {
@@ -91,17 +79,23 @@
   font-size: .9rem;
 }
 
+.bio {
+  margin: 0;
+  line-height: 1.7;
+  color: #dbe3f5;
+}
+
 .author {
   margin: 0;
-  color: #b9c4df;
   font-size: .95rem;
+  color: #aeb8d0;
 }
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
-  margin-top: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
 }
 
 .button,
@@ -143,42 +137,12 @@
 }
 
 .sectionTitle {
-  margin-bottom: 18px;
   font-size: 1.6rem;
+  margin-bottom: 18px;
   color: white;
   text-shadow:
     0 1px 0 #07123a,
     0 3px 8px rgba(0,0,0,.4);
-}
-
-.tracklist {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background: #0b1030;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.track {
-  display: grid;
-  grid-template-columns: 50px 1fr;
-  gap: 14px;
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-
-.track:last-child {
-  border-bottom: none;
-}
-
-.track span:first-child {
-  color: #5af7a3;
-  font-weight: bold;
-}
-
-.track span:last-child {
-  color: white;
 }
 
 .empty {
@@ -187,10 +151,48 @@
   padding: 20px;
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: #0b1030;
+  border: 1px solid rgba(90,247,163,.14);
+  border-radius: 14px;
+  padding: 10px;
+  transition: .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: #5af7a3;
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+
+.cardImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.cardName {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
 /* TABLET */
 @media (max-width: 992px) {
   .hero {
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 220px 1fr;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -206,21 +208,29 @@
   }
 
   .cover {
-    height: 280px;
+    height: 260px;
   }
 
-  .title {
+  .name {
     font-size: 1.8rem;
   }
 
-  .track {
-    grid-template-columns: 42px 1fr;
-    padding: 12px 14px;
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .cardImage {
+    height: 150px;
   }
 }
 
 /* MOBILE CHICO */
 @media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
   .actions {
     flex-direction: column;
   }
@@ -229,9 +239,5 @@
   .buttonSecondary,
   .cancel {
     width: 100%;
-  }
-
-  .cover {
-    height: 240px;
   }
 }

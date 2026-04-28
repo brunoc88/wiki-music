@@ -1,0 +1,125 @@
+.settings-page {
+  width: min(980px, 92%);
+  margin: 34px auto;
+}
+
+.settings-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.settings-head {
+  margin-bottom: 24px;
+}
+
+.settings-head h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 10px;
+  color: white;
+}
+
+.settings-head p {
+  color: var(--muted);
+}
+
+/* acciones */
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.setting-item {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+
+  background: rgba(255,255,255,.04);
+  color: white;
+
+  cursor: pointer;
+  text-align: left;
+  transition: .2s;
+}
+
+.setting-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,.07);
+}
+
+.setting-item.danger {
+  border-color: rgba(255,80,80,.4);
+  color: #ffb4b4;
+}
+
+/* form */
+
+.settings-form {
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+/* UserInputs */
+
+.settings-form .input-form,
+.settings-form .select-form {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+
+  background: rgba(255,255,255,.05);
+  color: white;
+}
+
+.settings-form .btn-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.settings-form .btn {
+  background: var(--primary);
+  color: #08140f;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-weight: 700;
+}
+
+.settings-form .error {
+  color: #fca5a5;
+  font-size: .92rem;
+  margin-bottom: 8px;
+}
+
+/* mobile */
+
+@media (max-width: 760px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-card {
+    padding: 18px;
+  }
+
+  .settings-form .btn-form {
+    flex-direction: column;
+  }
+
+  .settings-form .btn {
+    width: 100%;
+  }
+}

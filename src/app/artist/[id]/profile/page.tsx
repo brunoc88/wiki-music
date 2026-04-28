@@ -2,181 +2,243 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { deactivateArtisById, getArtistById, reactiveArtistById } from "@/lib/auth/api/artist.api"
+import {
+  deactivateArtisById,
+  getArtistById,
+  reactiveArtistById,
+} from "@/lib/auth/api/artist.api"
 import { ArtistDescription } from "@/types/artist.types"
 import { useError } from "@/context/ErrorContext"
-import Link from "next/link"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
+import styles from "./../profile/profile.module.css"
 
 const ArtistProfile = () => {
+  const [artist, setArtist] =
+    useState<ArtistDescription>()
+  const [loading, setLoading] = useState(true)
+  const [open, setOpen] = useState(false)
 
-    const [artist, setArtist] = useState<ArtistDescription>()
-    const [loading, setLoading] = useState(true)
-    const { id } = useParams()
-    const { errors, setErrors } = useError()
-    const router = useRouter()
-    const [open, setOpen] = useState(false)
-    const { data: session } = useSession()
-    const isAdmin = ["admin", "super"].includes(session?.user?.rol)
+  const { id } = useParams()
+  const router = useRouter()
+  const { errors, setErrors } = useError()
+  const { data: session } = useSession()
 
-    useEffect(() => {
-        if (!id) return
+  const isAdmin = ["admin", "super"].includes(
+    session?.user?.rol
+  )
 
-        const loadArtistProfile = async () => {
+  useEffect(() => {
+    if (!id) return
 
-            const res = await getArtistById(Number(id))
+    const loadArtist = async () => {
+      try {
+        const res = await getArtistById(Number(id))
 
-            if (!res.ok) {
-                setErrors(res.error)
-            }
-            else {
-                setArtist(res.artist)
-                setErrors({})
-            }
-            setLoading(false)
+        if (!res.ok) {
+          setErrors(res.error)
+        } else {
+          setArtist(res.artist)
+          setErrors({})
         }
-
-        loadArtistProfile()
-
-    }, [id])
-
-    const toggleArtist = async () => {
-        let msj = ""
-
-        if (artist?.state) {
-            msj = 'Deseas desactivar este artista?'
-            if (confirm(msj)) {
-                const res = await deactivateArtisById(artist.id)
-                if (res.ok) setArtist(prev => ({ ...prev, state: !prev?.state }))
-                else setErrors(res.error)
-            }
-            return
-        }
-        else {
-            msj = 'Deseas activar este artista?'
-            if (confirm(msj)) {
-                const res = await reactiveArtistById(artist.id)
-                if (res.ok) setArtist(prev => ({ ...prev, state: !prev?.state }))
-                else setErrors(res.error)
-            }
-            return
-        }
+      } finally {
+        setLoading(false)
+      }
     }
 
-    if (loading) return <p>Loading...</p>
-    if (errors?.length) return <p>Artista no encontrado</p>
+    loadArtist()
+  }, [id])
 
+  const toggleArtist = async () => {
+    if (!artist) return
+
+    const confirmText = artist.state
+      ? "Deseas desactivar este artista?"
+      : "Deseas activar este artista?"
+
+    if (!confirm(confirmText)) return
+
+    const res = artist.state
+      ? await deactivateArtisById(artist.id)
+      : await reactiveArtistById(artist.id)
+
+    if (res.ok) {
+      setArtist((prev) =>
+        prev
+          ? {
+              ...prev,
+              state: !prev.state,
+            }
+          : prev
+      )
+    } else {
+      setErrors(res.error)
+    }
+  }
+
+  if (loading) {
     return (
-        <div>
-            <h2>{artist?.name}</h2>
+      <div className={styles.wrapper}>
+        <p>Cargando...</p>
+      </div>
+    )
+  }
 
-            <img
-                src={artist?.pic}
-                alt={artist?.name}
-                style={{ width: 200, height: 200, objectFit: "cover" }}
-            />
-            {/* Menú */}
-            {session?.user?.id && !open && (
-                <button onClick={() => setOpen(true)} style={{ fontSize: "20px" }}>
-                    ⋮
+  if (errors?.length) {
+    return (
+      <div className={styles.wrapper}>
+        <p>Artista no encontrado.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.wrapper}>
+      <section className={styles.hero}>
+        <img
+          src={artist?.pic}
+          alt={artist?.name}
+          className={styles.cover}
+        />
+
+        <div className={styles.info}>
+          <div className={styles.topRow}>
+            <h1 className={styles.name}>
+              {artist?.name}
+            </h1>
+
+            <span
+              className={
+                artist?.state
+                  ? styles.active
+                  : styles.inactive
+              }
+            >
+              {artist?.state
+                ? "Activo"
+                : "Inactivo"}
+            </span>
+          </div>
+
+          <div className={styles.genres}>
+            {artist?.genres.map((genre) => (
+              <span
+                key={genre.id}
+                className={styles.genre}
+              >
+                {genre.name}
+              </span>
+            ))}
+          </div>
+
+          <p className={styles.bio}>
+            {artist?.bio}
+          </p>
+
+          <p className={styles.author}>
+            Creado/editado por:{" "}
+            {artist?.updatedBy?.username ||
+              artist?.createdBy?.username}
+          </p>
+
+          {session?.user?.id && (
+            <div className={styles.actions}>
+              {!open ? (
+                <button
+                  className={styles.button}
+                  onClick={() =>
+                    setOpen(true)
+                  }
+                >
+                  Opciones
                 </button>
-            )}
+              ) : (
+                <>
+                  <button
+                    className={styles.button}
+                    onClick={() =>
+                      router.push(
+                        `/artist/${artist?.id}/edit`
+                      )
+                    }
+                  >
+                    Editar
+                  </button>
 
-            {session?.user?.id && open && (
-                <div>
-                    <button onClick={()=> router.push(`/artist/${artist?.id}/edit`)}>Editar</button>
+                  {isAdmin && (
+                    <button
+                      className={styles.buttonSecondary}
+                      onClick={
+                        toggleArtist
+                      }
+                    >
+                      {artist?.state
+                        ? "Desactivar"
+                        : "Activar"}
+                    </button>
+                  )}
 
-                    {isAdmin && (
-                        <button onClick={() => toggleArtist()}>
-                            {artist?.state ? "Desactivar Artista" : "Activar Artista"}
-                        </button>
-                    )}
+                  <button
+                    className={styles.cancel}
+                    onClick={() =>
+                      setOpen(false)
+                    }
+                  >
+                    Cancelar
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
 
-                    <button onClick={() => setOpen(false)}>Cancelar</button>
-                </div>
-            )}
-            <p>{artist?.bio}</p>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          Albums
+        </h2>
 
+        {artist?.albums.length === 0 ? (
+          <div className={styles.empty}>
             <p>
-                Géneros: {artist?.genres.map(g => g.name).join(", ")}
+              No tiene albums, crea el
+              primero.
             </p>
 
-            {artist?.updatedBy?.username ? (
-                <p>Creado/editado por: {artist.updatedBy.username}</p>
-            ) : (
-                <p>Creado/editado por: {artist?.createdBy?.username}</p>
-            )}
+            <button
+              className={styles.button}
+              onClick={() =>
+                router.push("/album")
+              }
+            >
+              Crear Album
+            </button>
+          </div>
+        ) : (
+          <div className={styles.grid}>
+            {artist?.albums.map((album) => (
+              <Link
+                key={album.id}
+                href={`/album/${album.id}`}
+              >
+                <div className={styles.card}>
+                  <img
+                    src={album.pic}
+                    alt={album.name}
+                    className={styles.cardImage}
+                  />
 
-            <h3>Albums:</h3>
-            {artist?.albums.length === 0 ? (
-                <div>
-                    <p>No tiene albums, crea el primero!</p>
-                    <button onClick={() => router.push('/album')}>Crear Album</button>
+                  <p className={styles.cardName}>
+                    {album.name}
+                  </p>
                 </div>
-            ) : (
-                <div
-                    style={{
-                        display: "flex",
-                        gap: "16px",
-                        overflowX: "auto",
-                        padding: "10px 0"
-                    }}
-                >
-                    {artist?.albums.map(a => (
-                        <Link
-                            key={a.id}
-                            href={`/album/${a.id}`}
-                            style={{
-                                textDecoration: "none",
-                                color: "inherit"
-                            }}
-                        >
-                            <div
-                                style={{
-                                    minWidth: "200px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "12px",
-                                    padding: "10px",
-                                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                                    background: "#fff",
-                                    cursor: "pointer",
-                                    transition: "transform 0.2s, box-shadow 0.2s"
-                                }}
-                                onMouseEnter={e => {
-                                    e.currentTarget.style.transform = "scale(1.03)"
-                                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)"
-                                }}
-                                onMouseLeave={e => {
-                                    e.currentTarget.style.transform = "scale(1)"
-                                    e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)"
-                                }}
-                            >
-                                <img
-                                    src={a.pic}
-                                    alt={a.name}
-                                    style={{
-                                        width: "100%",
-                                        height: "150px",
-                                        objectFit: "cover",
-                                        borderRadius: "8px"
-                                    }}
-                                />
-
-                                <p
-                                    style={{
-                                        marginTop: "8px",
-                                        fontWeight: "bold",
-                                        textAlign: "center"
-                                    }}
-                                >
-                                    {a.name}
-                                </p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>)}
-        </div>
-    )
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  )
 }
 
-export default ArtistProfile 
+export default ArtistProfile

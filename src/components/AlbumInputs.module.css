@@ -1,0 +1,143 @@
+/* components/AlbumInputs.module.css  (HIJO) */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.group label {
+  font-size: .95rem;
+  font-weight: 700;
+  color: white;
+}
+
+.group input,
+.group textarea,
+.group select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #2b3a74;
+  background: #101845;
+  color: white;
+  font-size: .96rem;
+  outline: none;
+  transition: .2s ease;
+  box-sizing: border-box;
+}
+
+.group input::placeholder,
+.group textarea::placeholder {
+  color: #9eabd4;
+}
+
+.group input:focus,
+.group textarea:focus,
+.group select:focus {
+  border-color: #5af7a3;
+  box-shadow: 0 0 0 3px rgba(90,247,163,.14);
+}
+
+.group select {
+  min-height: 130px;
+}
+
+.group select option {
+  background: #101845;
+  color: white;
+}
+
+.error {
+  margin: 0;
+  color: #ff9c9c;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.songBox {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.songRow {
+  display: grid;
+  grid-template-columns: 1fr 44px 44px;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.songRow input {
+  margin: 0;
+}
+
+.add,
+.remove,
+.cancel,
+.primary,
+.secondary {
+  border: none;
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.add {
+  background: #5af7a3;
+  color: #07123a;
+}
+
+.remove {
+  background: #ff8c8c;
+  color: #07123a;
+}
+
+.cancel {
+  margin-top: 14px;
+  background: #3a4474;
+  color: white;
+}
+
+.primary {
+  background: #5af7a3;
+  color: #07123a;
+}
+
+.secondary {
+  background: #162056;
+  color: white;
+}
+
+.add:hover,
+.remove:hover,
+.cancel:hover,
+.primary:hover,
+.secondary:hover {
+  transform: translateY(-2px);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .actions {
+    flex-direction: column;
+  }
+
+  .primary,
+  .secondary {
+    width: 100%;
+  }
+
+  .songRow {
+    grid-template-columns: 1fr 42px 42px;
+  }
+}

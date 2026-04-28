@@ -1,4 +1,5 @@
 import { useParams } from "next/navigation"
+import styles from "./AlbumInputs.module.css"
 
 const AlbumInputs = ({
     genres,
@@ -18,119 +19,239 @@ const AlbumInputs = ({
     album,
     router
 }) => {
-    const {id} = useParams()
-    let albumId = Number(id)
+    const { id } = useParams()
+    const albumId = Number(id)
+
+    const goBack = () => {
+        if (albumId) {
+            router.push(`/album/${albumId}`)
+        } else {
+            router.push("/album/index")
+        }
+    }
 
     return (
-        <div>
-            {errors?.duplicado && <p>{errors.duplicado[0]}</p>}
-            <p>Titulo:</p>
-            <input
-                type="text"
-                onChange={handleAlbumName}
-                value={album?.name || ""}
-            />
-            {errors?.name && <p className="error">{errors.name[0]}</p>}
+        <>
+            <div className={styles.group}>
+                <label>Título</label>
 
-            <p>Artista/Banda:</p>
-            <select
-                name="artistId"
-                onChange={handleSelectArtist}
-                value={album?.artistId || ""}
-            >
-                <option value="">Seleccionar artista</option>
-                {artists?.map(a => (
-                    <option key={a.id} value={a.id}>
-                        {a.name}
+                <input
+                    type="text"
+                    value={album?.name || ""}
+                    onChange={handleAlbumName}
+                    placeholder="Nombre del álbum"
+                />
+
+                {errors?.name && (
+                    <p className={styles.error}>
+                        {errors.name[0]}
+                    </p>
+                )}
+            </div>
+
+            <div className={styles.group}>
+                <label>Artista / Banda</label>
+
+                <select
+                    name="artistId"
+                    onChange={handleSelectArtist}
+                    value={album?.artistId || ""}
+                >
+                    <option value="">
+                        Seleccionar artista
                     </option>
-                ))}
-            </select>
-            {errors?.artistId && (
-                <p className="error">{errors.artistId[0]}</p>
-            )}
 
-            <p>Genero/s:</p>
-            <select
-                multiple
-                value={album.genres.map(String)}
-                onChange={handleGenres}
-            >
-                {genres.map(g => (
-                    <option key={g.id} value={String(g.id)}>
-                        {g.name}
-                    </option>
-                ))}
-            </select>
-            {errors?.genres && (
-                <p className="error">{errors.genres[0]}</p>
-            )}
-
-            <p>Imagen:</p>
-            <input type="file" onChange={handleFile} />
-
-            {!showSongs && (
-                <button type="button" onClick={() => setShowSongs(true)}>
-                    Agregar Canciones
-                </button>
-            )}
-
-            {showSongs && (
-                <div>
-                    <p>Ingrese canciones</p>
-
-                    {songs.map((song, index) => (
-                        <div key={index}>
-                            <input
-                                type="text"
-                                value={song}
-                                onChange={(e) =>
-                                    handleSongChange(index, e.target.value)
-                                }
-                                placeholder={`Canción ${index + 1}`}
-                            />
-
-                            <button
-                                type="button"
-                                onClick={() => removeSong(index)}
-                            >
-                                -
-                            </button>
-
-                            {index === songs.length - 1 && (
-                                <button
-                                    type="button"
-                                    onClick={addSongInput}
-                                >
-                                    +
-                                </button>
-                            )}
-                        </div>
+                    {artists?.map(a => (
+                        <option
+                            key={a.id}
+                            value={a.id}
+                        >
+                            {a.name}
+                        </option>
                     ))}
+                </select>
 
+                {errors?.artistId && (
+                    <p className={styles.error}>
+                        {errors.artistId[0]}
+                    </p>
+                )}
+            </div>
+
+            <div className={styles.group}>
+                <label>Género/s</label>
+
+                <select
+                    multiple
+                    value={album.genres.map(String)}
+                    onChange={handleGenres}
+                >
+                    {genres.map(g => (
+                        <option
+                            key={g.id}
+                            value={String(g.id)}
+                        >
+                            {g.name}
+                        </option>
+                    ))}
+                </select>
+
+                {errors?.genres && (
+                    <p className={styles.error}>
+                        {errors.genres[0]}
+                    </p>
+                )}
+            </div>
+
+            <div className={styles.group}>
+                <label>Imagen</label>
+
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFile}
+                />
+            </div>
+
+            <div className={styles.group}>
+                {!showSongs ? (
                     <button
                         type="button"
+                        className={styles.secondary}
                         onClick={() => {
-                            setShowSongs(false)
-                            cleanSongs()
+                            if (songs.length === 0) {
+                                addSongInput()
+                            }
+                            setShowSongs(true)
                         }}
                     >
-                        Cancelar
+                        Agregar canciones
                     </button>
-                </div>
-            )}
+                ) : (
+                    <div
+                        className={
+                            styles.songBox
+                        }
+                    >
+                        <label>
+                            Canciones
+                        </label>
 
-            {errors?.songs && <span>{errors.songs[0]}</span>}
+                        {songs.map(
+                            (
+                                song,
+                                index
+                            ) => (
+                                <div
+                                    key={
+                                        index
+                                    }
+                                    className={
+                                        styles.songRow
+                                    }
+                                >
+                                    <input
+                                        type="text"
+                                        value={
+                                            song
+                                        }
+                                        placeholder={`Canción ${index +
+                                            1
+                                            }`}
+                                        onChange={e =>
+                                            handleSongChange(
+                                                index,
+                                                e
+                                                    .target
+                                                    .value
+                                            )
+                                        }
+                                    />
 
-            <br />
+                                    <button
+                                        type="button"
+                                        className={
+                                            styles.remove
+                                        }
+                                        onClick={() =>
+                                            removeSong(
+                                                index
+                                            )
+                                        }
+                                    >
+                                        −
+                                    </button>
 
-            <div className="form-actions">
-                <button type="submit">Enviar</button>
-                <button type="button" onClick={() => router.push(`/album/${albumId}`)}>
+                                    {index ===
+                                        songs.length -
+                                        1 && (
+                                            <button
+                                                type="button"
+                                                className={
+                                                    styles.add
+                                                }
+                                                onClick={
+                                                    addSongInput
+                                                }
+                                            >
+                                                +
+                                            </button>
+                                        )}
+                                </div>
+                            )
+                        )}
+
+                        <button
+                            type="button"
+                            className={
+                                styles.cancel
+                            }
+                            onClick={() => {
+                                setShowSongs(
+                                    false
+                                )
+                                cleanSongs()
+                            }}
+                        >
+                            Cancelar canciones
+                        </button>
+                    </div>
+                )}
+
+                {errors?.songs && (
+                    <p className={styles.error}>
+                        {errors.songs[0]}
+                    </p>
+                )}
+            </div>
+
+            <div
+                className={
+                    styles.actions
+                }
+            >
+                <button
+                    type="submit"
+                    className={
+                        styles.primary
+                    }
+                >
+                    Guardar
+                </button>
+
+                <button
+                    type="button"
+                    className={
+                        styles.secondary
+                    }
+                    onClick={goBack}
+                >
                     Volver
                 </button>
             </div>
-        </div>
+        </>
     )
 }
 
 export default AlbumInputs
+

@@ -1,138 +1,194 @@
 "use client"
 
+import { getAllActiveAlbums } from "@/lib/auth/api/album.api"
 import { ActiveAlbums } from "@/types/album.types"
-import { useState, useEffect, HtmlHTMLAttributes } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { getAllActiveAlbums } from "@/lib/auth/api/album.api"
 import Link from "next/link"
+import styles from "./style.module.css"
+
+const ITEMS_PER_PAGE = 8
 
 const AlbumsIndex = () => {
-    const [albums, setAlbums] = useState<ActiveAlbums>([])
-    const [filterAlbums, setFilterAlbums] = useState<ActiveAlbums>([])
-    const [loading, setLoading] = useState<boolean>(true)
-    const [status, setStatus] = useState<number>(0)
-    const { data: session } = useSession()
-    const router = useRouter()
+  const [albums, setAlbums] = useState<ActiveAlbums>([])
+  const [search, setSearch] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [status, setStatus] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
 
-    useEffect(() => {
-        const loadAlbums = async () => {
-            const res = await getAllActiveAlbums()
-            if (res.ok) setAlbums(res.albums)
-            if (res.ok) setFilterAlbums(res.albums)
-            else setStatus(res.status)
-            setLoading(false)
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    const loadAlbums = async () => {
+      try {
+        const res = await getAllActiveAlbums()
+
+        if (res.ok) {
+          setAlbums(res.albums)
+        } else {
+          setStatus(res.status)
         }
-
-        loadAlbums()
-    }, [])
-
-    const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const result = albums.filter(a => a.name.toLowerCase().includes(e.target.value.toLowerCase()))
-        if (result.length > 0) setFilterAlbums(result)
-        else setFilterAlbums(albums)
+      } catch (error) {
+        setStatus(500)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    if (loading) return <p>Loading...</p>
-    if (status === 500) <p>Error de servidor</p>
+    loadAlbums()
+  }, [])
 
-    return (
-        <div>
-            <div>
-                <h2>Albums recientes</h2>
-                {session?.user.id ? (
-                    <div>
-                        <p>No te quedes atras y crea un album!</p>
-                        <button onClick={() => router.push('/album')}>Crear Album!</button>
-                    </div>
-                ) : (
-                    <div>
-                        <p>Quieres crear un album?. Registrate y disfruta de crear contenido de tus artistas favoritos!.
-                        </p>
-                        <button onClick={() => router.push('/auth/register')}>Registrarse</button>
-                    </div>
-                )}
-                {filterAlbums.length > 0 &&
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="ingrese nombre del album..."
-                            onChange={handleOnchange}
-                            name="serching"
-                        />
-                    </div>
-                }
-
-                <div
-                    style={{
-                        display: "flex",
-                        gap: "16px",
-                        overflowX: "auto",
-                        padding: "10px 0"
-                    }}
-                >
-                    {filterAlbums.map(a => (
-                        <Link
-                            key={a.id}
-                            href={`/album/${a.id}`}
-                            style={{
-                                textDecoration: "none",
-                                color: "inherit"
-                            }}
-                        >
-                            <div
-                                style={{
-                                    minWidth: "200px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "12px",
-                                    padding: "10px",
-                                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                                    background: "#fff",
-                                    cursor: "pointer",
-                                    transition: "transform 0.2s, box-shadow 0.2s"
-                                }}
-                                onMouseEnter={e => {
-                                    e.currentTarget.style.transform = "scale(1.03)"
-                                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)"
-                                }}
-                                onMouseLeave={e => {
-                                    e.currentTarget.style.transform = "scale(1)"
-                                    e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)"
-                                }}
-                            >
-                                <img
-                                    src={a.pic}
-                                    alt={a.name}
-                                    style={{
-                                        width: "100%",
-                                        height: "150px",
-                                        objectFit: "cover",
-                                        borderRadius: "8px"
-                                    }}
-                                />
-
-                                <p
-                                    style={{
-                                        marginTop: "8px",
-                                        fontWeight: "bold",
-                                        textAlign: "center"
-                                    }}
-                                >
-                                    {a.name}
-                                </p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-            {session?.user.id && albums.length === 0 &&
-                <div>
-                    <p>No hay albums, crea el primero!</p>
-                    <button onClick={() => router.push('/album')}>Crear Album!</button>
-                </div>
-            }
-        </div>
+  const filteredAlbums = useMemo(() => {
+    return albums.filter((album) =>
+      album.name
+        .toLowerCase()
+        .includes(search.toLowerCase())
     )
+  }, [albums, search])
+
+  const totalPages = Math.ceil(
+    filteredAlbums.length / ITEMS_PER_PAGE
+  )
+
+  const paginatedAlbums = filteredAlbums.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
+
+  const handleSearch = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearch(e.target.value)
+    setCurrentPage(1)
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.wrapper}>
+        <p>Cargando...</p>
+      </div>
+    )
+  }
+
+  if (status === 500) {
+    return (
+      <div className={styles.wrapper}>
+        <p>Error de servidor.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.wrapper}>
+      <h1 className={styles.title}>
+        Albums recientes
+      </h1>
+
+      {session?.user?.id ? (
+        <div className={styles.banner}>
+          <p>
+            No te quedes atrás y crea un album.
+          </p>
+
+          <button
+            className={styles.button}
+            onClick={() => router.push("/album")}
+          >
+            Crear Album
+          </button>
+        </div>
+      ) : (
+        <div className={styles.banner}>
+          <p>
+            ¿Quieres crear albums?
+            Registrate y compartí tus
+            favoritos.
+          </p>
+
+          <button
+            className={styles.button}
+            onClick={() =>
+              router.push("/auth/register")
+            }
+          >
+            Registrarse
+          </button>
+        </div>
+      )}
+
+      {albums.length > 0 && (
+        <input
+          type="text"
+          placeholder="Buscar album..."
+          value={search}
+          onChange={handleSearch}
+          className={styles.search}
+        />
+      )}
+
+      {filteredAlbums.length === 0 ? (
+        <p className={styles.empty}>
+          No se encontraron albums.
+        </p>
+      ) : (
+        <>
+          <div className={styles.grid}>
+            {paginatedAlbums.map((album) => (
+              <Link
+                key={album.id}
+                href={`/album/${album.id}`}
+              >
+                <div className={styles.card}>
+                  <img
+                    src={album.pic}
+                    alt={album.name}
+                    className={styles.image}
+                  />
+
+                  <p className={styles.name}>
+                    {album.name}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button
+                className={styles.pageBtn}
+                disabled={currentPage === 1}
+                onClick={() =>
+                  setCurrentPage((p) => p - 1)
+                }
+              >
+                Anterior
+              </button>
+
+              <span>
+                Página {currentPage} de{" "}
+                {totalPages}
+              </span>
+
+              <button
+                className={styles.pageBtn}
+                disabled={
+                  currentPage === totalPages
+                }
+                onClick={() =>
+                  setCurrentPage((p) => p + 1)
+                }
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
 }
 
 export default AlbumsIndex
